@@ -9,13 +9,19 @@ using a defind convention vs coding complex custom APIs on top of provider APIs.
 The Documents folder has high level systems design docs.
 
 Frontend: 
+
    HTML5: with mobile support from day 1
+   
    ?CSS:SASS
+   
    JavaScript:?Backbone?Angular?JQuery
    
 Backend:
+
    node.js
+   
    noSql:?mongoDB?Cassanda?
+
    Rdb reporting: AWS RDB if needed
    
    
