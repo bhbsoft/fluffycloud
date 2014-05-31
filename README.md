@@ -1,10 +1,10 @@
 fluffycloud
 ===========
 
-FluffyCloud.io is a website the presents a users virtual infrastracture in a meaningfull cross platform way.
+FluffyCloud.io is a web site the presents a users virtual infrastructure in a meaningful cross platform way.
 
 The core concepts here is to manage properties and configurations as key:value pairs and to code features 
-using a defind convention vs coding complex custom APIs on top of provider APIs.
+using a defined convention vs coding complex custom APIs on top of provider APIs.
 
 The Documents folder has high level systems design docs.
 
@@ -23,6 +23,13 @@ The Documents folder has high level systems design docs.
    
 ##CLI:
 
-    Once our service layer is mature need to implement the CLI known as percipitation. 
-    This will allow for easy orchistration of the service layer.
+    Once our service layer is going to be built on top of CLI from the existing providers. 
+    We will implement aws, gce, then azure. The CLI ontop of the providers cli will be 
+    known as percipitation. As percipitation matures there will need a need to implement
+    the open source version and closed source version.
+    
+#Project dependencies
+    Node.js
+    aws-cli
+    gcutil    
    
