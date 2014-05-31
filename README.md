@@ -8,20 +8,20 @@ using a defind convention vs coding complex custom APIs on top of provider APIs.
 
 The Documents folder has high level systems design docs.
 
-#Frontend: 
+##Frontend: 
 
     HTML5: with mobile support from day 1
     ?CSS:SASS
     JavaScript:?Backbone?Angular?JQuery
    
-#Backend:
+##Backend:
 
     node.js
     noSql:mongoDB Cassanda
     Rdb reporting: AWS RDB if needed
    
    
-#CLI:
+##CLI:
 
     Once our service layer is mature need to implement the CLI known as percipitation. 
     This will allow for easy orchistration of the service layer.
