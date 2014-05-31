@@ -1,4 +1,4 @@
-default : {
-   my-key-pair : "my-fresh-key-pair",
-   my-security-group : "my-fresh-security-group"
+"default" : {
+   "my-key-pair" : "my-fresh-key-pair",
+   "my-security-group" : "my-fresh-security-group"
 }
