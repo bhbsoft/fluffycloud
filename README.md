@@ -16,9 +16,9 @@ The Documents folder has high level systems design docs.
    
 ##Backend:
 
-    node.js
+    springboot 
     noSql:mongoDB Cassanda
-    Rdb reporting: AWS RDB if needed
+    Rdb reporting: AWS RDB if needed (SQL)
    
    
 ##CLI:
@@ -29,7 +29,8 @@ The Documents folder has high level systems design docs.
     the open source version and closed source version.
     
 #Project dependencies
-    Node.js
+    Groovy/Gradle
+    Springboot
     aws-cli
     gcutil    
    
