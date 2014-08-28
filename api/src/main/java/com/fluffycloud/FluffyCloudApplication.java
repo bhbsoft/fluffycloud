@@ -15,7 +15,7 @@ public class FluffyCloudApplication {
 
   public static void main(String[] args) {
   
-    ApplicationContext ctx = SpringApplication.run(Application.class, args);
+    ApplicationContext ctx = SpringApplication.run(FluffyCloudApplication.class, args);
     
     System.out.println("Let's inspect the beans provided by Spring Boot:");
     
