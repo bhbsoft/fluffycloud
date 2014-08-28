@@ -1,4 +1,4 @@
-package com.fluffycloud;
+package com.fluffycloud.api;
 
 import java.util.Arrays;
 import org.springframework.boot.SpringApplication;
