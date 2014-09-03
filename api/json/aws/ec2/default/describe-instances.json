@@ -1,0 +1,7 @@
+{
+   provider: aws,
+   cmd : ec2, 
+   sub_cmd:describe-instances,
+   cmd_properties:  [--max-items:50],         
+   cmd_filters:[architecture:x86_64, availability-zone=us-east-1]
+}
