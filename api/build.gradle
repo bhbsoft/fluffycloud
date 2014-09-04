@@ -33,6 +33,9 @@ dependencies {
   // tag::actuator[]
   compile("org.springframework.boot:spring-boot-starter-actuator")
   // end::actuator[]
+  compile("org.apache.commons:commons-exec:1.2")
+  compile("com.google.code.gson:gson:2.3")
+  
   testCompile("junit:junit")
 }
 

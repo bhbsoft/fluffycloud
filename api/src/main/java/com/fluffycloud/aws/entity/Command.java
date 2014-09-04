@@ -94,9 +94,12 @@ public class Command
 		StringBuilder command = new StringBuilder(this.provider.getValue() + " " + this.command + " " + this.action
 				+ " ");
 
-		for (String option : this.options)
+		if (this.options != null)
 		{
-			command.append(option + " ");
+			for (String option : this.options)
+			{
+				command.append(option + " ");
+			}
 		}
 
 		if (this.parameters == null)

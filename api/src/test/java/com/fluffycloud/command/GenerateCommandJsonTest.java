@@ -1,7 +1,7 @@
 package com.fluffycloud.command;
 
-import static com.fluffycloud.constants.InstanceTypes.t1MICRO;
-import static com.fluffycloud.constants.Provider.AWS;
+import static com.fluffycloud.aws.constants.InstanceTypes.t1MICRO;
+import static com.fluffycloud.aws.constants.Provider.AWS;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -13,9 +13,11 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.fluffycloud.entity.Command;
-import com.fluffycloud.entity.Parameters;
-import com.fluffycloud.entity.SecurityGroup;
+import com.fluffycloud.aws.constants.InstanceTypes;
+import com.fluffycloud.aws.constants.Provider;
+import com.fluffycloud.aws.entity.Command;
+import com.fluffycloud.aws.entity.Parameters;
+import com.fluffycloud.aws.entity.SecurityGroup;
 import com.google.gson.Gson;
 
 public class GenerateCommandJsonTest
