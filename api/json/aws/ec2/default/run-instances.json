@@ -1,0 +1,12 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "run-instances",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"image-id": "ami-xxxxxx"
+		}
+	}
+}

@@ -1,0 +1,12 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "create-key-pair",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"key-name": "NameForKeyPair"
+		}
+	}
+}

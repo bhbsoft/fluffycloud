@@ -13,8 +13,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.fluffycloud.aws.constants.InstanceTypes;
-import com.fluffycloud.aws.constants.Provider;
 import com.fluffycloud.aws.entity.Command;
 import com.fluffycloud.aws.entity.Parameters;
 import com.fluffycloud.aws.entity.SecurityGroup;

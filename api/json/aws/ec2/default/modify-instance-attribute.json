@@ -1,0 +1,12 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "modify-instance-attribute",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"instance-id": "i-xxxx"
+		}
+	}
+}

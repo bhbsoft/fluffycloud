@@ -1,0 +1,1 @@
+{"provider":"AWS","command":"ec2","action":"terminate-instances","parameters":{"parameterMap":{"instance-ids":"i-xxxxxx"}}}

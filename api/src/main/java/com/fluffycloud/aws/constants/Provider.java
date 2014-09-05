@@ -17,7 +17,7 @@ public enum Provider
 		return value;
 	}
 
-	public boolean isValidProvider(String value)
+	public static boolean isValidProvider(String value)
 	{
 		for (Provider provider : values())
 		{
@@ -28,6 +28,19 @@ public enum Provider
 		}
 
 		return false;
+	}
+
+	public static Provider getProvider(String value)
+	{
+		for (Provider provider : values())
+		{
+			if (provider.getValue().equalsIgnoreCase(value))
+			{
+				return provider;
+			}
+		}
+
+		return null;
 	}
 
 }

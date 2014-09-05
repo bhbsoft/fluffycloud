@@ -1,0 +1,12 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "reboot-instances",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"instance-ids": "i-xxxxx"
+		}
+	}
+}

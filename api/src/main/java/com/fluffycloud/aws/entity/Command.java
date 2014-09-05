@@ -131,14 +131,14 @@ public class Command
 
 			command.append("] ");
 
-			command.append("--security-group-ids [");
+			command.append("--security-group-ids ");
 
 			for (SecurityGroup sGroup : sList)
 			{
 				command.append(sGroup.getGroupId() + " ");
 			}
 
-			command.append("] ");
+			command.append(" ");
 		}
 
 		List<String> flags = this.getParameters().getFlags();
