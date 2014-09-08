@@ -1,0 +1,12 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "modify-volume-attribute",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"volume-id": "vol-xxxxx"
+		}
+	}
+}

@@ -1,0 +1,13 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "create-volume",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"availability-zone": "xx-xx-xx",
+			"snapshot-id": "snap-xxxxx"
+		}
+	}
+}

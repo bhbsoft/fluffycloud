@@ -1,0 +1,13 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "describe-volume-attribute",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"volume-id": "vol-xxxxxx",
+			"attribute": "autoEnableIO"
+		}
+	}
+}

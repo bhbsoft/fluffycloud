@@ -1,0 +1,12 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "enable-volume-io",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"volume-id": "vol-xxxxxx"
+		}
+	}
+}

@@ -1,0 +1,14 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "attach-volume",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"volume-id": "vol-xxxxx",
+			"instance-id": "i-xxxxx",
+			"device": "/xxxx/xxxx"
+		}
+	}
+}
