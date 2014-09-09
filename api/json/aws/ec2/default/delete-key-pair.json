@@ -1,7 +1,7 @@
 {
 	"provider": "AWS",
 	"command": "ec2",
-	"action": "create-key-pair",
+	"action": "delete-key-pair",
 	"parameters": 
 	{
 		"parameterMap": 

@@ -1,12 +1,13 @@
 {
 	"provider": "AWS",
 	"command": "ec2",
-	"action": "create-key-pair",
+	"action": "describe-image-attribute",
 	"parameters": 
 	{
 		"parameterMap": 
 		{
-			"key-name": "xxxxx"
+			"attribute": "xxxx",
+			"image-id": "ami-xxxxx"
 		}
 	}
 }

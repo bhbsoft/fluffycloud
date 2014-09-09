@@ -1,12 +1,13 @@
 {
 	"provider": "AWS",
 	"command": "ec2",
-	"action": "create-key-pair",
+	"action": "reset-image-attribute",
 	"parameters": 
 	{
 		"parameterMap": 
 		{
-			"key-name": "xxxxx"
+			"attribute": "xxxxx",
+			"image-id": "ami-xxxxx"
 		}
 	}
 }

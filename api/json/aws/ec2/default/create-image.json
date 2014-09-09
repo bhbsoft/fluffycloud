@@ -1,12 +1,13 @@
 {
 	"provider": "AWS",
 	"command": "ec2",
-	"action": "create-key-pair",
+	"action": "create-image",
 	"parameters": 
 	{
 		"parameterMap": 
 		{
-			"key-name": "xxxxx"
+			"instance-id": "i-xxxxx",
+			"name": "xxxxx"
 		}
 	}
 }

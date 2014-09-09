@@ -1,12 +1,12 @@
 {
 	"provider": "AWS",
 	"command": "ec2",
-	"action": "create-key-pair",
+	"action": "deregister-image",
 	"parameters": 
 	{
 		"parameterMap": 
 		{
-			"key-name": "xxxxx"
+			"image-id": "ami-xxxxx"
 		}
 	}
 }
