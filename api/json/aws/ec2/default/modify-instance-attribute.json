@@ -6,7 +6,8 @@
 	{
 		"parameterMap": 
 		{
-			"instance-id": "i-xxxx"
+			"instance-id": "i-xxxx",
+			"instance-type": "{\"Value\": \"t1.micro\"}"
 		}
 	}
 }

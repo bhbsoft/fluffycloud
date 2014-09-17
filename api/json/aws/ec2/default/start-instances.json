@@ -1,1 +1,12 @@
-{"provider":"AWS","command":"ec2","action":"start-instances","parameters":{"parameterMap":{"instance-ids":"i-xxxxxx"}}}
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "start-instances",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"instance-ids": "i-xxxxxx"
+		}
+	}
+}
