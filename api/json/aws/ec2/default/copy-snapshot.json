@@ -1,0 +1,13 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "copy-snapshot",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"source-snapshot-id": "snap-xxxxx",
+			"source-region": "xxxxx"
+		}
+	}
+}

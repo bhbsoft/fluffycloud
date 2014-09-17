@@ -1,0 +1,13 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "describe-image-attribute",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"attribute": "xxxx",
+			"image-id": "ami-xxxxx"
+		}
+	}
+}

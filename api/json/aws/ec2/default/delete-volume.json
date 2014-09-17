@@ -1,0 +1,12 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "delete-volume",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"volume-id": "vol-xxxxx"
+		}
+	}
+}

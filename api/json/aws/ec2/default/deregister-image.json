@@ -1,0 +1,12 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "deregister-image",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"image-id": "ami-xxxxx"
+		}
+	}
+}

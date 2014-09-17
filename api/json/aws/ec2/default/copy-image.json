@@ -1,0 +1,13 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "copy-image",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"source-region": "us-east-1",
+			"source-image-id": "ami-xxxxx"
+		}
+	}
+}

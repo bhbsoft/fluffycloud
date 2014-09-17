@@ -1,0 +1,12 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "delete-snapshot",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"snapshot-id": "snap-xxxxxx"
+		}
+	}
+}

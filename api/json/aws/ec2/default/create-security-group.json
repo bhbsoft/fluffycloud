@@ -1,0 +1,13 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "create-security-group",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"description": "\"Description about group\" ",
+			"group-name": "MySecurityGroupName"
+		}
+	}
+}

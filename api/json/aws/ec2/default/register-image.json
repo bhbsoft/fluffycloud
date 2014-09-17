@@ -1,0 +1,12 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "register-image",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"image-location": "xxx/xxx"
+		}
+	}
+}

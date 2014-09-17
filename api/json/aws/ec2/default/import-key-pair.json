@@ -1,0 +1,13 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "import-key-pair",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"public-key-material": "xxxxx",
+			"key-name": "xxxxx"
+		}
+	}
+}

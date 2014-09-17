@@ -1,0 +1,13 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "create-image",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"instance-id": "i-xxxxx",
+			"name": "xxxxx"
+		}
+	}
+}
