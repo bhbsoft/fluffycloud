@@ -1,0 +1,5 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "describe-network-acls"
+}

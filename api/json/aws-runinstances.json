@@ -1,1 +1,54 @@
-{"provider":"AWS","command":"ec2","action":"run-instances","options":[],"parameters":{"securityGroups":[{"groupId":"sg1-xxxxxx"},{"groupId":"sg2-xxxx"}],"parameterMap":{"user-data":"","monitoring":"basic","count":"1","network-interfaces":"eth0","subnet-id":"subnet-aed7c186","placement ":"","block-device-mappings":"","instance-initiated-shutdown-behavior":"","iam-instance-profile":"","key-name":"awslinux","ramdisk-id":"","secondary-private-ip-addresses":"","secondary-private-ip-address-count":"","additional-info":"","kernel-id":"aki-xxxx","image-id":"ami-xxxxxx","instance-type":"t1.Micro","private-ip-address":"","ebs-optimized":"False","client-token":""},"flags":["dry-run","disable-api-termination","associate-public-ip-address"]}}
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "run-instances",
+	"options": 
+	[
+		
+	],
+
+	"parameters": 
+	{
+		"securityGroups": 
+		[
+			{
+				"groupId": "sg1-xxxxxx"
+			},
+
+			{
+				"groupId": "sg2-xxxx"
+			}
+		],
+
+		"parameterMap": 
+		{
+			"user-data": "",
+			"monitoring": "basic",
+			"count": "1",
+			"network-interfaces": "eth0",
+			"subnet-id": "subnet-aed7c186",
+			"placement ": "",
+			"block-device-mappings": "",
+			"instance-initiated-shutdown-behavior": "",
+			"iam-instance-profile": "",
+			"key-name": "awslinux",
+			"ramdisk-id": "",
+			"secondary-private-ip-addresses": "",
+			"secondary-private-ip-address-count": "",
+			"additional-info": "",
+			"kernel-id": "aki-xxxx",
+			"image-id": "ami-xxxxxx",
+			"instance-type": "t1.Micro",
+			"private-ip-address": "",
+			"ebs-optimized": "False",
+			"client-token": ""
+		},
+
+		"flags": 
+		[
+			"dry-run",
+			"disable-api-termination",
+			"associate-public-ip-address"
+		]
+	}
+}

@@ -1,12 +1,12 @@
 {
 	"provider": "AWS",
 	"command": "ec2",
-	"action": "describe-instances",
+	"action": "delete-security-group",
 	"parameters": 
 	{
 		"parameterMap": 
 		{
-			"instance-ids": "i-7c687e93"
+			"group-name": "MySecurityGroup"
 		}
 	}
 }

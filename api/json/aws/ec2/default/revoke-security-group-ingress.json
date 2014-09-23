@@ -1,0 +1,15 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "revoke-security-group-ingress",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"port": "22",
+			"protocol": "tcp",
+			"cidr": "10.0.0.0/22",
+			"group-name": "MySecurityGroup"
+		}
+	}
+}

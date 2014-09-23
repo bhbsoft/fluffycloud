@@ -1,12 +1,12 @@
 {
 	"provider": "AWS",
 	"command": "ec2",
-	"action": "describe-instances",
+	"action": "create-network-acl",
 	"parameters": 
 	{
 		"parameterMap": 
 		{
-			"instance-ids": "i-7c687e93"
+			"vpc-id": "vpc-7cd16619"
 		}
 	}
 }
