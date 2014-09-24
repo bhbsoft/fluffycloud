@@ -1,0 +1,12 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "delete-dhcp-options",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"dhcp-options-id": "dopt-a71a06c5"
+		}
+	}
+}

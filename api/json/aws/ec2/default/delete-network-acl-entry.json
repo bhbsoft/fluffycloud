@@ -1,0 +1,18 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "delete-network-acl-entry",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"rule-number": "200",
+			"network-acl-id": "acl-0b4eff6e"
+		},
+
+		"flags": 
+		[
+			"ingress"
+		]
+	}
+}

@@ -1,0 +1,12 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "delete-internet-gateway",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"internet-gateway-id": "igw-f37fa896"
+		}
+	}
+}

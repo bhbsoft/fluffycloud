@@ -1,0 +1,13 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "associate-dhcp-options",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"dhcp-options-id": "dopt-081a066a",
+			"vpc-id": "vpc-7cd16619"
+		}
+	}
+}

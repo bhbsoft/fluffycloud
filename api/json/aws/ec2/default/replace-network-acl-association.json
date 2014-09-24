@@ -1,0 +1,13 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "replace-network-acl-association",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"association-id": "aclassoc-e1ffdf84",
+			"network-acl-id": "acl-4931802c"
+		}
+	}
+}

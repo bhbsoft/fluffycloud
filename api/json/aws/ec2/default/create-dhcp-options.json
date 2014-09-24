@@ -1,0 +1,12 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "create-dhcp-options",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"dhcp-configuration": "\"Key=domain-name-servers,Values\u003d10.2.5.1,10.2.5.2\""
+		}
+	}
+}

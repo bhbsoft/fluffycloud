@@ -1,0 +1,21 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "replace-network-acl-entry",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"protocol": "-1",
+			"cidr-block": "0.0.0.0/0",
+			"rule-number": "200",
+			"network-acl-id": "acl-0b4eff6e",
+			"rule-action": "deny"
+		},
+
+		"flags": 
+		[
+			"ingress"
+		]
+	}
+}
