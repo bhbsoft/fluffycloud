@@ -1,0 +1,13 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "delete-route",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"route-table-id": "rtb-0605ba63",
+			"destination-cidr-block": "0.0.0.0/0"
+		}
+	}
+}

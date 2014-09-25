@@ -1,0 +1,13 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "associate-address",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"instance-id": "i-c8a64a26",
+			"public-ip": "107.21.212.111"
+		}
+	}
+}

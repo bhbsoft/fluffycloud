@@ -1,0 +1,13 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "associate-route-table",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"route-table-id": "rtb-8d8732e8",
+			"subnet-id": "subnet-e4ec3893"
+		}
+	}
+}

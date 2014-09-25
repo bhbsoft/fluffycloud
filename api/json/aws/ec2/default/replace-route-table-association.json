@@ -1,0 +1,13 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "replace-route-table-association",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"route-table-id": "rtb-5405ba31",
+			"association-id": "rtbassoc-a38e01c6"
+		}
+	}
+}

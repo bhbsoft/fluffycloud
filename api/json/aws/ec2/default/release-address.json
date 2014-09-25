@@ -1,0 +1,12 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "release-address",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"public-ip": "107.21.212.111"
+		}
+	}
+}

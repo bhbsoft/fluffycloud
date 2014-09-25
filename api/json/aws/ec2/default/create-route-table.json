@@ -1,0 +1,12 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "create-route-table",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"vpc-id": "vpc-52bc0337"
+		}
+	}
+}

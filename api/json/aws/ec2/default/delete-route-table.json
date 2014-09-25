@@ -1,0 +1,12 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "delete-route-table",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"route-table-id": "rtb-3711ae52"
+		}
+	}
+}

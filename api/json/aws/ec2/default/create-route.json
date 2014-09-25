@@ -1,0 +1,14 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "create-route",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"gateway-id": "igw-65438a00",
+			"route-table-id": "rtb-0605ba63",
+			"destination-cidr-block": "0.0.0.0/0"
+		}
+	}
+}
