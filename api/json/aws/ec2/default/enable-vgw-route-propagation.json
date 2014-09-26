@@ -1,0 +1,13 @@
+{
+	"provider": "AWS",
+	"command": "ec2",
+	"action": "enable-vgw-route-propagation",
+	"parameters": 
+	{
+		"parameterMap": 
+		{
+			"gateway-id": "vgw-a98a68c0",
+			"route-table-id": "rtb-0605ba63"
+		}
+	}
+}
