@@ -1,5 +1,10 @@
 package com.fluffycloud.api;
 
+import static com.fluffycloud.aws.constants.Action.AUTHORIZESECURITYGROUPEGRESS;
+import static com.fluffycloud.aws.constants.Action.AUTHORIZESECURITYGROUPINGRESS;
+import static com.fluffycloud.aws.constants.Action.CREATESECURITYGROUP;
+import static com.fluffycloud.aws.constants.Action.CREATEVPC;
+
 import java.io.IOException;
 import java.util.Map;
 
@@ -11,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fluffycloud.aws.cli.utils.CLIExecutor;
 import com.fluffycloud.aws.cli.utils.PropertyReader;
+import com.fluffycloud.aws.constants.Action;
 import com.fluffycloud.aws.entity.Command;
 import com.fluffycloud.aws.entity.Parameters;
 import com.fluffycloud.aws.response.entity.CreateSecurityGroupResponse;
@@ -85,19 +91,19 @@ public class AWSMockController
 		Gson gson = new Gson();
 
 		/* 1. Create a VPC instance */
-		Command defaultCommand = cliExecutor.getDefaultCommand("create-vpc");
+		Command defaultCommand = cliExecutor.getDefaultCommand(CREATEVPC);
 		String createVPCResponseJSON = cliExecutor.processCommand(defaultCommand);
 		CreateVPCResponse createVPCResponse = gson.fromJson(createVPCResponseJSON, CreateVPCResponse.class);
 
 		/* 2. Create a Security Group */
-		Command defaultCommandSG = cliExecutor.getDefaultCommand("create-security-group");
+		Command defaultCommandSG = cliExecutor.getDefaultCommand(CREATESECURITYGROUP);
 		String createSGJSON = cliExecutor.processCommand(defaultCommandSG);
 		System.out.println(createSGJSON);
 		CreateSecurityGroupResponse createSecurityGroupResponse = gson.fromJson(createSGJSON,
 				CreateSecurityGroupResponse.class);
 
 		/* 3. Add Inbound Rules */
-		Command defaultCommandSGIngress = cliExecutor.getDefaultCommand("authorize-security-group-ingress");
+		Command defaultCommandSGIngress = cliExecutor.getDefaultCommand(AUTHORIZESECURITYGROUPINGRESS);
 		Parameters ingressParams = defaultCommandSGIngress.getParameters();
 		Map<String, String> ingressParameterMap = ingressParams.getParameterMap();
 		ingressParameterMap.put("group-name", defaultCommandSG.getParameters().getParameterMap().get("group-name"));
@@ -105,7 +111,7 @@ public class AWSMockController
 		System.out.println(authorizeSGIngressResponseJSON);
 
 		/* 4. Add OutBound Rules */
-		Command defaultCommandSGEgress = cliExecutor.getDefaultCommand("authorize-security-group-egress");
+		Command defaultCommandSGEgress = cliExecutor.getDefaultCommand(AUTHORIZESECURITYGROUPEGRESS);
 		Parameters egressParams = defaultCommandSGEgress.getParameters();
 		Map<String, String> egressParameterMap = egressParams.getParameterMap();
 		egressParameterMap.put("group-id", createSecurityGroupResponse.getGroupId());

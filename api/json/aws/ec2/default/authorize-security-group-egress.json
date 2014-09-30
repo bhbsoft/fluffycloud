@@ -1,15 +1,13 @@
 {
-	"provider": "AWS",
-	"command": "ec2",
-	"action": "authorize-security-group-egress",
-	"parameters": 
-	{
-		"parameterMap": 
-		{
-			"port": "22",
-			"group-id": "sg-a8c698cd",
-			"protocol": "tcp",
-			"cidr": "203.0.113.0/24"
+"provider":"AWS",
+"command":"ec2",
+"action":"authorize-security-group-egress",
+"parameters":{
+	"parameterMap":{
+			"port":"80",
+			"group-id":"sg-a8c698cd",
+			"protocol":"tcp",
+			"cidr":"0.0.0.0/0"
+			}
 		}
-	}
 }

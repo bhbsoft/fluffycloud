@@ -1,0 +1,1 @@
+{"provider":"AWS","command":"ec2","action":"create-subnet","parameters":{"parameterMap":{"cidr-block":"10.0.1.0/24","vpc-id":"vpc-xxxx"}}}
