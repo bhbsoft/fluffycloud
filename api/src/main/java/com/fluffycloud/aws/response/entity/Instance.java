@@ -1,60 +1,68 @@
 package com.fluffycloud.aws.response.entity;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Instance
 {
-	private String KernelId;
-	private String ImageId;
-	private String InstanceId;
-	private String InstanceType;
-	private String RootDeviceType;
+	@SerializedName("KernelId")
+	private String kernelId;
+	@SerializedName("ImageId")
+	private String imageId;
+	@SerializedName("InstanceId")
+	private String instanceId;
+	@SerializedName("InstanceType")
+	private String instanceType;
+	@SerializedName("RootDeviceType")
+	private String iootDeviceType;
 
 	public String getKernelId()
 	{
-		return KernelId;
+		return kernelId;
 	}
 
 	public void setKernelId(String kernelId)
 	{
-		KernelId = kernelId;
+		this.kernelId = kernelId;
 	}
 
 	public String getImageId()
 	{
-		return ImageId;
+		return imageId;
 	}
 
 	public void setImageId(String imageId)
 	{
-		ImageId = imageId;
+		this.imageId = imageId;
 	}
 
 	public String getInstanceId()
 	{
-		return InstanceId;
+		return instanceId;
 	}
 
 	public void setInstanceId(String instanceId)
 	{
-		InstanceId = instanceId;
+		this.instanceId = instanceId;
 	}
 
 	public String getInstanceType()
 	{
-		return InstanceType;
+		return instanceType;
 	}
 
 	public void setInstanceType(String instanceType)
 	{
-		InstanceType = instanceType;
+		this.instanceType = instanceType;
 	}
 
-	public String getRootDeviceType()
+	public String getIootDeviceType()
 	{
-		return RootDeviceType;
+		return iootDeviceType;
 	}
 
-	public void setRootDeviceType(String rootDeviceType)
+	public void setIootDeviceType(String iootDeviceType)
 	{
-		RootDeviceType = rootDeviceType;
+		this.iootDeviceType = iootDeviceType;
 	}
+
 }

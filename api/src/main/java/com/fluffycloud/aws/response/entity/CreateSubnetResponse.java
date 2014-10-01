@@ -1,16 +1,20 @@
 package com.fluffycloud.aws.response.entity;
 
-public class CreateSubnetResponse
+import com.google.gson.annotations.SerializedName;
+
+public class CreateSubnetResponse extends BaseResponse
 {
-	private Subnet Subnet;
+	@SerializedName("Subnet")
+	private Subnet subnet;
 
 	public Subnet getSubnet()
 	{
-		return Subnet;
+		return subnet;
 	}
 
-	public void setSubnet(Subnet Subnet)
+	public void setSubnet(Subnet subnet)
 	{
-		this.Subnet = Subnet;
+		this.subnet = subnet;
 	}
+
 }

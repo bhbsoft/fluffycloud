@@ -1,7 +1,10 @@
 package com.fluffycloud.aws.response.entity;
 
-public class CreateVPCResponse
+import com.google.gson.annotations.SerializedName;
+
+public class CreateVPCResponse extends BaseResponse
 {
+	@SerializedName("Vpc")
 	private VPC Vpc;
 
 	public VPC getVpc()
@@ -9,8 +12,9 @@ public class CreateVPCResponse
 		return Vpc;
 	}
 
-	public void setVpc(VPC Vpc)
+	public void setVpc(VPC vpc)
 	{
-		this.Vpc = Vpc;
+		Vpc = vpc;
 	}
+
 }

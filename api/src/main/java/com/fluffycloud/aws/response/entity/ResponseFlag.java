@@ -2,12 +2,8 @@ package com.fluffycloud.aws.response.entity;
 
 import com.google.gson.annotations.SerializedName;
 
-public class CreateSecurityGroupResponse extends BaseResponse
+public class ResponseFlag extends BaseResponse
 {
-
-	@SerializedName("GroupId")
-	private String groupId;
-
 	@SerializedName("return")
 	private boolean actionPerformed;
 
@@ -20,15 +16,4 @@ public class CreateSecurityGroupResponse extends BaseResponse
 	{
 		this.actionPerformed = actionPerformed;
 	}
-
-	public String getGroupId()
-	{
-		return groupId;
-	}
-
-	public void setGroupId(String groupId)
-	{
-		this.groupId = groupId;
-	}
-
 }

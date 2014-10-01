@@ -3,7 +3,7 @@ package com.fluffycloud.aws.constants;
 public enum InstanceTypes
 {
 
-	t1MICRO("t1.micro");
+	t1MICRO("t1.micro"),t2MICRO("t2.micro");
 
 	public String typeName;
 

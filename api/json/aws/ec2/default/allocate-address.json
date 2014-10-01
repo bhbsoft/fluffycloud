@@ -1,5 +1,1 @@
-{
-	"provider": "AWS",
-	"command": "ec2",
-	"action": "allocate-address"
-}
+{"provider":"AWS","command":"ec2","action":"allocate-address","parameters":{"parameterMap":{"domain":"vpc"}}}

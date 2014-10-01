@@ -1,11 +1,7 @@
 package com.fluffycloud.api;
 
-import static com.fluffycloud.aws.constants.Action.AUTHORIZESECURITYGROUPEGRESS;
-import static com.fluffycloud.aws.constants.Action.AUTHORIZESECURITYGROUPINGRESS;
-import static com.fluffycloud.aws.constants.Action.CREATESECURITYGROUP;
-import static com.fluffycloud.aws.constants.Action.CREATEVPC;
-
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,10 +13,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fluffycloud.aws.cli.utils.CLIExecutor;
 import com.fluffycloud.aws.cli.utils.PropertyReader;
 import com.fluffycloud.aws.constants.Action;
-import com.fluffycloud.aws.entity.Command;
-import com.fluffycloud.aws.entity.Parameters;
+import com.fluffycloud.aws.constants.InstanceTypes;
+import com.fluffycloud.aws.response.entity.AllocateAddressReponse;
+import com.fluffycloud.aws.response.entity.CreateScenario1Response;
 import com.fluffycloud.aws.response.entity.CreateSecurityGroupResponse;
+import com.fluffycloud.aws.response.entity.CreateSubnetResponse;
 import com.fluffycloud.aws.response.entity.CreateVPCResponse;
+import com.fluffycloud.aws.response.entity.ResponseFlag;
+import com.fluffycloud.aws.response.entity.RunInstanceResponse;
+import com.fluffycloud.exceptions.FluffyCloudException;
 import com.google.gson.Gson;
 
 @RestController
@@ -86,38 +87,78 @@ public class AWSMockController
 	}
 
 	@RequestMapping("/aws/create/scenario1")
-	public String createScenario1(HttpServletRequest request) throws IOException
+	public String createScenario1(HttpServletRequest request) throws IOException, FluffyCloudException
 	{
+		Map<String, String> paramsToUdate = new HashMap<String, String>();
 		Gson gson = new Gson();
+		CreateScenario1Response createScenario1Response = new CreateScenario1Response();
 
 		/* 1. Create a VPC instance */
-		Command defaultCommand = cliExecutor.getDefaultCommand(CREATEVPC);
-		String createVPCResponseJSON = cliExecutor.processCommand(defaultCommand);
+		String createVPCResponseJSON = cliExecutor.performAction(Action.CREATEVPC, paramsToUdate);
 		CreateVPCResponse createVPCResponse = gson.fromJson(createVPCResponseJSON, CreateVPCResponse.class);
+		createScenario1Response.setCreateVPCResponse(createVPCResponse);
 
 		/* 2. Create a Security Group */
-		Command defaultCommandSG = cliExecutor.getDefaultCommand(CREATESECURITYGROUP);
-		String createSGJSON = cliExecutor.processCommand(defaultCommandSG);
-		System.out.println(createSGJSON);
-		CreateSecurityGroupResponse createSecurityGroupResponse = gson.fromJson(createSGJSON,
+		paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
+		String sgName = "TestSG-" + System.currentTimeMillis();
+		paramsToUdate.put("group-name", sgName);
+		String jsonResponse = cliExecutor.performAction(Action.CREATESECURITYGROUP, paramsToUdate);
+		CreateSecurityGroupResponse createSecurityGroupResponse = gson.fromJson(jsonResponse,
 				CreateSecurityGroupResponse.class);
+		createScenario1Response.setCreateSecurityGroupResponse(createSecurityGroupResponse);
 
 		/* 3. Add Inbound Rules */
-		Command defaultCommandSGIngress = cliExecutor.getDefaultCommand(AUTHORIZESECURITYGROUPINGRESS);
-		Parameters ingressParams = defaultCommandSGIngress.getParameters();
-		Map<String, String> ingressParameterMap = ingressParams.getParameterMap();
-		ingressParameterMap.put("group-name", defaultCommandSG.getParameters().getParameterMap().get("group-name"));
-		String authorizeSGIngressResponseJSON = cliExecutor.processCommand(defaultCommandSGIngress);
-		System.out.println(authorizeSGIngressResponseJSON);
+		paramsToUdate.clear();
+		paramsToUdate.put("group-id", createSecurityGroupResponse.getGroupId());
+		String authorizeSGIngressResponseJSON = cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS,
+				paramsToUdate);
+		ResponseFlag authorizeSecurityGroupIngressResponse = gson.fromJson(authorizeSGIngressResponseJSON,
+				ResponseFlag.class);
+		createScenario1Response.setAuthorizeSecurityGroupIngressResponse(authorizeSecurityGroupIngressResponse);
+
+		// TODO add other inbound and outbound rules recommended for scenario
 
 		/* 4. Add OutBound Rules */
-		Command defaultCommandSGEgress = cliExecutor.getDefaultCommand(AUTHORIZESECURITYGROUPEGRESS);
-		Parameters egressParams = defaultCommandSGEgress.getParameters();
-		Map<String, String> egressParameterMap = egressParams.getParameterMap();
-		egressParameterMap.put("group-id", createSecurityGroupResponse.getGroupId());
-		String authorizeSGEgressResponseJSON = cliExecutor.processCommand(defaultCommandSGEgress);
-		System.out.println(authorizeSGEgressResponseJSON);
-		return "In Progress";
+		paramsToUdate.clear();
+		paramsToUdate.put("group-id", createSecurityGroupResponse.getGroupId());
+		String authorizeSGEgressResponseJSON = cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPEGRESS,
+				paramsToUdate);
+		ResponseFlag authorizeSecurityGroupEgressResponse = gson.fromJson(authorizeSGEgressResponseJSON,
+				ResponseFlag.class);
+		createScenario1Response.setAuthorizeSecurityGroupEgressResponse(authorizeSecurityGroupEgressResponse);
 
+		/* 5. Create subnet */
+		paramsToUdate.clear();
+		paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
+		String createSubnetResponseJSON = cliExecutor.performAction(Action.CREATESUBNET, paramsToUdate);
+		CreateSubnetResponse createSubnetResponse = gson.fromJson(createSubnetResponseJSON, CreateSubnetResponse.class);
+		createScenario1Response.setCreateSubnetResponse(createSubnetResponse);
+
+		/* 6. Run instance with configured or default AMI */
+		paramsToUdate.clear();
+		paramsToUdate.put("instance-type", InstanceTypes.t1MICRO.getValue());
+		paramsToUdate.put("subnet-id", createSubnetResponse.getSubnet().getSubnetId());
+		paramsToUdate.put("security-group-ids", createSecurityGroupResponse.getGroupId());
+		String runInstanceResponseJSON = cliExecutor.performAction(Action.RUNINSTANCES, paramsToUdate);
+		RunInstanceResponse runInstanceResponse = gson.fromJson(runInstanceResponseJSON, RunInstanceResponse.class);
+		createScenario1Response.setRunInstanceResponse(runInstanceResponse);
+
+		/* 7. Create elastic IP address */
+		paramsToUdate.clear();
+		String allocateAddressResponseJSON = cliExecutor.performAction(Action.ALLOCATEADDRESS, paramsToUdate);
+		AllocateAddressReponse allocateAddressReponse = gson.fromJson(allocateAddressResponseJSON,
+				AllocateAddressReponse.class);
+		createScenario1Response.setAllocateAddressReponse(allocateAddressReponse);
+
+		/* 8. Associate elastic IP address to instance */
+		paramsToUdate.clear();
+		String instanceId = runInstanceResponse.getInstances().get(0).getInstanceId();
+		paramsToUdate.put("instance-id", instanceId);
+		paramsToUdate.put("allocation-id", allocateAddressReponse.getAllocationID());
+		String associateAddressResponseJSON = cliExecutor.performAction(Action.ASSOCIATEADDRESS, paramsToUdate);
+		ResponseFlag associateAddressResponse = gson.fromJson(associateAddressResponseJSON, ResponseFlag.class);
+		createScenario1Response.setAssociateAddressResponse(associateAddressResponse);
+
+		return gson.toJson(createScenario1Response);
 	}
 }

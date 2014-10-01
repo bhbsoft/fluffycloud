@@ -1,72 +1,85 @@
 package com.fluffycloud.aws.response.entity;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Subnet
 {
-	private String VpcId;
-	private String CidrBlock;
-	private String State;
-	private String AvailabilityZone;
-	private String SubnetId;
-	private String AvailabilityAddressCount;
+	@SerializedName("VpcId")
+	private String vpcId;
+
+	@SerializedName("CidrBlock")
+	private String cidrBlock;
+
+	@SerializedName("State")
+	private String state;
+
+	@SerializedName("AvailabilityZone")
+	private String availabilityZone;
+
+	@SerializedName("SubnetId")
+	private String subnetId;
+
+	@SerializedName("AvailabilityAddressCount")
+	private String availabilityAddressCount;
 
 	public String getVpcId()
 	{
-		return VpcId;
+		return vpcId;
 	}
 
 	public void setVpcId(String vpcId)
 	{
-		VpcId = vpcId;
+		this.vpcId = vpcId;
 	}
 
 	public String getCidrBlock()
 	{
-		return CidrBlock;
+		return cidrBlock;
 	}
 
 	public void setCidrBlock(String cidrBlock)
 	{
-		CidrBlock = cidrBlock;
+		this.cidrBlock = cidrBlock;
 	}
 
 	public String getState()
 	{
-		return State;
+		return state;
 	}
 
 	public void setState(String state)
 	{
-		State = state;
+		this.state = state;
 	}
 
 	public String getAvailabilityZone()
 	{
-		return AvailabilityZone;
+		return availabilityZone;
 	}
 
 	public void setAvailabilityZone(String availabilityZone)
 	{
-		AvailabilityZone = availabilityZone;
+		this.availabilityZone = availabilityZone;
 	}
 
 	public String getSubnetId()
 	{
-		return SubnetId;
+		return subnetId;
 	}
 
 	public void setSubnetId(String subnetId)
 	{
-		SubnetId = subnetId;
+		this.subnetId = subnetId;
 	}
 
 	public String getAvailabilityAddressCount()
 	{
-		return AvailabilityAddressCount;
+		return availabilityAddressCount;
 	}
 
 	public void setAvailabilityAddressCount(String availabilityAddressCount)
 	{
-		AvailabilityAddressCount = availabilityAddressCount;
+		this.availabilityAddressCount = availabilityAddressCount;
 	}
 
 }

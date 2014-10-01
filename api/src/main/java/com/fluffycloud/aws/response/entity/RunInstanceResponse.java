@@ -2,18 +2,21 @@ package com.fluffycloud.aws.response.entity;
 
 import java.util.ArrayList;
 
-public class RunInstanceResponse
+import com.google.gson.annotations.SerializedName;
+
+public class RunInstanceResponse extends BaseResponse
 {
-	private ArrayList<Instance> Instances;
+	@SerializedName("Instances")
+	private ArrayList<Instance> instances;
 
 	public ArrayList<Instance> getInstances()
 	{
-		return Instances;
+		return instances;
 	}
 
 	public void setInstances(ArrayList<Instance> instances)
 	{
-		Instances = instances;
+		this.instances = instances;
 	}
 
 }

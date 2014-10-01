@@ -1,61 +1,72 @@
 package com.fluffycloud.aws.response.entity;
 
+import com.google.gson.annotations.SerializedName;
+
 public class VPC
 {
-	private String CidrBlock;
-	private String InstanceTenancy;
-	private String VpcId;
-	private String DhcpOptionsId;
-	private String State;
+	@SerializedName("CidrBlock")
+	private String cidrBlock;
+
+	@SerializedName("InstanceTenancy")
+	private String instanceTenancy;
+
+	@SerializedName("VpcId")
+	private String vpcId;
+
+	@SerializedName("DhcpOptionsId")
+	private String dhcpOptionsId;
+
+	@SerializedName("State")
+	private String state;
 
 	public String getCidrBlock()
 	{
-		return CidrBlock;
+		return cidrBlock;
 	}
 
 	public void setCidrBlock(String cidrBlock)
 	{
-		CidrBlock = cidrBlock;
+		this.cidrBlock = cidrBlock;
 	}
 
 	public String getInstanceTenancy()
 	{
-		return InstanceTenancy;
+		return instanceTenancy;
 	}
 
 	public void setInstanceTenancy(String instanceTenancy)
 	{
-		InstanceTenancy = instanceTenancy;
+		this.instanceTenancy = instanceTenancy;
 	}
 
 	public String getVpcId()
 	{
-		return VpcId;
+		return vpcId;
 	}
 
 	public void setVpcId(String vpcId)
 	{
-		VpcId = vpcId;
+		this.vpcId = vpcId;
 	}
 
 	public String getDhcpOptionsId()
 	{
-		return DhcpOptionsId;
+		return dhcpOptionsId;
 	}
 
 	public void setDhcpOptionsId(String dhcpOptionsId)
 	{
-		DhcpOptionsId = dhcpOptionsId;
+		this.dhcpOptionsId = dhcpOptionsId;
 	}
 
 	public String getState()
 	{
-		return State;
+		return state;
 	}
 
 	public void setState(String state)
 	{
-		State = state;
+		this.state = state;
 	}
 
 }

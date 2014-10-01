@@ -1,5 +1,6 @@
 package com.fluffycloud.aws.entity;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +23,10 @@ public class Parameters
 
 	public Map<String, String> getParameterMap()
 	{
+		if (null == parameterMap)
+		{
+			return new HashMap<String, String>();
+		}
 		return parameterMap;
 	}
 
