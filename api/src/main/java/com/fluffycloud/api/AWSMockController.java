@@ -19,6 +19,7 @@ import com.fluffycloud.aws.response.entity.CreateScenario1Response;
 import com.fluffycloud.aws.response.entity.CreateSecurityGroupResponse;
 import com.fluffycloud.aws.response.entity.CreateSubnetResponse;
 import com.fluffycloud.aws.response.entity.CreateVPCResponse;
+import com.fluffycloud.aws.response.entity.DescribeInstanceStatusResponse;
 import com.fluffycloud.aws.response.entity.ResponseFlag;
 import com.fluffycloud.aws.response.entity.RunInstanceResponse;
 import com.fluffycloud.exceptions.FluffyCloudException;
@@ -87,7 +88,8 @@ public class AWSMockController
 	}
 
 	@RequestMapping("/aws/create/scenario1")
-	public String createScenario1(HttpServletRequest request) throws IOException, FluffyCloudException
+	public String createScenario1(HttpServletRequest request) throws IOException, FluffyCloudException,
+			InterruptedException
 	{
 		Map<String, String> paramsToUdate = new HashMap<String, String>();
 		Gson gson = new Gson();
@@ -142,6 +144,19 @@ public class AWSMockController
 		String runInstanceResponseJSON = cliExecutor.performAction(Action.RUNINSTANCES, paramsToUdate);
 		RunInstanceResponse runInstanceResponse = gson.fromJson(runInstanceResponseJSON, RunInstanceResponse.class);
 		createScenario1Response.setRunInstanceResponse(runInstanceResponse);
+
+		/* Check instance state before proceeding */
+		Map<String, String> test = new HashMap<String, String>();
+		test.put("instance-id", runInstanceResponse.getInstances().get(0).getInstanceId());
+		String command = cliExecutor.performAction(Action.DESCRIBEINSTANCESTATUS, test);
+		DescribeInstanceStatusResponse response = gson.fromJson(command, DescribeInstanceStatusResponse.class);
+
+		while (!response.getInstanceStatuses().get(0).getInstanceState().getName().equalsIgnoreCase("running"))
+		{
+			Thread.sleep(2000);
+			command = cliExecutor.performAction(Action.DESCRIBEINSTANCESTATUS, test);
+			response = gson.fromJson(command, DescribeInstanceStatusResponse.class);
+		}
 
 		/* 7. Create elastic IP address */
 		paramsToUdate.clear();
