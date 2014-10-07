@@ -10,11 +10,8 @@ public class CreateScenario1Response extends BaseResponse
 	@SerializedName("SecurityGroup")
 	private CreateSecurityGroupResponse createSecurityGroupResponse;
 
-	@SerializedName("InBoundRuleCreated")
-	private ResponseFlag authorizeSecurityGroupIngressResponse;
-
-	@SerializedName("OutBoundRuleCreated")
-	private ResponseFlag authorizeSecurityGroupEgressResponse;
+	@SerializedName("SecurityGroupPermissions")
+	private DescribeSecurityGroupResponse describeSecurityGroupResponse;
 
 	@SerializedName("Subnet")
 	private CreateSubnetResponse createSubnetResponse;
@@ -22,11 +19,37 @@ public class CreateScenario1Response extends BaseResponse
 	@SerializedName("Instance")
 	private RunInstanceResponse runInstanceResponse;
 
+	@SerializedName("InternetGateway")
+	private CreateInternetGatewayResponse createInternetGatewayResponse;
+
+	@SerializedName("InternetGatewayAttached")
+	private ResponseFlag internetGatewayAttached;
+
 	@SerializedName("AllocatedAddress")
 	private AllocateAddressReponse allocateAddressReponse;
 
 	@SerializedName("AddressAssociated")
 	private ResponseFlag associateAddressResponse;
+
+	public ResponseFlag getInternetGatewayAttached()
+	{
+		return internetGatewayAttached;
+	}
+
+	public void setInternetGatewayAttached(ResponseFlag internetGatewayAttached)
+	{
+		this.internetGatewayAttached = internetGatewayAttached;
+	}
+
+	public CreateInternetGatewayResponse getCreateInternetGatewayResponse()
+	{
+		return createInternetGatewayResponse;
+	}
+
+	public void setCreateInternetGatewayResponse(CreateInternetGatewayResponse createInternetGatewayResponse)
+	{
+		this.createInternetGatewayResponse = createInternetGatewayResponse;
+	}
 
 	public CreateVPCResponse getCreateVPCResponse()
 	{
@@ -48,24 +71,14 @@ public class CreateScenario1Response extends BaseResponse
 		this.createSecurityGroupResponse = createSecurityGroupResponse;
 	}
 
-	public ResponseFlag getAuthorizeSecurityGroupIngressResponse()
+	public DescribeSecurityGroupResponse getDescribeSecurityGroupResponse()
 	{
-		return authorizeSecurityGroupIngressResponse;
+		return describeSecurityGroupResponse;
 	}
 
-	public void setAuthorizeSecurityGroupIngressResponse(ResponseFlag authorizeSecurityGroupIngressResponse)
+	public void setDescribeSecurityGroupResponse(DescribeSecurityGroupResponse describeSecurityGroupResponse)
 	{
-		this.authorizeSecurityGroupIngressResponse = authorizeSecurityGroupIngressResponse;
-	}
-
-	public ResponseFlag getAuthorizeSecurityGroupEgressResponse()
-	{
-		return authorizeSecurityGroupEgressResponse;
-	}
-
-	public void setAuthorizeSecurityGroupEgressResponse(ResponseFlag authorizeSecurityGroupEgressResponse)
-	{
-		this.authorizeSecurityGroupEgressResponse = authorizeSecurityGroupEgressResponse;
+		this.describeSecurityGroupResponse = describeSecurityGroupResponse;
 	}
 
 	public CreateSubnetResponse getCreateSubnetResponse()

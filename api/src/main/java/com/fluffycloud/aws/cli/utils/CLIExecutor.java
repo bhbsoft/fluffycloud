@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,21 @@ public class CLIExecutor
 {
 	@Autowired
 	ResponseValidator responseValidator;
+
+	// public static void main(String args[]) throws IOException,
+	// FluffyCloudException
+	// {
+	// Map<String, String> paramsToUdate = new HashMap<String, String>();
+	// Gson gson = new Gson();
+	// paramsToUdate.put("group-ids", "sg-25f4c840");
+	// String describeSGResponseJSON =
+	// performAction(Action.DESCRIBESECURITYGROUPS, paramsToUdate);
+	// DescribeSecurityGroupResponse describeSGesponse =
+	// gson.fromJson(describeSGResponseJSON,
+	// DescribeSecurityGroupResponse.class);
+	// System.out.println(describeSGesponse.getSecurityGroups().get(0).getGroupId());
+	//
+	// }
 
 	/**
 	 * 
@@ -45,6 +61,17 @@ public class CLIExecutor
 			{
 				parameterMap.put(key, paramsToUdate.get(key));
 			}
+		}
+		else
+		{
+			params = new Parameters();
+			Map<String, String> parameterMap = new HashMap<String, String>();
+			for (String key : paramsToUdate.keySet())
+			{
+				parameterMap.put(key, paramsToUdate.get(key));
+			}
+			params.setParameterMap(parameterMap);
+			defaultCommand.setParameters(params);
 		}
 		return processCommand(defaultCommand);
 	}

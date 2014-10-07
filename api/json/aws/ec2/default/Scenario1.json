@@ -1,0 +1,96 @@
+{
+    "VPC": {
+        "Vpc": {
+            "CidrBlock": "10.0.0.0/16",
+            "InstanceTenancy": "default",
+            "VpcId": "vpc-34c74251",
+            "DhcpOptionsId": "dopt-06465b64",
+            "State": "pending"
+        }
+    },
+    "SecurityGroup": {
+        "GroupId": "sg-88e4d8ed",
+        "return": true
+    },
+    "SecurityGroupPermissions": {
+        "SecurityGroups": [
+            {
+                "IpPermissions": [
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": "22",
+                        "IpRanges": [
+                            {
+                                "CidrIp": "203.0.113.0/24"
+                            }
+                        ],
+                        "ToPort": "22"
+                    }
+                ],
+                "IpPermissionsEgress": [
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": "80",
+                        "IpRanges": [
+                            {
+                                "CidrIp": "0.0.0.0/0"
+                            }
+                        ],
+                        "ToPort": "80"
+                    },
+                    {
+                        "IpProtocol": "-1",
+                        "IpRanges": [
+                            {
+                                "CidrIp": "0.0.0.0/0"
+                            }
+                        ]
+                    }
+                ],
+                "Description": "Description about group",
+                "OwnerId": "533286118017",
+                "GroupName": "TestSG-1412678257028",
+                "GroupId": "sg-88e4d8ed",
+                "VpcId": "vpc-34c74251"
+            }
+        ]
+    },
+    "Subnet": {
+        "Subnet": {
+            "VpcId": "vpc-34c74251",
+            "CidrBlock": "10.0.1.0/24",
+            "State": "pending",
+            "AvailabilityZone": "us-east-1c",
+            "SubnetId": "subnet-c65aa09f"
+        }
+    },
+    "Instance": {
+        "Instances": [
+            {
+                "KernelId": "aki-825ea7eb",
+                "ImageId": "ami-82fa58eb",
+                "InstanceId": "i-64651289",
+                "InstanceType": "t1.micro",
+                "RootDeviceType": "ebs"
+            }
+        ]
+    },
+    "InternetGateway": {
+        "InternetGateway": {
+            "InternetGatewayId": "igw-b59341d0",
+            "Attachments": [],
+            "Tags": []
+        }
+    },
+    "InternetGatewayAttached": {
+        "return": true
+    },
+    "AllocatedAddress": {
+        "PublicIp": "54.86.191.116",
+        "Domain": "vpc",
+        "AllocationId": "eipalloc-ed69b188"
+    },
+    "AddressAssociated": {
+        "return": true
+    }
+}
