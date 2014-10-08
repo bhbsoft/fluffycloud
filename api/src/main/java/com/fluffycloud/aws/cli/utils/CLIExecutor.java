@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 import com.fluffycloud.aws.constants.Action;
 import com.fluffycloud.aws.entity.Command;
 import com.fluffycloud.aws.entity.Parameters;
+import com.fluffycloud.aws.response.entity.DescribeInstanceStatusResponse;
+import com.fluffycloud.aws.response.entity.RunInstanceResponse;
 import com.fluffycloud.exceptions.CommandExecutionException;
 import com.fluffycloud.exceptions.DefaultJsonNotFoundException;
 import com.fluffycloud.exceptions.FluffyCloudException;
@@ -160,5 +162,27 @@ public class CLIExecutor
 			throw new CommandExecutionException(e.getMessage());
 		}
 
+	}
+
+	public void
+			checkInstanceState(Map<String, String> paramsToUdate, Gson gson, RunInstanceResponse runInstanceResponse)
+					throws IOException, FluffyCloudException
+	{
+		paramsToUdate.clear();
+		paramsToUdate.put("instance-id", runInstanceResponse.getInstances().get(0).getInstanceId());
+		String command = performAction(Action.DESCRIBEINSTANCESTATUS, paramsToUdate);
+		DescribeInstanceStatusResponse response = gson.fromJson(command, DescribeInstanceStatusResponse.class);
+
+		if (response.getInstanceStatuses().size() > 0
+				&& response.getInstanceStatuses().get(0).getInstanceState().getName().equalsIgnoreCase("running"))
+		{
+			System.out.println(response.getInstanceStatuses().get(0).getInstanceState().getName());
+			return;
+		}
+		else
+		{
+			System.out.println("Invalid Instance state");
+			checkInstanceState(paramsToUdate, gson, runInstanceResponse);
+		}
 	}
 }

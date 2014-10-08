@@ -1,7 +1,6 @@
 package com.fluffycloud.api;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,22 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fluffycloud.aws.cli.utils.CLIExecutor;
+import com.fluffycloud.api.Iservice.AWSService;
 import com.fluffycloud.aws.cli.utils.PropertyReader;
-import com.fluffycloud.aws.constants.Action;
-import com.fluffycloud.aws.constants.InstanceTypes;
-import com.fluffycloud.aws.response.entity.AllocateAddressReponse;
-import com.fluffycloud.aws.response.entity.CreateInternetGatewayResponse;
-import com.fluffycloud.aws.response.entity.CreateScenario1Response;
-import com.fluffycloud.aws.response.entity.CreateSecurityGroupResponse;
-import com.fluffycloud.aws.response.entity.CreateSubnetResponse;
-import com.fluffycloud.aws.response.entity.CreateVPCResponse;
-import com.fluffycloud.aws.response.entity.DescribeInstanceStatusResponse;
-import com.fluffycloud.aws.response.entity.DescribeSecurityGroupResponse;
-import com.fluffycloud.aws.response.entity.ResponseFlag;
-import com.fluffycloud.aws.response.entity.RunInstanceResponse;
 import com.fluffycloud.exceptions.FluffyCloudException;
-import com.google.gson.Gson;
 
 @RestController
 public class AWSMockController
@@ -35,7 +21,7 @@ public class AWSMockController
 	PropertyReader propertyReader;
 
 	@Autowired
-	CLIExecutor cliExecutor;
+	AWSService aWSService;
 
 	@RequestMapping("/aws")
 	public String mockAWSCloud(HttpServletRequest request)
@@ -93,123 +79,14 @@ public class AWSMockController
 	public String createScenario1(HttpServletRequest request) throws IOException, FluffyCloudException,
 			InterruptedException
 	{
-		Map<String, String> paramsToUdate = new HashMap<String, String>();
-		Gson gson = new Gson();
-		CreateScenario1Response createScenario1Response = new CreateScenario1Response();
-
-		/* 1. Create a VPC instance */
-		String createVPCResponseJSON = cliExecutor.performAction(Action.CREATEVPC, paramsToUdate);
-		CreateVPCResponse createVPCResponse = gson.fromJson(createVPCResponseJSON, CreateVPCResponse.class);
-		createScenario1Response.setCreateVPCResponse(createVPCResponse);
-
-		/* 2. Create a Security Group */
-		paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
-		String sgName = "TestSG-" + System.currentTimeMillis();
-		paramsToUdate.put("group-name", sgName);
-		String jsonResponse = cliExecutor.performAction(Action.CREATESECURITYGROUP, paramsToUdate);
-		CreateSecurityGroupResponse createSecurityGroupResponse = gson.fromJson(jsonResponse,
-				CreateSecurityGroupResponse.class);
-		createScenario1Response.setCreateSecurityGroupResponse(createSecurityGroupResponse);
-
-		/* 3. Add Inbound Rules */
-		paramsToUdate.clear();
-		paramsToUdate.put("group-id", createSecurityGroupResponse.getGroupId());
-		String authorizeSGIngressResponseJSON = cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS,
-				paramsToUdate);
-		ResponseFlag authorizeSecurityGroupIngressResponse = gson.fromJson(authorizeSGIngressResponseJSON,
-				ResponseFlag.class);
-
-		/* 4. Add OutBound Rules */
-		paramsToUdate.clear();
-		paramsToUdate.put("group-id", createSecurityGroupResponse.getGroupId());
-		String authorizeSGEgressResponseJSON = cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPEGRESS,
-				paramsToUdate);
-		ResponseFlag authorizeSecurityGroupEgressResponse = gson.fromJson(authorizeSGEgressResponseJSON,
-				ResponseFlag.class);
-
-		/* Get ingress/egress rules info */
-		paramsToUdate.clear();
-		paramsToUdate.put("group-ids", createSecurityGroupResponse.getGroupId());
-		String describeSGResponseJSON = cliExecutor.performAction(Action.DESCRIBESECURITYGROUPS, paramsToUdate);
-		DescribeSecurityGroupResponse describeSGesponse = gson.fromJson(describeSGResponseJSON,
-				DescribeSecurityGroupResponse.class);
-		createScenario1Response.setDescribeSecurityGroupResponse(describeSGesponse);
-
-		/* 5. Create subnet */
-		paramsToUdate.clear();
-		paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
-		String createSubnetResponseJSON = cliExecutor.performAction(Action.CREATESUBNET, paramsToUdate);
-		CreateSubnetResponse createSubnetResponse = gson.fromJson(createSubnetResponseJSON, CreateSubnetResponse.class);
-		createScenario1Response.setCreateSubnetResponse(createSubnetResponse);
-
-		/* 6. Run instance with configured or default AMI */
-		paramsToUdate.clear();
-		paramsToUdate.put("instance-type", InstanceTypes.t1MICRO.getValue());
-		paramsToUdate.put("subnet-id", createSubnetResponse.getSubnet().getSubnetId());
-		paramsToUdate.put("security-group-ids", createSecurityGroupResponse.getGroupId());
-		String runInstanceResponseJSON = cliExecutor.performAction(Action.RUNINSTANCES, paramsToUdate);
-		RunInstanceResponse runInstanceResponse = gson.fromJson(runInstanceResponseJSON, RunInstanceResponse.class);
-		createScenario1Response.setRunInstanceResponse(runInstanceResponse);
-
-		/* 7. Check instance state before proceeding */
-		checkInstanceState(paramsToUdate, gson, runInstanceResponse);
-
-		/* 8. Create Internet Gateway */
-		paramsToUdate.clear();
-		String createInternetGatewayResponseJson = cliExecutor.performAction(Action.CREATEINTERNETGATEWAY,
-				paramsToUdate);
-		CreateInternetGatewayResponse createInternetGatewayResponse = gson.fromJson(createInternetGatewayResponseJson,
-				CreateInternetGatewayResponse.class);
-		createScenario1Response.setCreateInternetGatewayResponse(createInternetGatewayResponse);
-
-		/* 9. Attach Internet Gateway to VPC */
-		paramsToUdate.clear();
-		paramsToUdate.put("internet-gateway-id", createInternetGatewayResponse.getInternetGateway()
-				.getInternetGatewayId());
-		paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
-		String attachInternetGatewayResponseJson = cliExecutor.performAction(Action.ATTACHINTERNETGATEWAY,
-				paramsToUdate);
-		ResponseFlag attachInternetGatewayResponse = gson.fromJson(attachInternetGatewayResponseJson,
-				ResponseFlag.class);
-		createScenario1Response.setInternetGatewayAttached(attachInternetGatewayResponse);
-
-		/* 10. Create elastic IP address */
-		paramsToUdate.clear();
-		String allocateAddressResponseJSON = cliExecutor.performAction(Action.ALLOCATEADDRESS, paramsToUdate);
-		AllocateAddressReponse allocateAddressReponse = gson.fromJson(allocateAddressResponseJSON,
-				AllocateAddressReponse.class);
-		createScenario1Response.setAllocateAddressReponse(allocateAddressReponse);
-
-		/* 11. Associate elastic IP address to instance */
-		paramsToUdate.clear();
-		String instanceId = runInstanceResponse.getInstances().get(0).getInstanceId();
-		paramsToUdate.put("instance-id", instanceId);
-		paramsToUdate.put("allocation-id", allocateAddressReponse.getAllocationID());
-		String associateAddressResponseJSON = cliExecutor.performAction(Action.ASSOCIATEADDRESS, paramsToUdate);
-		ResponseFlag associateAddressResponse = gson.fromJson(associateAddressResponseJSON, ResponseFlag.class);
-		createScenario1Response.setAssociateAddressResponse(associateAddressResponse);
-
-		return gson.toJson(createScenario1Response);
+		return aWSService.createScenario1();
 	}
 
-	private void checkInstanceState(Map<String, String> paramsToUdate, Gson gson,
-			RunInstanceResponse runInstanceResponse) throws IOException, FluffyCloudException
+	@RequestMapping("/aws/create/scenario2")
+	public String createScenario2(HttpServletRequest request) throws IOException, FluffyCloudException,
+			InterruptedException
 	{
-		paramsToUdate.clear();
-		paramsToUdate.put("instance-id", runInstanceResponse.getInstances().get(0).getInstanceId());
-		String command = cliExecutor.performAction(Action.DESCRIBEINSTANCESTATUS, paramsToUdate);
-		DescribeInstanceStatusResponse response = gson.fromJson(command, DescribeInstanceStatusResponse.class);
-
-		if (response.getInstanceStatuses().size() > 0
-				&& response.getInstanceStatuses().get(0).getInstanceState().getName().equalsIgnoreCase("running"))
-		{
-			System.out.println(response.getInstanceStatuses().get(0).getInstanceState().getName());
-			return;
-		}
-		else
-		{
-			System.out.println("Invalid Instance state");
-			checkInstanceState(paramsToUdate, gson, runInstanceResponse);
-		}
+		return aWSService.createScenario2();
 	}
+
 }
