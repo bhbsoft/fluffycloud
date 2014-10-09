@@ -16,7 +16,7 @@ public class Command
 	private String action;
 	private List<String> options;
 	private Parameters parameters;
-	private Filter filters;
+	private List<Filter> filters;
 
 	public Parameters getParameters()
 	{
@@ -28,12 +28,12 @@ public class Command
 		this.parameters = parameters;
 	}
 
-	public Filter getFilters()
+	public List<Filter> getFilters()
 	{
 		return filters;
 	}
 
-	public void setFilters(Filter filters)
+	public void setFilters(List<Filter> filters)
 	{
 		this.filters = filters;
 	}
@@ -120,7 +120,7 @@ public class Command
 		}
 
 		List<SecurityGroup> sList = this.parameters.getSecurityGroups();
-		if (sList != null && sList.size() > 0)
+		if (null != sList && sList.size() > 0)
 		{
 			command.append("--security-groups [");
 
@@ -147,6 +147,21 @@ public class Command
 			for (String flag : flags)
 			{
 				command.append("--" + flag + " ");
+			}
+		}
+
+		List<Filter> filters = this.getFilters();
+		if (null != filters && filters.size() > 0)
+		{
+			command.append("--filters ");
+			for (Filter filter : filters)
+			{
+				command.append("Name=" + filter.getName() + "," + "Values=");
+				for (String value : filter.getValues())
+				{
+					command.append(value + ",");
+				}
+				command.append(" ");
 			}
 		}
 

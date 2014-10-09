@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import com.fluffycloud.aws.constants.Action;
 import com.fluffycloud.aws.entity.Command;
+import com.fluffycloud.aws.entity.Filter;
 import com.fluffycloud.aws.entity.Parameters;
 import com.fluffycloud.aws.response.entity.DescribeInstanceStatusResponse;
 import com.fluffycloud.aws.response.entity.RunInstanceResponse;
@@ -28,20 +30,22 @@ public class CLIExecutor
 	@Autowired
 	ResponseValidator responseValidator;
 
-	// public static void main(String args[]) throws IOException,
-	// FluffyCloudException
-	// {
-	// Map<String, String> paramsToUdate = new HashMap<String, String>();
-	// Gson gson = new Gson();
-	// paramsToUdate.put("group-ids", "sg-25f4c840");
-	// String describeSGResponseJSON =
-	// performAction(Action.DESCRIBESECURITYGROUPS, paramsToUdate);
-	// DescribeSecurityGroupResponse describeSGesponse =
-	// gson.fromJson(describeSGResponseJSON,
-	// DescribeSecurityGroupResponse.class);
-	// System.out.println(describeSGesponse.getSecurityGroups().get(0).getGroupId());
-	//
-	// }
+	/**
+	 * 
+	 * @param action
+	 * @param paramsToUdate
+	 * @param filters
+	 * @return
+	 * @throws IOException
+	 * @throws FluffyCloudException
+	 */
+	public String performAction(Action action, Map<String, String> paramsToUdate, List<Filter> filters)
+			throws IOException, FluffyCloudException
+	{
+		Command defaultCommand = getDefaultCommand(action);
+		defaultCommand.setFilters(filters);
+		return updateParameters(paramsToUdate, defaultCommand);
+	}
 
 	/**
 	 * 
@@ -55,6 +59,19 @@ public class CLIExecutor
 			FluffyCloudException
 	{
 		Command defaultCommand = getDefaultCommand(action);
+		return updateParameters(paramsToUdate, defaultCommand);
+	}
+
+	/**
+	 * 
+	 * @param paramsToUdate
+	 * @param defaultCommand
+	 * @return
+	 * @throws FluffyCloudException
+	 */
+	private String updateParameters(Map<String, String> paramsToUdate, Command defaultCommand)
+			throws FluffyCloudException
+	{
 		Parameters params = defaultCommand.getParameters();
 		if (null != params)
 		{
@@ -170,7 +187,7 @@ public class CLIExecutor
 	{
 		paramsToUdate.clear();
 		paramsToUdate.put("instance-id", runInstanceResponse.getInstances().get(0).getInstanceId());
-		String command = performAction(Action.DESCRIBEINSTANCESTATUS, paramsToUdate);
+		String command = performAction(Action.DESCRIBEINSTANCESTATUS, paramsToUdate, null);
 		DescribeInstanceStatusResponse response = gson.fromJson(command, DescribeInstanceStatusResponse.class);
 
 		if (response.getInstanceStatuses().size() > 0

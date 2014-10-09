@@ -1,6 +1,20 @@
 package com.fluffycloud.aws.response.entity;
 
-public class CreateRouteTableResponse
+import com.google.gson.annotations.SerializedName;
+
+public class CreateRouteTableResponse extends BaseResponse
 {
+	@SerializedName("RouteTable")
+	private RouteTable routeTable;
+
+	public RouteTable getRouteTable()
+	{
+		return routeTable;
+	}
+
+	public void setRouteTable(RouteTable routeTable)
+	{
+		this.routeTable = routeTable;
+	}
 
 }
