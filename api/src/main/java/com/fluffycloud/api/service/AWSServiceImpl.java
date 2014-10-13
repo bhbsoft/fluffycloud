@@ -19,6 +19,7 @@ import com.fluffycloud.aws.response.entity.Association;
 import com.fluffycloud.aws.response.entity.CreateInternetGatewayResponse;
 import com.fluffycloud.aws.response.entity.CreateRouteTableResponse;
 import com.fluffycloud.aws.response.entity.CreateScenario1Response;
+import com.fluffycloud.aws.response.entity.CreateScenario2Response;
 import com.fluffycloud.aws.response.entity.CreateSecurityGroupResponse;
 import com.fluffycloud.aws.response.entity.CreateSubnetResponse;
 import com.fluffycloud.aws.response.entity.CreateVPCResponse;
@@ -137,12 +138,14 @@ public class AWSServiceImpl implements AWSService
 	{
 		Map<String, String> paramsToUdate = new HashMap<String, String>();
 		Gson gson = new Gson();
+		CreateScenario2Response createScenario2Response = new CreateScenario2Response();
 
 		/* 1. Create a VPC instance */
 		paramsToUdate.clear();
 		paramsToUdate.put("cidr-block", "10.0.0.0/16");
 		String createVPCResponseJSON = cliExecutor.performAction(Action.CREATEVPC, paramsToUdate);
 		CreateVPCResponse createVPCResponse = gson.fromJson(createVPCResponseJSON, CreateVPCResponse.class);
+		createScenario2Response.setCreateVPCResponse(createVPCResponse);
 
 		/* 2. Create public subnet */
 		paramsToUdate.clear();
@@ -151,6 +154,7 @@ public class AWSServiceImpl implements AWSService
 		String createPublicSubnetResponseJSON = cliExecutor.performAction(Action.CREATESUBNET, paramsToUdate);
 		CreateSubnetResponse createPublicSubnetResponse = gson.fromJson(createPublicSubnetResponseJSON,
 				CreateSubnetResponse.class);
+		createScenario2Response.setCreatePublicSubnetResponse(createPublicSubnetResponse);
 
 		/* Create private subnet */
 		paramsToUdate.clear();
@@ -159,9 +163,9 @@ public class AWSServiceImpl implements AWSService
 		String createPrivateSubnetResponseJSON = cliExecutor.performAction(Action.CREATESUBNET, paramsToUdate);
 		CreateSubnetResponse createPrivateSubnetResponse = gson.fromJson(createPrivateSubnetResponseJSON,
 				CreateSubnetResponse.class);
+		createScenario2Response.setCreatePrivateSubnetResponse(createPrivateSubnetResponse);
 
 		/* 3. Create Security Groups */
-				
 
 		/* --Webserver SG-- */
 		paramsToUdate.clear();
@@ -178,22 +182,22 @@ public class AWSServiceImpl implements AWSService
 		paramsToUdate.put("port", "80");
 		paramsToUdate.put("protocol", "tcp");
 		paramsToUdate.put("group-id", createWebSecurityGroupResponse.getGroupId());
-		cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate); 
-		
+		cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
+
 		paramsToUdate.clear();
 		paramsToUdate.put("cidr", "0.0.0.0/0");
 		paramsToUdate.put("port", "443");
 		paramsToUdate.put("protocol", "tcp");
 		paramsToUdate.put("group-id", createWebSecurityGroupResponse.getGroupId());
 		cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
-		
+
 		paramsToUdate.clear();
 		paramsToUdate.put("cidr", "10.0.0.0/24");
 		paramsToUdate.put("port", "22");
 		paramsToUdate.put("protocol", "tcp");
 		paramsToUdate.put("group-id", createWebSecurityGroupResponse.getGroupId());
 		cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
-		
+
 		paramsToUdate.clear();
 		paramsToUdate.put("cidr", "10.0.0.0/24");
 		paramsToUdate.put("port", "3389");
@@ -209,7 +213,10 @@ public class AWSServiceImpl implements AWSService
 		/* Get ingress/egress rules info */
 		paramsToUdate.clear();
 		paramsToUdate.put("group-ids", createWebSecurityGroupResponse.getGroupId());
-		cliExecutor.performAction(Action.DESCRIBESECURITYGROUPS, paramsToUdate);
+		String describeWebSGJsonResponse = cliExecutor.performAction(Action.DESCRIBESECURITYGROUPS, paramsToUdate);
+		DescribeSecurityGroupResponse describeWebSGResponse = gson.fromJson(describeWebSGJsonResponse,
+				DescribeSecurityGroupResponse.class);
+		createScenario2Response.setDescribeWebSGResponse(describeWebSGResponse);
 
 		/* --NAT server SG-- */
 		paramsToUdate.clear();
@@ -227,7 +234,7 @@ public class AWSServiceImpl implements AWSService
 		paramsToUdate.put("protocol", "tcp");
 		paramsToUdate.put("group-id", createNatSecurityGroupResponse.getGroupId());
 		cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
-		
+
 		paramsToUdate.clear();
 		paramsToUdate.put("cidr", "10.0.1.0/24");
 		paramsToUdate.put("port", "443");
@@ -242,8 +249,6 @@ public class AWSServiceImpl implements AWSService
 		paramsToUdate.put("group-id", createNatSecurityGroupResponse.getGroupId());
 		cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
 
-		
-		//TODO check for error
 		/* Add OutBound Rules */
 		paramsToUdate.clear();
 		paramsToUdate.put("cidr", "0.0.0.0/0");
@@ -251,18 +256,20 @@ public class AWSServiceImpl implements AWSService
 		paramsToUdate.put("protocol", "tcp");
 		paramsToUdate.put("group-id", createNatSecurityGroupResponse.getGroupId());
 		cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPEGRESS, paramsToUdate);
-		
+
 		paramsToUdate.clear();
 		paramsToUdate.put("cidr", "0.0.0.0/0");
 		paramsToUdate.put("port", "443");
 		paramsToUdate.put("protocol", "tcp");
 		paramsToUdate.put("group-id", createNatSecurityGroupResponse.getGroupId());
-		//cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPEGRESS, paramsToUdate);
-
+		
 		/* Get ingress/egress rules info */
 		paramsToUdate.clear();
 		paramsToUdate.put("group-ids", createNatSecurityGroupResponse.getGroupId());
-		cliExecutor.performAction(Action.DESCRIBESECURITYGROUPS, paramsToUdate);
+		String describeNatSGJsonResponse = cliExecutor.performAction(Action.DESCRIBESECURITYGROUPS, paramsToUdate);
+		DescribeSecurityGroupResponse describeNatSGResponse = gson.fromJson(describeNatSGJsonResponse,
+				DescribeSecurityGroupResponse.class);
+		createScenario2Response.setDescribeNatSGResponse(describeNatSGResponse);
 
 		/* --DB server SG-- */
 		paramsToUdate.clear();
@@ -286,7 +293,10 @@ public class AWSServiceImpl implements AWSService
 		/* Get ingress/egress rules info */
 		paramsToUdate.clear();
 		paramsToUdate.put("group-ids", createDBSecurityGroupResponse.getGroupId());
-		cliExecutor.performAction(Action.DESCRIBESECURITYGROUPS, paramsToUdate);
+		String describeDBSGJsonResponse = cliExecutor.performAction(Action.DESCRIBESECURITYGROUPS, paramsToUdate);
+		DescribeSecurityGroupResponse describeDBSGResponse = gson.fromJson(describeDBSGJsonResponse,
+				DescribeSecurityGroupResponse.class);
+		createScenario2Response.setDescribeDBSGResponse(describeDBSGResponse);
 
 		/* 5. Create Internet Gateway */
 		paramsToUdate.clear();
@@ -294,27 +304,36 @@ public class AWSServiceImpl implements AWSService
 				paramsToUdate);
 		CreateInternetGatewayResponse createInternetGatewayResponse = gson.fromJson(createInternetGatewayResponseJson,
 				CreateInternetGatewayResponse.class);
+		createScenario2Response.setCreateInternetGatewayResponse(createInternetGatewayResponse);
 
 		/* 6. Attach Internet Gateway to VPC */
 		paramsToUdate.clear();
 		paramsToUdate.put("internet-gateway-id", createInternetGatewayResponse.getInternetGateway()
 				.getInternetGatewayId());
 		paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
-		cliExecutor.performAction(Action.ATTACHINTERNETGATEWAY, paramsToUdate);
-
+		String attachInternetGatewayJsonResponse = cliExecutor.performAction(Action.ATTACHINTERNETGATEWAY,
+				paramsToUdate);
+		ResponseFlag attachInternetGatewayResponse = gson.fromJson(attachInternetGatewayJsonResponse,
+				ResponseFlag.class);
+		createScenario2Response.setAttachInternetGatewayResponse(attachInternetGatewayResponse);
+		
 		/* 7. Create custom Route Table */
 		paramsToUdate.clear();
 		paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
 		String createRouteTableResponseJSON = cliExecutor.performAction(Action.CREATEROUTETABLE, paramsToUdate);
 		CreateRouteTableResponse createRouteTableResponse = gson.fromJson(createRouteTableResponseJSON,
 				CreateRouteTableResponse.class);
+		createScenario2Response.setCreateRouteTableResponse(createRouteTableResponse);	
+		
 
 		/* Add Route */
 		paramsToUdate.clear();
 		paramsToUdate.put("route-table-id", createRouteTableResponse.getRouteTable().getRouteTableId());
 		paramsToUdate.put("gateway-id", createInternetGatewayResponse.getInternetGateway().getInternetGatewayId());
 		paramsToUdate.put("destination-cidr-block", "0.0.0.0/0");
-		cliExecutor.performAction(Action.CREATEROUTE, paramsToUdate);
+		String createRouteJsonResponse = cliExecutor.performAction(Action.CREATEROUTE, paramsToUdate);
+		ResponseFlag createRouteResponse = gson.fromJson(createRouteJsonResponse, ResponseFlag.class);
+		createScenario2Response.setCreateRouteResponse(createRouteResponse);
 
 		/* 7. Run instance with configured or default AMI */
 		/*--Launch web server instance in public subnet--*/
@@ -325,6 +344,7 @@ public class AWSServiceImpl implements AWSService
 		String runWebserverInstanceResponseJSON = cliExecutor.performAction(Action.RUNINSTANCES, paramsToUdate);
 		RunInstanceResponse runWebserverInstanceResponse = gson.fromJson(runWebserverInstanceResponseJSON,
 				RunInstanceResponse.class);
+		createScenario2Response.setRunWebserverInstanceResponse(runWebserverInstanceResponse);
 
 		/* Check instance state before proceeding */
 		cliExecutor.checkInstanceState(paramsToUdate, gson, runWebserverInstanceResponse);
@@ -337,6 +357,7 @@ public class AWSServiceImpl implements AWSService
 		String runNatserverInstanceResponseJSON = cliExecutor.performAction(Action.RUNINSTANCES, paramsToUdate);
 		RunInstanceResponse runNatserverInstanceResponse = gson.fromJson(runNatserverInstanceResponseJSON,
 				RunInstanceResponse.class);
+		createScenario2Response.setRunNatserverInstanceResponse(runNatserverInstanceResponse);
 
 		/* Check instance state before proceeding */
 		cliExecutor.checkInstanceState(paramsToUdate, gson, runNatserverInstanceResponse);
@@ -349,6 +370,7 @@ public class AWSServiceImpl implements AWSService
 		String runDBserverInstanceResponseJSON = cliExecutor.performAction(Action.RUNINSTANCES, paramsToUdate);
 		RunInstanceResponse runDBserverInstanceResponse = gson.fromJson(runDBserverInstanceResponseJSON,
 				RunInstanceResponse.class);
+		createScenario2Response.setRunDBserverInstanceResponse(runDBserverInstanceResponse);
 
 		/* Check instance state before proceeding */
 		cliExecutor.checkInstanceState(paramsToUdate, gson, runDBserverInstanceResponse);
@@ -356,7 +378,6 @@ public class AWSServiceImpl implements AWSService
 		/* 8. Add Rule to Main Route Table */
 		/*--Get Main Route Table--*/
 		paramsToUdate.clear();
-		paramsToUdate.put("route-table-id", createRouteTableResponse.getRouteTable().getRouteTableId());
 		List<Filter> filters = new ArrayList<Filter>();
 		List<String> values = new ArrayList<String>();
 		Filter vpcFilter = new Filter();
@@ -368,6 +389,7 @@ public class AWSServiceImpl implements AWSService
 				filters);
 		DescribeRouteTableResponse describeRouteTableResponse = gson.fromJson(describeRouteTableResponseJson,
 				DescribeRouteTableResponse.class);
+		createScenario2Response.setDescribeRouteTableResponse(describeRouteTableResponse);
 
 		String mainRouteTableId = getMainRouteTableId(describeRouteTableResponse);
 		/*--Add rule for Nat instance--*/
@@ -385,7 +407,8 @@ public class AWSServiceImpl implements AWSService
 				.performAction(Action.ALLOCATEADDRESS, paramsToUdate);
 		AllocateAddressReponse allocateWebInstanceAddressReponse = gson.fromJson(
 				allocateWebInstanceAddressResponseJSON, AllocateAddressReponse.class);
-
+		createScenario2Response.setAllocateWebInstanceAddressReponse(allocateWebInstanceAddressReponse);
+		
 		/* Associate elastic IP address to Web instance */
 		paramsToUdate.clear();
 		String webInstanceId = runWebserverInstanceResponse.getInstances().get(0).getInstanceId();
@@ -393,6 +416,7 @@ public class AWSServiceImpl implements AWSService
 		paramsToUdate.put("allocation-id", allocateWebInstanceAddressReponse.getAllocationID());
 		String associateAddressResponseJSON = cliExecutor.performAction(Action.ASSOCIATEADDRESS, paramsToUdate);
 		ResponseFlag associateAddressResponse = gson.fromJson(associateAddressResponseJSON, ResponseFlag.class);
+		createScenario2Response.setAssociateAddressResponse(associateAddressResponse);
 
 		/* Create elastic IP address for Nat Instance */
 		paramsToUdate.clear();
@@ -400,19 +424,21 @@ public class AWSServiceImpl implements AWSService
 				.performAction(Action.ALLOCATEADDRESS, paramsToUdate);
 		AllocateAddressReponse allocateNatInstanceAddressReponse = gson.fromJson(
 				allocateNatInstanceAddressResponseJSON, AllocateAddressReponse.class);
+		createScenario2Response.setAllocateNatInstanceAddressReponse(allocateNatInstanceAddressReponse);
 
 		/* Associate elastic IP address to Nat instance */
 		paramsToUdate.clear();
-		String natInstanceId = runWebserverInstanceResponse.getInstances().get(0).getInstanceId();
+		String natInstanceId = runNatserverInstanceResponse.getInstances().get(0).getInstanceId();
 		paramsToUdate.put("instance-id", natInstanceId);
 		paramsToUdate.put("allocation-id", allocateWebInstanceAddressReponse.getAllocationID());
 		String associateNatInstanceAddressResponseJSON = cliExecutor.performAction(Action.ASSOCIATEADDRESS,
 				paramsToUdate);
 		ResponseFlag associateNatInstanceAddressResponse = gson.fromJson(associateNatInstanceAddressResponseJSON,
 				ResponseFlag.class);
+		createScenario2Response.setAssociateNatInstanceAddressResponse(associateNatInstanceAddressResponse);
 
 		// TODO Generate Scenario 2 JSON response
-		return "Done";
+		return gson.toJson(createScenario2Response);
 	}
 
 	private String getMainRouteTableId(final DescribeRouteTableResponse describeRouteTableResponse)
