@@ -4,13 +4,16 @@ import java.io.IOException;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fluffycloud.api.Iservice.AWSService;
 import com.fluffycloud.aws.cli.utils.PropertyReader;
+import com.fluffycloud.aws.entity.CommonRequestParams;
 import com.fluffycloud.exceptions.FluffyCloudException;
 
 @RestController
@@ -76,17 +79,29 @@ public class AWSMockController
 	}
 
 	@RequestMapping("/aws/create/scenario1")
-	public String createScenario1(HttpServletRequest request) throws IOException, FluffyCloudException,
+	public String createScenario1(@Valid CommonRequestParams params) throws IOException, FluffyCloudException,
 			InterruptedException
 	{
+		System.out.println(params.toString());
 		return aWSService.createScenario1();
 	}
 
 	@RequestMapping("/aws/create/scenario2")
-	public String createScenario2(HttpServletRequest request) throws IOException, FluffyCloudException,
+	public String createScenario2(@Valid CommonRequestParams params,
+			@RequestHeader(value = "content-type") String contentType) throws IOException, FluffyCloudException,
 			InterruptedException
 	{
-		return aWSService.createScenario2();
+
+		System.out.println(params.toString());
+		return aWSService.createScenario1();
+	}
+
+	/*Sample Implementation to show configured DB*/
+	@RequestMapping("/aws/add/command")
+	public String dBSample(@RequestHeader(value = "content-type") String contentType) throws IOException,
+			FluffyCloudException, InterruptedException
+	{
+		return aWSService.addCommand();
 	}
 
 }

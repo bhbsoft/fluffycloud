@@ -5,15 +5,17 @@ import static org.springframework.util.StringUtils.isEmpty;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.annotation.Id;
+
 import com.fluffycloud.aws.constants.Provider;
 
 public class Command
 {
-
+	@Id
+	private String action;
 	private Provider provider;
 	private String command;
 	private String subCommand;
-	private String action;
 	private List<String> options;
 	private Parameters parameters;
 	private List<Filter> filters;

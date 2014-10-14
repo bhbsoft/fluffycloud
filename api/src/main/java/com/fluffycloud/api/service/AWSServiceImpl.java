@@ -7,12 +7,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Component;
 
 import com.fluffycloud.api.Iservice.AWSService;
+import com.fluffycloud.api.db.MongoConfig;
 import com.fluffycloud.aws.cli.utils.CLIExecutor;
 import com.fluffycloud.aws.constants.Action;
 import com.fluffycloud.aws.constants.InstanceTypes;
+import com.fluffycloud.aws.constants.Provider;
+import com.fluffycloud.aws.entity.Command;
 import com.fluffycloud.aws.entity.Filter;
 import com.fluffycloud.aws.response.entity.AllocateAddressReponse;
 import com.fluffycloud.aws.response.entity.Association;
@@ -35,7 +39,13 @@ import com.google.gson.Gson;
 public class AWSServiceImpl implements AWSService
 {
 	@Autowired
-	CLIExecutor cliExecutor;
+	private CLIExecutor cliExecutor;
+
+	@Autowired
+	private MongoConfig mongoConfig;
+
+	@Autowired
+	MongoOperations mongoOperations;
 
 	@Override
 	public String createScenario1() throws IOException, FluffyCloudException, InterruptedException
@@ -131,6 +141,21 @@ public class AWSServiceImpl implements AWSService
 		createScenario1Response.setAssociateAddressResponse(associateAddressResponse);
 
 		return gson.toJson(createScenario1Response);
+	}
+
+	@Override
+	public String addCommand() throws IOException, FluffyCloudException, InterruptedException
+	{
+		Command command = mongoOperations.findById("SampleAwsAction", Command.class);
+		if (null == command)
+		{
+			command = new Command();
+			command.setAction("SampleAwsAction");
+			command.setCommand("SampleCommand");
+			command.setProvider(Provider.AWS);
+			mongoOperations.insert(command);
+		}
+		return command.toString() + " Saved To DB";
 	}
 
 	@Override
@@ -262,7 +287,7 @@ public class AWSServiceImpl implements AWSService
 		paramsToUdate.put("port", "443");
 		paramsToUdate.put("protocol", "tcp");
 		paramsToUdate.put("group-id", createNatSecurityGroupResponse.getGroupId());
-		
+
 		/* Get ingress/egress rules info */
 		paramsToUdate.clear();
 		paramsToUdate.put("group-ids", createNatSecurityGroupResponse.getGroupId());
@@ -316,15 +341,14 @@ public class AWSServiceImpl implements AWSService
 		ResponseFlag attachInternetGatewayResponse = gson.fromJson(attachInternetGatewayJsonResponse,
 				ResponseFlag.class);
 		createScenario2Response.setAttachInternetGatewayResponse(attachInternetGatewayResponse);
-		
+
 		/* 7. Create custom Route Table */
 		paramsToUdate.clear();
 		paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
 		String createRouteTableResponseJSON = cliExecutor.performAction(Action.CREATEROUTETABLE, paramsToUdate);
 		CreateRouteTableResponse createRouteTableResponse = gson.fromJson(createRouteTableResponseJSON,
 				CreateRouteTableResponse.class);
-		createScenario2Response.setCreateRouteTableResponse(createRouteTableResponse);	
-		
+		createScenario2Response.setCreateRouteTableResponse(createRouteTableResponse);
 
 		/* Add Route */
 		paramsToUdate.clear();
@@ -408,7 +432,7 @@ public class AWSServiceImpl implements AWSService
 		AllocateAddressReponse allocateWebInstanceAddressReponse = gson.fromJson(
 				allocateWebInstanceAddressResponseJSON, AllocateAddressReponse.class);
 		createScenario2Response.setAllocateWebInstanceAddressReponse(allocateWebInstanceAddressReponse);
-		
+
 		/* Associate elastic IP address to Web instance */
 		paramsToUdate.clear();
 		String webInstanceId = runWebserverInstanceResponse.getInstances().get(0).getInstanceId();

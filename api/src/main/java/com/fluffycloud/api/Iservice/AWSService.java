@@ -9,4 +9,6 @@ public interface AWSService
 	public String createScenario1() throws IOException, FluffyCloudException, InterruptedException;
 
 	public String createScenario2() throws IOException, FluffyCloudException, InterruptedException;
+
+	public String addCommand() throws IOException, FluffyCloudException, InterruptedException;
 }
