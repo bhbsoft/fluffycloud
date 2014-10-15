@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Component;
 
 import com.fluffycloud.aws.constants.Action;
@@ -20,6 +21,7 @@ import com.fluffycloud.aws.entity.Parameters;
 import com.fluffycloud.aws.response.entity.DescribeInstanceStatusResponse;
 import com.fluffycloud.aws.response.entity.RunInstanceResponse;
 import com.fluffycloud.exceptions.CommandExecutionException;
+import com.fluffycloud.exceptions.CommandNotFoundException;
 import com.fluffycloud.exceptions.DefaultJsonNotFoundException;
 import com.fluffycloud.exceptions.FluffyCloudException;
 import com.google.gson.Gson;
@@ -29,6 +31,9 @@ public class CLIExecutor
 {
 	@Autowired
 	ResponseValidator responseValidator;
+
+	@Autowired
+	MongoOperations mongoOperations;
 
 	/**
 	 * 
@@ -48,17 +53,29 @@ public class CLIExecutor
 	}
 
 	/**
+	 * Method to default command for the action.
 	 * 
 	 * @param action
 	 * @param paramsToUdate
 	 * @return
 	 * @throws IOException
 	 * @throws FluffyCloudException
+	 * @throws CommandNotFoundException
 	 */
 	public String performAction(Action action, Map<String, String> paramsToUdate) throws IOException,
-			FluffyCloudException
+			FluffyCloudException, CommandNotFoundException
 	{
-		Command defaultCommand = getDefaultCommand(action);
+		/* Get Default Command using JSON present on remote Database. */
+		Command defaultCommand = mongoOperations.findById(action.getAction(), Command.class);
+		if (null == defaultCommand)
+		{
+			throw new CommandNotFoundException("Default Command not found for action: " + action.getAction());
+		}
+
+		/*
+		 * ------Get Default Command using JSON files present locally.------
+		 * Command defaultCommand = getDefaultCommand(action);
+		 */
 		return updateParameters(paramsToUdate, defaultCommand);
 	}
 

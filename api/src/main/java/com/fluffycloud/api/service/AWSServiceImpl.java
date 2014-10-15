@@ -1,6 +1,5 @@
 package com.fluffycloud.api.service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,11 +10,9 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Component;
 
 import com.fluffycloud.api.Iservice.AWSService;
-import com.fluffycloud.api.db.MongoConfig;
 import com.fluffycloud.aws.cli.utils.CLIExecutor;
 import com.fluffycloud.aws.constants.Action;
 import com.fluffycloud.aws.constants.InstanceTypes;
-import com.fluffycloud.aws.constants.Provider;
 import com.fluffycloud.aws.entity.Command;
 import com.fluffycloud.aws.entity.Filter;
 import com.fluffycloud.aws.response.entity.AllocateAddressReponse;
@@ -42,427 +39,447 @@ public class AWSServiceImpl implements AWSService
 	private CLIExecutor cliExecutor;
 
 	@Autowired
-	private MongoConfig mongoConfig;
-
-	@Autowired
 	MongoOperations mongoOperations;
 
 	@Override
-	public String createScenario1() throws IOException, FluffyCloudException, InterruptedException
+	public String createScenario1() throws FluffyCloudException
 	{
 		Map<String, String> paramsToUdate = new HashMap<String, String>();
 		Gson gson = new Gson();
 		CreateScenario1Response createScenario1Response = new CreateScenario1Response();
 
-		/* 1. Create a VPC instance */
-		String createVPCResponseJSON = cliExecutor.performAction(Action.CREATEVPC, paramsToUdate);
-		CreateVPCResponse createVPCResponse = gson.fromJson(createVPCResponseJSON, CreateVPCResponse.class);
-		createScenario1Response.setCreateVPCResponse(createVPCResponse);
-
-		/* 2. Create a Security Group */
-		paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
-		String sgName = "TestSG-" + System.currentTimeMillis();
-		paramsToUdate.put("group-name", sgName);
-		String jsonResponse = cliExecutor.performAction(Action.CREATESECURITYGROUP, paramsToUdate);
-		CreateSecurityGroupResponse createSecurityGroupResponse = gson.fromJson(jsonResponse,
-				CreateSecurityGroupResponse.class);
-		createScenario1Response.setCreateSecurityGroupResponse(createSecurityGroupResponse);
-
-		/* 3. Add Inbound Rules */
-		paramsToUdate.clear();
-		paramsToUdate.put("group-id", createSecurityGroupResponse.getGroupId());
-		cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
-
-		/* 4. Add OutBound Rules */
-		paramsToUdate.clear();
-		paramsToUdate.put("group-id", createSecurityGroupResponse.getGroupId());
-		cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPEGRESS, paramsToUdate);
-
-		/* 5. Get ingress/egress rules info */
-		paramsToUdate.clear();
-		paramsToUdate.put("group-ids", createSecurityGroupResponse.getGroupId());
-		String describeSGResponseJSON = cliExecutor.performAction(Action.DESCRIBESECURITYGROUPS, paramsToUdate);
-		DescribeSecurityGroupResponse describeSGesponse = gson.fromJson(describeSGResponseJSON,
-				DescribeSecurityGroupResponse.class);
-		createScenario1Response.setDescribeSecurityGroupResponse(describeSGesponse);
-
-		/* 6. Create subnet */
-		paramsToUdate.clear();
-		paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
-		String createSubnetResponseJSON = cliExecutor.performAction(Action.CREATESUBNET, paramsToUdate);
-		CreateSubnetResponse createSubnetResponse = gson.fromJson(createSubnetResponseJSON, CreateSubnetResponse.class);
-		createScenario1Response.setCreateSubnetResponse(createSubnetResponse);
-
-		/* 7. Run instance with configured or default AMI */
-		paramsToUdate.clear();
-		paramsToUdate.put("instance-type", InstanceTypes.t1MICRO.getValue());
-		paramsToUdate.put("subnet-id", createSubnetResponse.getSubnet().getSubnetId());
-		paramsToUdate.put("security-group-ids", createSecurityGroupResponse.getGroupId());
-		String runInstanceResponseJSON = cliExecutor.performAction(Action.RUNINSTANCES, paramsToUdate);
-		RunInstanceResponse runInstanceResponse = gson.fromJson(runInstanceResponseJSON, RunInstanceResponse.class);
-		createScenario1Response.setRunInstanceResponse(runInstanceResponse);
-
-		/* 8. Check instance state before proceeding */
-		cliExecutor.checkInstanceState(paramsToUdate, gson, runInstanceResponse);
-
-		/* 9. Create Internet Gateway */
-		paramsToUdate.clear();
-		String createInternetGatewayResponseJson = cliExecutor.performAction(Action.CREATEINTERNETGATEWAY,
-				paramsToUdate);
-		CreateInternetGatewayResponse createInternetGatewayResponse = gson.fromJson(createInternetGatewayResponseJson,
-				CreateInternetGatewayResponse.class);
-		createScenario1Response.setCreateInternetGatewayResponse(createInternetGatewayResponse);
-
-		/* 10. Attach Internet Gateway to VPC */
-		paramsToUdate.clear();
-		paramsToUdate.put("internet-gateway-id", createInternetGatewayResponse.getInternetGateway()
-				.getInternetGatewayId());
-		paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
-		String attachInternetGatewayResponseJson = cliExecutor.performAction(Action.ATTACHINTERNETGATEWAY,
-				paramsToUdate);
-		ResponseFlag attachInternetGatewayResponse = gson.fromJson(attachInternetGatewayResponseJson,
-				ResponseFlag.class);
-		createScenario1Response.setInternetGatewayAttached(attachInternetGatewayResponse);
-
-		/* 11. Create elastic IP address */
-		paramsToUdate.clear();
-		String allocateAddressResponseJSON = cliExecutor.performAction(Action.ALLOCATEADDRESS, paramsToUdate);
-		AllocateAddressReponse allocateAddressReponse = gson.fromJson(allocateAddressResponseJSON,
-				AllocateAddressReponse.class);
-		createScenario1Response.setAllocateAddressReponse(allocateAddressReponse);
-
-		/* 12. Associate elastic IP address to instance */
-		paramsToUdate.clear();
-		String instanceId = runInstanceResponse.getInstances().get(0).getInstanceId();
-		paramsToUdate.put("instance-id", instanceId);
-		paramsToUdate.put("allocation-id", allocateAddressReponse.getAllocationID());
-		String associateAddressResponseJSON = cliExecutor.performAction(Action.ASSOCIATEADDRESS, paramsToUdate);
-		ResponseFlag associateAddressResponse = gson.fromJson(associateAddressResponseJSON, ResponseFlag.class);
-		createScenario1Response.setAssociateAddressResponse(associateAddressResponse);
-
-		return gson.toJson(createScenario1Response);
-	}
-
-	@Override
-	public String addCommand() throws IOException, FluffyCloudException, InterruptedException
-	{
-		Command command = mongoOperations.findById("SampleAwsAction", Command.class);
-		if (null == command)
+		try
 		{
-			command = new Command();
-			command.setAction("SampleAwsAction");
-			command.setCommand("SampleCommand");
-			command.setProvider(Provider.AWS);
-			mongoOperations.insert(command);
+
+			/* 1. Create a VPC instance */
+			String createVPCResponseJSON = cliExecutor.performAction(Action.CREATEVPC, paramsToUdate);
+			CreateVPCResponse createVPCResponse = gson.fromJson(createVPCResponseJSON, CreateVPCResponse.class);
+			createScenario1Response.setCreateVPCResponse(createVPCResponse);
+
+			/* 2. Create a Security Group */
+			paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
+			String sgName = "TestSG-" + System.currentTimeMillis();
+			paramsToUdate.put("group-name", sgName);
+			String jsonResponse = cliExecutor.performAction(Action.CREATESECURITYGROUP, paramsToUdate);
+			CreateSecurityGroupResponse createSecurityGroupResponse = gson.fromJson(jsonResponse,
+					CreateSecurityGroupResponse.class);
+			createScenario1Response.setCreateSecurityGroupResponse(createSecurityGroupResponse);
+
+			/* 3. Add Inbound Rules */
+			paramsToUdate.clear();
+			paramsToUdate.put("group-id", createSecurityGroupResponse.getGroupId());
+			cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
+
+			/* 4. Add OutBound Rules */
+			paramsToUdate.clear();
+			paramsToUdate.put("group-id", createSecurityGroupResponse.getGroupId());
+			cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPEGRESS, paramsToUdate);
+
+			/* 5. Get ingress/egress rules info */
+			paramsToUdate.clear();
+			paramsToUdate.put("group-ids", createSecurityGroupResponse.getGroupId());
+			String describeSGResponseJSON = cliExecutor.performAction(Action.DESCRIBESECURITYGROUPS, paramsToUdate);
+			DescribeSecurityGroupResponse describeSGesponse = gson.fromJson(describeSGResponseJSON,
+					DescribeSecurityGroupResponse.class);
+			createScenario1Response.setDescribeSecurityGroupResponse(describeSGesponse);
+
+			/* 6. Create subnet */
+			paramsToUdate.clear();
+			paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
+			String createSubnetResponseJSON = cliExecutor.performAction(Action.CREATESUBNET, paramsToUdate);
+			CreateSubnetResponse createSubnetResponse = gson.fromJson(createSubnetResponseJSON,
+					CreateSubnetResponse.class);
+			createScenario1Response.setCreateSubnetResponse(createSubnetResponse);
+
+			/* 7. Run instance with configured or default AMI */
+			paramsToUdate.clear();
+			paramsToUdate.put("instance-type", InstanceTypes.t1MICRO.getValue());
+			paramsToUdate.put("subnet-id", createSubnetResponse.getSubnet().getSubnetId());
+			paramsToUdate.put("security-group-ids", createSecurityGroupResponse.getGroupId());
+			String runInstanceResponseJSON = cliExecutor.performAction(Action.RUNINSTANCES, paramsToUdate);
+			RunInstanceResponse runInstanceResponse = gson.fromJson(runInstanceResponseJSON, RunInstanceResponse.class);
+			createScenario1Response.setRunInstanceResponse(runInstanceResponse);
+
+			/* 8. Check instance state before proceeding */
+			cliExecutor.checkInstanceState(paramsToUdate, gson, runInstanceResponse);
+
+			/* 9. Create Internet Gateway */
+			paramsToUdate.clear();
+			String createInternetGatewayResponseJson = cliExecutor.performAction(Action.CREATEINTERNETGATEWAY,
+					paramsToUdate);
+			CreateInternetGatewayResponse createInternetGatewayResponse = gson.fromJson(
+					createInternetGatewayResponseJson, CreateInternetGatewayResponse.class);
+			createScenario1Response.setCreateInternetGatewayResponse(createInternetGatewayResponse);
+
+			/* 10. Attach Internet Gateway to VPC */
+			paramsToUdate.clear();
+			paramsToUdate.put("internet-gateway-id", createInternetGatewayResponse.getInternetGateway()
+					.getInternetGatewayId());
+			paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
+			String attachInternetGatewayResponseJson = cliExecutor.performAction(Action.ATTACHINTERNETGATEWAY,
+					paramsToUdate);
+			ResponseFlag attachInternetGatewayResponse = gson.fromJson(attachInternetGatewayResponseJson,
+					ResponseFlag.class);
+			createScenario1Response.setInternetGatewayAttached(attachInternetGatewayResponse);
+
+			/* 11. Create elastic IP address */
+			paramsToUdate.clear();
+			String allocateAddressResponseJSON = cliExecutor.performAction(Action.ALLOCATEADDRESS, paramsToUdate);
+			AllocateAddressReponse allocateAddressReponse = gson.fromJson(allocateAddressResponseJSON,
+					AllocateAddressReponse.class);
+			createScenario1Response.setAllocateAddressReponse(allocateAddressReponse);
+
+			/* 12. Associate elastic IP address to instance */
+			paramsToUdate.clear();
+			String instanceId = runInstanceResponse.getInstances().get(0).getInstanceId();
+			paramsToUdate.put("instance-id", instanceId);
+			paramsToUdate.put("allocation-id", allocateAddressReponse.getAllocationID());
+			String associateAddressResponseJSON = cliExecutor.performAction(Action.ASSOCIATEADDRESS, paramsToUdate);
+			ResponseFlag associateAddressResponse = gson.fromJson(associateAddressResponseJSON, ResponseFlag.class);
+			createScenario1Response.setAssociateAddressResponse(associateAddressResponse);
+
+			mongoOperations.insert(createScenario1Response);
+
+			return gson.toJson(createScenario1Response);
 		}
-		return command.toString() + " Saved To DB";
+		catch (Exception exception)
+		{
+			throw new FluffyCloudException(exception.getMessage());
+		}
 	}
 
 	@Override
-	public String createScenario2() throws IOException, FluffyCloudException, InterruptedException
+	public String addCommand() throws FluffyCloudException
+	{
+		for (Action action : Action.values())
+		{
+			Command command = mongoOperations.findById(action.getAction(), Command.class);
+			if (null == command)
+			{
+				command = cliExecutor.getDefaultCommand(action);
+				System.out.println(command.getAction());
+				mongoOperations.insert(command);
+				System.out.println(command.getAction() + " command Json Saved.");
+			}
+			else
+			{
+				System.out.println(command.getAction() + " command json already exists");
+			}
+		}
+		return " Saved To DB";
+	}
+
+	@Override
+	public String createScenario2() throws FluffyCloudException
 	{
 		Map<String, String> paramsToUdate = new HashMap<String, String>();
 		Gson gson = new Gson();
 		CreateScenario2Response createScenario2Response = new CreateScenario2Response();
+		try
+		{
+			/* 1. Create a VPC instance */
+			paramsToUdate.clear();
+			paramsToUdate.put("cidr-block", "10.0.0.0/16");
+			String createVPCResponseJSON = cliExecutor.performAction(Action.CREATEVPC, paramsToUdate);
+			CreateVPCResponse createVPCResponse = gson.fromJson(createVPCResponseJSON, CreateVPCResponse.class);
+			createScenario2Response.setCreateVPCResponse(createVPCResponse);
 
-		/* 1. Create a VPC instance */
-		paramsToUdate.clear();
-		paramsToUdate.put("cidr-block", "10.0.0.0/16");
-		String createVPCResponseJSON = cliExecutor.performAction(Action.CREATEVPC, paramsToUdate);
-		CreateVPCResponse createVPCResponse = gson.fromJson(createVPCResponseJSON, CreateVPCResponse.class);
-		createScenario2Response.setCreateVPCResponse(createVPCResponse);
+			/* 2. Create public subnet */
+			paramsToUdate.clear();
+			paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
+			paramsToUdate.put("cidr-block", "10.0.0.0/24");
+			String createPublicSubnetResponseJSON = cliExecutor.performAction(Action.CREATESUBNET, paramsToUdate);
+			CreateSubnetResponse createPublicSubnetResponse = gson.fromJson(createPublicSubnetResponseJSON,
+					CreateSubnetResponse.class);
+			createScenario2Response.setCreatePublicSubnetResponse(createPublicSubnetResponse);
 
-		/* 2. Create public subnet */
-		paramsToUdate.clear();
-		paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
-		paramsToUdate.put("cidr-block", "10.0.0.0/24");
-		String createPublicSubnetResponseJSON = cliExecutor.performAction(Action.CREATESUBNET, paramsToUdate);
-		CreateSubnetResponse createPublicSubnetResponse = gson.fromJson(createPublicSubnetResponseJSON,
-				CreateSubnetResponse.class);
-		createScenario2Response.setCreatePublicSubnetResponse(createPublicSubnetResponse);
+			/* Create private subnet */
+			paramsToUdate.clear();
+			paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
+			paramsToUdate.put("cidr-block", "10.0.1.0/24");
+			String createPrivateSubnetResponseJSON = cliExecutor.performAction(Action.CREATESUBNET, paramsToUdate);
+			CreateSubnetResponse createPrivateSubnetResponse = gson.fromJson(createPrivateSubnetResponseJSON,
+					CreateSubnetResponse.class);
+			createScenario2Response.setCreatePrivateSubnetResponse(createPrivateSubnetResponse);
 
-		/* Create private subnet */
-		paramsToUdate.clear();
-		paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
-		paramsToUdate.put("cidr-block", "10.0.1.0/24");
-		String createPrivateSubnetResponseJSON = cliExecutor.performAction(Action.CREATESUBNET, paramsToUdate);
-		CreateSubnetResponse createPrivateSubnetResponse = gson.fromJson(createPrivateSubnetResponseJSON,
-				CreateSubnetResponse.class);
-		createScenario2Response.setCreatePrivateSubnetResponse(createPrivateSubnetResponse);
+			/* 3. Create Security Groups */
 
-		/* 3. Create Security Groups */
+			/* --Webserver SG-- */
+			paramsToUdate.clear();
+			paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
+			String sgName = "WebserverSG-" + System.currentTimeMillis();
+			paramsToUdate.put("group-name", sgName);
+			String jsonWebSGResponse = cliExecutor.performAction(Action.CREATESECURITYGROUP, paramsToUdate);
+			CreateSecurityGroupResponse createWebSecurityGroupResponse = gson.fromJson(jsonWebSGResponse,
+					CreateSecurityGroupResponse.class);
 
-		/* --Webserver SG-- */
-		paramsToUdate.clear();
-		paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
-		String sgName = "WebserverSG-" + System.currentTimeMillis();
-		paramsToUdate.put("group-name", sgName);
-		String jsonWebSGResponse = cliExecutor.performAction(Action.CREATESECURITYGROUP, paramsToUdate);
-		CreateSecurityGroupResponse createWebSecurityGroupResponse = gson.fromJson(jsonWebSGResponse,
-				CreateSecurityGroupResponse.class);
+			/* Add Inbound Rules */
+			paramsToUdate.clear();
+			paramsToUdate.put("cidr", "0.0.0.0/0");
+			paramsToUdate.put("port", "80");
+			paramsToUdate.put("protocol", "tcp");
+			paramsToUdate.put("group-id", createWebSecurityGroupResponse.getGroupId());
+			cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
 
-		/* Add Inbound Rules */
-		paramsToUdate.clear();
-		paramsToUdate.put("cidr", "0.0.0.0/0");
-		paramsToUdate.put("port", "80");
-		paramsToUdate.put("protocol", "tcp");
-		paramsToUdate.put("group-id", createWebSecurityGroupResponse.getGroupId());
-		cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
+			paramsToUdate.clear();
+			paramsToUdate.put("cidr", "0.0.0.0/0");
+			paramsToUdate.put("port", "443");
+			paramsToUdate.put("protocol", "tcp");
+			paramsToUdate.put("group-id", createWebSecurityGroupResponse.getGroupId());
+			cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
 
-		paramsToUdate.clear();
-		paramsToUdate.put("cidr", "0.0.0.0/0");
-		paramsToUdate.put("port", "443");
-		paramsToUdate.put("protocol", "tcp");
-		paramsToUdate.put("group-id", createWebSecurityGroupResponse.getGroupId());
-		cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
+			paramsToUdate.clear();
+			paramsToUdate.put("cidr", "10.0.0.0/24");
+			paramsToUdate.put("port", "22");
+			paramsToUdate.put("protocol", "tcp");
+			paramsToUdate.put("group-id", createWebSecurityGroupResponse.getGroupId());
+			cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
 
-		paramsToUdate.clear();
-		paramsToUdate.put("cidr", "10.0.0.0/24");
-		paramsToUdate.put("port", "22");
-		paramsToUdate.put("protocol", "tcp");
-		paramsToUdate.put("group-id", createWebSecurityGroupResponse.getGroupId());
-		cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
+			paramsToUdate.clear();
+			paramsToUdate.put("cidr", "10.0.0.0/24");
+			paramsToUdate.put("port", "3389");
+			paramsToUdate.put("protocol", "tcp");
+			paramsToUdate.put("group-id", createWebSecurityGroupResponse.getGroupId());
+			cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
 
-		paramsToUdate.clear();
-		paramsToUdate.put("cidr", "10.0.0.0/24");
-		paramsToUdate.put("port", "3389");
-		paramsToUdate.put("protocol", "tcp");
-		paramsToUdate.put("group-id", createWebSecurityGroupResponse.getGroupId());
-		cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
+			/* Add OutBound Rules */
+			paramsToUdate.clear();
+			paramsToUdate.put("group-id", createWebSecurityGroupResponse.getGroupId());
+			cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPEGRESS, paramsToUdate);
 
-		/* Add OutBound Rules */
-		paramsToUdate.clear();
-		paramsToUdate.put("group-id", createWebSecurityGroupResponse.getGroupId());
-		cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPEGRESS, paramsToUdate);
+			/* Get ingress/egress rules info */
+			paramsToUdate.clear();
+			paramsToUdate.put("group-ids", createWebSecurityGroupResponse.getGroupId());
+			String describeWebSGJsonResponse = cliExecutor.performAction(Action.DESCRIBESECURITYGROUPS, paramsToUdate);
+			DescribeSecurityGroupResponse describeWebSGResponse = gson.fromJson(describeWebSGJsonResponse,
+					DescribeSecurityGroupResponse.class);
+			createScenario2Response.setDescribeWebSGResponse(describeWebSGResponse);
 
-		/* Get ingress/egress rules info */
-		paramsToUdate.clear();
-		paramsToUdate.put("group-ids", createWebSecurityGroupResponse.getGroupId());
-		String describeWebSGJsonResponse = cliExecutor.performAction(Action.DESCRIBESECURITYGROUPS, paramsToUdate);
-		DescribeSecurityGroupResponse describeWebSGResponse = gson.fromJson(describeWebSGJsonResponse,
-				DescribeSecurityGroupResponse.class);
-		createScenario2Response.setDescribeWebSGResponse(describeWebSGResponse);
+			/* --NAT server SG-- */
+			paramsToUdate.clear();
+			paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
+			sgName = "NatserverSG-" + System.currentTimeMillis();
+			paramsToUdate.put("group-name", sgName);
+			String jsonNatSGResponse = cliExecutor.performAction(Action.CREATESECURITYGROUP, paramsToUdate);
+			CreateSecurityGroupResponse createNatSecurityGroupResponse = gson.fromJson(jsonNatSGResponse,
+					CreateSecurityGroupResponse.class);
 
-		/* --NAT server SG-- */
-		paramsToUdate.clear();
-		paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
-		sgName = "NatserverSG-" + System.currentTimeMillis();
-		paramsToUdate.put("group-name", sgName);
-		String jsonNatSGResponse = cliExecutor.performAction(Action.CREATESECURITYGROUP, paramsToUdate);
-		CreateSecurityGroupResponse createNatSecurityGroupResponse = gson.fromJson(jsonNatSGResponse,
-				CreateSecurityGroupResponse.class);
+			/* Add Inbound Rules */
+			paramsToUdate.clear();
+			paramsToUdate.put("cidr", "10.0.1.0/24");
+			paramsToUdate.put("port", "80");
+			paramsToUdate.put("protocol", "tcp");
+			paramsToUdate.put("group-id", createNatSecurityGroupResponse.getGroupId());
+			cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
 
-		/* Add Inbound Rules */
-		paramsToUdate.clear();
-		paramsToUdate.put("cidr", "10.0.1.0/24");
-		paramsToUdate.put("port", "80");
-		paramsToUdate.put("protocol", "tcp");
-		paramsToUdate.put("group-id", createNatSecurityGroupResponse.getGroupId());
-		cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
+			paramsToUdate.clear();
+			paramsToUdate.put("cidr", "10.0.1.0/24");
+			paramsToUdate.put("port", "443");
+			paramsToUdate.put("protocol", "tcp");
+			paramsToUdate.put("group-id", createNatSecurityGroupResponse.getGroupId());
+			cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
 
-		paramsToUdate.clear();
-		paramsToUdate.put("cidr", "10.0.1.0/24");
-		paramsToUdate.put("port", "443");
-		paramsToUdate.put("protocol", "tcp");
-		paramsToUdate.put("group-id", createNatSecurityGroupResponse.getGroupId());
-		cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
+			paramsToUdate.clear();
+			paramsToUdate.put("cidr", "203.0.113.0/24");
+			paramsToUdate.put("port", "443");
+			paramsToUdate.put("protocol", "tcp");
+			paramsToUdate.put("group-id", createNatSecurityGroupResponse.getGroupId());
+			cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
 
-		paramsToUdate.clear();
-		paramsToUdate.put("cidr", "203.0.113.0/24");
-		paramsToUdate.put("port", "443");
-		paramsToUdate.put("protocol", "tcp");
-		paramsToUdate.put("group-id", createNatSecurityGroupResponse.getGroupId());
-		cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
+			/* Add OutBound Rules */
+			paramsToUdate.clear();
+			paramsToUdate.put("cidr", "0.0.0.0/0");
+			paramsToUdate.put("port", "443");
+			paramsToUdate.put("protocol", "tcp");
+			paramsToUdate.put("group-id", createNatSecurityGroupResponse.getGroupId());
+			cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPEGRESS, paramsToUdate);
 
-		/* Add OutBound Rules */
-		paramsToUdate.clear();
-		paramsToUdate.put("cidr", "0.0.0.0/0");
-		paramsToUdate.put("port", "443");
-		paramsToUdate.put("protocol", "tcp");
-		paramsToUdate.put("group-id", createNatSecurityGroupResponse.getGroupId());
-		cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPEGRESS, paramsToUdate);
+			paramsToUdate.clear();
+			paramsToUdate.put("cidr", "0.0.0.0/0");
+			paramsToUdate.put("port", "443");
+			paramsToUdate.put("protocol", "tcp");
+			paramsToUdate.put("group-id", createNatSecurityGroupResponse.getGroupId());
 
-		paramsToUdate.clear();
-		paramsToUdate.put("cidr", "0.0.0.0/0");
-		paramsToUdate.put("port", "443");
-		paramsToUdate.put("protocol", "tcp");
-		paramsToUdate.put("group-id", createNatSecurityGroupResponse.getGroupId());
+			/* Get ingress/egress rules info */
+			paramsToUdate.clear();
+			paramsToUdate.put("group-ids", createNatSecurityGroupResponse.getGroupId());
+			String describeNatSGJsonResponse = cliExecutor.performAction(Action.DESCRIBESECURITYGROUPS, paramsToUdate);
+			DescribeSecurityGroupResponse describeNatSGResponse = gson.fromJson(describeNatSGJsonResponse,
+					DescribeSecurityGroupResponse.class);
+			createScenario2Response.setDescribeNatSGResponse(describeNatSGResponse);
 
-		/* Get ingress/egress rules info */
-		paramsToUdate.clear();
-		paramsToUdate.put("group-ids", createNatSecurityGroupResponse.getGroupId());
-		String describeNatSGJsonResponse = cliExecutor.performAction(Action.DESCRIBESECURITYGROUPS, paramsToUdate);
-		DescribeSecurityGroupResponse describeNatSGResponse = gson.fromJson(describeNatSGJsonResponse,
-				DescribeSecurityGroupResponse.class);
-		createScenario2Response.setDescribeNatSGResponse(describeNatSGResponse);
+			/* --DB server SG-- */
+			paramsToUdate.clear();
+			paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
+			sgName = "DBserverSG-" + System.currentTimeMillis();
+			paramsToUdate.put("group-name", sgName);
+			String jsonDBSGResponse = cliExecutor.performAction(Action.CREATESECURITYGROUP, paramsToUdate);
+			CreateSecurityGroupResponse createDBSecurityGroupResponse = gson.fromJson(jsonDBSGResponse,
+					CreateSecurityGroupResponse.class);
 
-		/* --DB server SG-- */
-		paramsToUdate.clear();
-		paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
-		sgName = "DBserverSG-" + System.currentTimeMillis();
-		paramsToUdate.put("group-name", sgName);
-		String jsonDBSGResponse = cliExecutor.performAction(Action.CREATESECURITYGROUP, paramsToUdate);
-		CreateSecurityGroupResponse createDBSecurityGroupResponse = gson.fromJson(jsonDBSGResponse,
-				CreateSecurityGroupResponse.class);
+			/* Add Inbound Rules */
+			paramsToUdate.clear();
+			paramsToUdate.put("group-id", createDBSecurityGroupResponse.getGroupId());
+			cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
 
-		/* Add Inbound Rules */
-		paramsToUdate.clear();
-		paramsToUdate.put("group-id", createDBSecurityGroupResponse.getGroupId());
-		cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
+			/* Add OutBound Rules */
+			paramsToUdate.clear();
+			paramsToUdate.put("group-id", createDBSecurityGroupResponse.getGroupId());
+			cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPEGRESS, paramsToUdate);
 
-		/* Add OutBound Rules */
-		paramsToUdate.clear();
-		paramsToUdate.put("group-id", createDBSecurityGroupResponse.getGroupId());
-		cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPEGRESS, paramsToUdate);
+			/* Get ingress/egress rules info */
+			paramsToUdate.clear();
+			paramsToUdate.put("group-ids", createDBSecurityGroupResponse.getGroupId());
+			String describeDBSGJsonResponse = cliExecutor.performAction(Action.DESCRIBESECURITYGROUPS, paramsToUdate);
+			DescribeSecurityGroupResponse describeDBSGResponse = gson.fromJson(describeDBSGJsonResponse,
+					DescribeSecurityGroupResponse.class);
+			createScenario2Response.setDescribeDBSGResponse(describeDBSGResponse);
 
-		/* Get ingress/egress rules info */
-		paramsToUdate.clear();
-		paramsToUdate.put("group-ids", createDBSecurityGroupResponse.getGroupId());
-		String describeDBSGJsonResponse = cliExecutor.performAction(Action.DESCRIBESECURITYGROUPS, paramsToUdate);
-		DescribeSecurityGroupResponse describeDBSGResponse = gson.fromJson(describeDBSGJsonResponse,
-				DescribeSecurityGroupResponse.class);
-		createScenario2Response.setDescribeDBSGResponse(describeDBSGResponse);
+			/* 5. Create Internet Gateway */
+			paramsToUdate.clear();
+			String createInternetGatewayResponseJson = cliExecutor.performAction(Action.CREATEINTERNETGATEWAY,
+					paramsToUdate);
+			CreateInternetGatewayResponse createInternetGatewayResponse = gson.fromJson(
+					createInternetGatewayResponseJson, CreateInternetGatewayResponse.class);
+			createScenario2Response.setCreateInternetGatewayResponse(createInternetGatewayResponse);
 
-		/* 5. Create Internet Gateway */
-		paramsToUdate.clear();
-		String createInternetGatewayResponseJson = cliExecutor.performAction(Action.CREATEINTERNETGATEWAY,
-				paramsToUdate);
-		CreateInternetGatewayResponse createInternetGatewayResponse = gson.fromJson(createInternetGatewayResponseJson,
-				CreateInternetGatewayResponse.class);
-		createScenario2Response.setCreateInternetGatewayResponse(createInternetGatewayResponse);
+			/* 6. Attach Internet Gateway to VPC */
+			paramsToUdate.clear();
+			paramsToUdate.put("internet-gateway-id", createInternetGatewayResponse.getInternetGateway()
+					.getInternetGatewayId());
+			paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
+			String attachInternetGatewayJsonResponse = cliExecutor.performAction(Action.ATTACHINTERNETGATEWAY,
+					paramsToUdate);
+			ResponseFlag attachInternetGatewayResponse = gson.fromJson(attachInternetGatewayJsonResponse,
+					ResponseFlag.class);
+			createScenario2Response.setAttachInternetGatewayResponse(attachInternetGatewayResponse);
 
-		/* 6. Attach Internet Gateway to VPC */
-		paramsToUdate.clear();
-		paramsToUdate.put("internet-gateway-id", createInternetGatewayResponse.getInternetGateway()
-				.getInternetGatewayId());
-		paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
-		String attachInternetGatewayJsonResponse = cliExecutor.performAction(Action.ATTACHINTERNETGATEWAY,
-				paramsToUdate);
-		ResponseFlag attachInternetGatewayResponse = gson.fromJson(attachInternetGatewayJsonResponse,
-				ResponseFlag.class);
-		createScenario2Response.setAttachInternetGatewayResponse(attachInternetGatewayResponse);
+			/* 7. Create custom Route Table */
+			paramsToUdate.clear();
+			paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
+			String createRouteTableResponseJSON = cliExecutor.performAction(Action.CREATEROUTETABLE, paramsToUdate);
+			CreateRouteTableResponse createRouteTableResponse = gson.fromJson(createRouteTableResponseJSON,
+					CreateRouteTableResponse.class);
+			createScenario2Response.setCreateRouteTableResponse(createRouteTableResponse);
 
-		/* 7. Create custom Route Table */
-		paramsToUdate.clear();
-		paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
-		String createRouteTableResponseJSON = cliExecutor.performAction(Action.CREATEROUTETABLE, paramsToUdate);
-		CreateRouteTableResponse createRouteTableResponse = gson.fromJson(createRouteTableResponseJSON,
-				CreateRouteTableResponse.class);
-		createScenario2Response.setCreateRouteTableResponse(createRouteTableResponse);
+			/* Add Route */
+			paramsToUdate.clear();
+			paramsToUdate.put("route-table-id", createRouteTableResponse.getRouteTable().getRouteTableId());
+			paramsToUdate.put("gateway-id", createInternetGatewayResponse.getInternetGateway().getInternetGatewayId());
+			paramsToUdate.put("destination-cidr-block", "0.0.0.0/0");
+			String createRouteJsonResponse = cliExecutor.performAction(Action.CREATEROUTE, paramsToUdate);
+			ResponseFlag createRouteResponse = gson.fromJson(createRouteJsonResponse, ResponseFlag.class);
+			createScenario2Response.setCreateRouteResponse(createRouteResponse);
 
-		/* Add Route */
-		paramsToUdate.clear();
-		paramsToUdate.put("route-table-id", createRouteTableResponse.getRouteTable().getRouteTableId());
-		paramsToUdate.put("gateway-id", createInternetGatewayResponse.getInternetGateway().getInternetGatewayId());
-		paramsToUdate.put("destination-cidr-block", "0.0.0.0/0");
-		String createRouteJsonResponse = cliExecutor.performAction(Action.CREATEROUTE, paramsToUdate);
-		ResponseFlag createRouteResponse = gson.fromJson(createRouteJsonResponse, ResponseFlag.class);
-		createScenario2Response.setCreateRouteResponse(createRouteResponse);
+			/* 7. Run instance with configured or default AMI */
+			/*--Launch web server instance in public subnet--*/
+			paramsToUdate.clear();
+			paramsToUdate.put("instance-type", InstanceTypes.t1MICRO.getValue());
+			paramsToUdate.put("subnet-id", createPublicSubnetResponse.getSubnet().getSubnetId());
+			paramsToUdate.put("security-group-ids", createWebSecurityGroupResponse.getGroupId());
+			String runWebserverInstanceResponseJSON = cliExecutor.performAction(Action.RUNINSTANCES, paramsToUdate);
+			RunInstanceResponse runWebserverInstanceResponse = gson.fromJson(runWebserverInstanceResponseJSON,
+					RunInstanceResponse.class);
+			createScenario2Response.setRunWebserverInstanceResponse(runWebserverInstanceResponse);
 
-		/* 7. Run instance with configured or default AMI */
-		/*--Launch web server instance in public subnet--*/
-		paramsToUdate.clear();
-		paramsToUdate.put("instance-type", InstanceTypes.t1MICRO.getValue());
-		paramsToUdate.put("subnet-id", createPublicSubnetResponse.getSubnet().getSubnetId());
-		paramsToUdate.put("security-group-ids", createWebSecurityGroupResponse.getGroupId());
-		String runWebserverInstanceResponseJSON = cliExecutor.performAction(Action.RUNINSTANCES, paramsToUdate);
-		RunInstanceResponse runWebserverInstanceResponse = gson.fromJson(runWebserverInstanceResponseJSON,
-				RunInstanceResponse.class);
-		createScenario2Response.setRunWebserverInstanceResponse(runWebserverInstanceResponse);
+			/* Check instance state before proceeding */
+			cliExecutor.checkInstanceState(paramsToUdate, gson, runWebserverInstanceResponse);
 
-		/* Check instance state before proceeding */
-		cliExecutor.checkInstanceState(paramsToUdate, gson, runWebserverInstanceResponse);
+			/*--Launch NAT server instance in public subnet--*/
+			paramsToUdate.clear();
+			paramsToUdate.put("instance-type", InstanceTypes.t1MICRO.getValue());
+			paramsToUdate.put("subnet-id", createPublicSubnetResponse.getSubnet().getSubnetId());
+			paramsToUdate.put("security-group-ids", createNatSecurityGroupResponse.getGroupId());
+			String runNatserverInstanceResponseJSON = cliExecutor.performAction(Action.RUNINSTANCES, paramsToUdate);
+			RunInstanceResponse runNatserverInstanceResponse = gson.fromJson(runNatserverInstanceResponseJSON,
+					RunInstanceResponse.class);
+			createScenario2Response.setRunNatserverInstanceResponse(runNatserverInstanceResponse);
 
-		/*--Launch NAT server instance in public subnet--*/
-		paramsToUdate.clear();
-		paramsToUdate.put("instance-type", InstanceTypes.t1MICRO.getValue());
-		paramsToUdate.put("subnet-id", createPublicSubnetResponse.getSubnet().getSubnetId());
-		paramsToUdate.put("security-group-ids", createNatSecurityGroupResponse.getGroupId());
-		String runNatserverInstanceResponseJSON = cliExecutor.performAction(Action.RUNINSTANCES, paramsToUdate);
-		RunInstanceResponse runNatserverInstanceResponse = gson.fromJson(runNatserverInstanceResponseJSON,
-				RunInstanceResponse.class);
-		createScenario2Response.setRunNatserverInstanceResponse(runNatserverInstanceResponse);
+			/* Check instance state before proceeding */
+			cliExecutor.checkInstanceState(paramsToUdate, gson, runNatserverInstanceResponse);
 
-		/* Check instance state before proceeding */
-		cliExecutor.checkInstanceState(paramsToUdate, gson, runNatserverInstanceResponse);
+			/*--Launch DB server instance in private subnet--*/
+			paramsToUdate.clear();
+			paramsToUdate.put("instance-type", InstanceTypes.t1MICRO.getValue());
+			paramsToUdate.put("subnet-id", createPrivateSubnetResponse.getSubnet().getSubnetId());
+			paramsToUdate.put("security-group-ids", createDBSecurityGroupResponse.getGroupId());
+			String runDBserverInstanceResponseJSON = cliExecutor.performAction(Action.RUNINSTANCES, paramsToUdate);
+			RunInstanceResponse runDBserverInstanceResponse = gson.fromJson(runDBserverInstanceResponseJSON,
+					RunInstanceResponse.class);
+			createScenario2Response.setRunDBserverInstanceResponse(runDBserverInstanceResponse);
 
-		/*--Launch DB server instance in private subnet--*/
-		paramsToUdate.clear();
-		paramsToUdate.put("instance-type", InstanceTypes.t1MICRO.getValue());
-		paramsToUdate.put("subnet-id", createPrivateSubnetResponse.getSubnet().getSubnetId());
-		paramsToUdate.put("security-group-ids", createDBSecurityGroupResponse.getGroupId());
-		String runDBserverInstanceResponseJSON = cliExecutor.performAction(Action.RUNINSTANCES, paramsToUdate);
-		RunInstanceResponse runDBserverInstanceResponse = gson.fromJson(runDBserverInstanceResponseJSON,
-				RunInstanceResponse.class);
-		createScenario2Response.setRunDBserverInstanceResponse(runDBserverInstanceResponse);
+			/* Check instance state before proceeding */
+			cliExecutor.checkInstanceState(paramsToUdate, gson, runDBserverInstanceResponse);
 
-		/* Check instance state before proceeding */
-		cliExecutor.checkInstanceState(paramsToUdate, gson, runDBserverInstanceResponse);
+			/* 8. Add Rule to Main Route Table */
+			/*--Get Main Route Table--*/
+			paramsToUdate.clear();
+			List<Filter> filters = new ArrayList<Filter>();
+			List<String> values = new ArrayList<String>();
+			Filter vpcFilter = new Filter();
+			values.add(createVPCResponse.getVpc().getVpcId());
+			vpcFilter.setName("vpc-id");
+			vpcFilter.setValues(values);
+			filters.add(vpcFilter);
+			String describeRouteTableResponseJson = cliExecutor.performAction(Action.DESCRIBEROUTETABLES,
+					paramsToUdate, filters);
+			DescribeRouteTableResponse describeRouteTableResponse = gson.fromJson(describeRouteTableResponseJson,
+					DescribeRouteTableResponse.class);
+			createScenario2Response.setDescribeRouteTableResponse(describeRouteTableResponse);
 
-		/* 8. Add Rule to Main Route Table */
-		/*--Get Main Route Table--*/
-		paramsToUdate.clear();
-		List<Filter> filters = new ArrayList<Filter>();
-		List<String> values = new ArrayList<String>();
-		Filter vpcFilter = new Filter();
-		values.add(createVPCResponse.getVpc().getVpcId());
-		vpcFilter.setName("vpc-id");
-		vpcFilter.setValues(values);
-		filters.add(vpcFilter);
-		String describeRouteTableResponseJson = cliExecutor.performAction(Action.DESCRIBEROUTETABLES, paramsToUdate,
-				filters);
-		DescribeRouteTableResponse describeRouteTableResponse = gson.fromJson(describeRouteTableResponseJson,
-				DescribeRouteTableResponse.class);
-		createScenario2Response.setDescribeRouteTableResponse(describeRouteTableResponse);
+			String mainRouteTableId = getMainRouteTableId(describeRouteTableResponse);
+			/*--Add rule for Nat instance--*/
+			paramsToUdate.clear();
+			paramsToUdate.put("route-table-id", mainRouteTableId);
+			paramsToUdate.put("instance-id", runNatserverInstanceResponse.getInstances().get(0).getInstanceId());
+			paramsToUdate.put("destination-cidr-block", "0.0.0.0/0");
+			cliExecutor.performAction(Action.CREATEROUTE, paramsToUdate);
+			getMainRouteTableId(describeRouteTableResponse);
 
-		String mainRouteTableId = getMainRouteTableId(describeRouteTableResponse);
-		/*--Add rule for Nat instance--*/
-		paramsToUdate.clear();
-		paramsToUdate.put("route-table-id", mainRouteTableId);
-		paramsToUdate.put("instance-id", runNatserverInstanceResponse.getInstances().get(0).getInstanceId());
-		paramsToUdate.put("destination-cidr-block", "0.0.0.0/0");
-		cliExecutor.performAction(Action.CREATEROUTE, paramsToUdate);
-		getMainRouteTableId(describeRouteTableResponse);
+			/* 9. Create Elastic IPs to Public instaces Web and Nat */
+			/* Create elastic IP address for Web Instance */
+			paramsToUdate.clear();
+			String allocateWebInstanceAddressResponseJSON = cliExecutor.performAction(Action.ALLOCATEADDRESS,
+					paramsToUdate);
+			AllocateAddressReponse allocateWebInstanceAddressReponse = gson.fromJson(
+					allocateWebInstanceAddressResponseJSON, AllocateAddressReponse.class);
+			createScenario2Response.setAllocateWebInstanceAddressReponse(allocateWebInstanceAddressReponse);
 
-		/* 9. Create Elastic IPs to Public instaces Web and Nat */
-		/* Create elastic IP address for Web Instance */
-		paramsToUdate.clear();
-		String allocateWebInstanceAddressResponseJSON = cliExecutor
-				.performAction(Action.ALLOCATEADDRESS, paramsToUdate);
-		AllocateAddressReponse allocateWebInstanceAddressReponse = gson.fromJson(
-				allocateWebInstanceAddressResponseJSON, AllocateAddressReponse.class);
-		createScenario2Response.setAllocateWebInstanceAddressReponse(allocateWebInstanceAddressReponse);
+			/* Associate elastic IP address to Web instance */
+			paramsToUdate.clear();
+			String webInstanceId = runWebserverInstanceResponse.getInstances().get(0).getInstanceId();
+			paramsToUdate.put("instance-id", webInstanceId);
+			paramsToUdate.put("allocation-id", allocateWebInstanceAddressReponse.getAllocationID());
+			String associateAddressResponseJSON = cliExecutor.performAction(Action.ASSOCIATEADDRESS, paramsToUdate);
+			ResponseFlag associateAddressResponse = gson.fromJson(associateAddressResponseJSON, ResponseFlag.class);
+			createScenario2Response.setAssociateAddressResponse(associateAddressResponse);
 
-		/* Associate elastic IP address to Web instance */
-		paramsToUdate.clear();
-		String webInstanceId = runWebserverInstanceResponse.getInstances().get(0).getInstanceId();
-		paramsToUdate.put("instance-id", webInstanceId);
-		paramsToUdate.put("allocation-id", allocateWebInstanceAddressReponse.getAllocationID());
-		String associateAddressResponseJSON = cliExecutor.performAction(Action.ASSOCIATEADDRESS, paramsToUdate);
-		ResponseFlag associateAddressResponse = gson.fromJson(associateAddressResponseJSON, ResponseFlag.class);
-		createScenario2Response.setAssociateAddressResponse(associateAddressResponse);
+			/* Create elastic IP address for Nat Instance */
+			paramsToUdate.clear();
+			String allocateNatInstanceAddressResponseJSON = cliExecutor.performAction(Action.ALLOCATEADDRESS,
+					paramsToUdate);
+			AllocateAddressReponse allocateNatInstanceAddressReponse = gson.fromJson(
+					allocateNatInstanceAddressResponseJSON, AllocateAddressReponse.class);
+			createScenario2Response.setAllocateNatInstanceAddressReponse(allocateNatInstanceAddressReponse);
 
-		/* Create elastic IP address for Nat Instance */
-		paramsToUdate.clear();
-		String allocateNatInstanceAddressResponseJSON = cliExecutor
-				.performAction(Action.ALLOCATEADDRESS, paramsToUdate);
-		AllocateAddressReponse allocateNatInstanceAddressReponse = gson.fromJson(
-				allocateNatInstanceAddressResponseJSON, AllocateAddressReponse.class);
-		createScenario2Response.setAllocateNatInstanceAddressReponse(allocateNatInstanceAddressReponse);
+			/* Associate elastic IP address to Nat instance */
+			paramsToUdate.clear();
+			String natInstanceId = runNatserverInstanceResponse.getInstances().get(0).getInstanceId();
+			paramsToUdate.put("instance-id", natInstanceId);
+			paramsToUdate.put("allocation-id", allocateWebInstanceAddressReponse.getAllocationID());
+			String associateNatInstanceAddressResponseJSON = cliExecutor.performAction(Action.ASSOCIATEADDRESS,
+					paramsToUdate);
+			ResponseFlag associateNatInstanceAddressResponse = gson.fromJson(associateNatInstanceAddressResponseJSON,
+					ResponseFlag.class);
+			createScenario2Response.setAssociateNatInstanceAddressResponse(associateNatInstanceAddressResponse);
 
-		/* Associate elastic IP address to Nat instance */
-		paramsToUdate.clear();
-		String natInstanceId = runNatserverInstanceResponse.getInstances().get(0).getInstanceId();
-		paramsToUdate.put("instance-id", natInstanceId);
-		paramsToUdate.put("allocation-id", allocateWebInstanceAddressReponse.getAllocationID());
-		String associateNatInstanceAddressResponseJSON = cliExecutor.performAction(Action.ASSOCIATEADDRESS,
-				paramsToUdate);
-		ResponseFlag associateNatInstanceAddressResponse = gson.fromJson(associateNatInstanceAddressResponseJSON,
-				ResponseFlag.class);
-		createScenario2Response.setAssociateNatInstanceAddressResponse(associateNatInstanceAddressResponse);
-
-		// TODO Generate Scenario 2 JSON response
-		return gson.toJson(createScenario2Response);
+			// TODO Generate Scenario 2 JSON response
+			return gson.toJson(createScenario2Response);
+		}
+		catch (Exception exception)
+		{
+			throw new FluffyCloudException(exception.getMessage());
+		}
 	}
 
 	private String getMainRouteTableId(final DescribeRouteTableResponse describeRouteTableResponse)

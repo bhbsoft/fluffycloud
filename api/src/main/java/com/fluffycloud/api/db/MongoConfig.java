@@ -26,7 +26,7 @@ public class MongoConfig
 
 	public @Bean MongoTemplate mongoTemplate() throws Exception
 	{
-		return new MongoTemplate(mongo(), "FluffyCloud");
+		return new MongoTemplate(mongo(), env.getProperty("FluffyCloudDB"));
 	}
 
 	public @Bean MongoOperations mongoOperations() throws Exception
