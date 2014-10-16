@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import com.google.gson.annotations.SerializedName;
 
-public class DescribeSecurityGroupResponse
+public class DescribeSecurityGroupResponse extends BaseResponse
 {
 	@SerializedName("SecurityGroups")
 	private ArrayList<SecurityGroup> securityGroups;

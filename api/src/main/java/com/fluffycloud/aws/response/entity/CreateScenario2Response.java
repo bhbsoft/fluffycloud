@@ -2,7 +2,7 @@ package com.fluffycloud.aws.response.entity;
 
 import com.google.gson.annotations.SerializedName;
 
-public class CreateScenario2Response
+public class CreateScenario2Response extends BaseResponse
 {
 	@SerializedName("VPC")
 	private CreateVPCResponse createVPCResponse;

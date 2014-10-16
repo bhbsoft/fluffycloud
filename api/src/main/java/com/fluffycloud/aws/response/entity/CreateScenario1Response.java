@@ -1,9 +1,14 @@
 package com.fluffycloud.aws.response.entity;
 
+import org.springframework.data.annotation.Id;
+
 import com.google.gson.annotations.SerializedName;
 
 public class CreateScenario1Response extends BaseResponse
 {
+	@Id
+	private String action;
+	
 	@SerializedName("VPC")
 	private CreateVPCResponse createVPCResponse;
 

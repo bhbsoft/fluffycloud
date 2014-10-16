@@ -10,8 +10,11 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Component;
 
 import com.fluffycloud.api.Iservice.AWSService;
+import com.fluffycloud.api.repository.IAWSCommandRepository;
+import com.fluffycloud.api.repository.IAWSResponseRepository;
 import com.fluffycloud.aws.cli.utils.CLIExecutor;
 import com.fluffycloud.aws.constants.Action;
+import com.fluffycloud.aws.constants.AppParams;
 import com.fluffycloud.aws.constants.InstanceTypes;
 import com.fluffycloud.aws.entity.Command;
 import com.fluffycloud.aws.entity.Filter;
@@ -41,6 +44,12 @@ public class AWSServiceImpl implements AWSService
 	@Autowired
 	MongoOperations mongoOperations;
 
+	@Autowired
+	IAWSResponseRepository iAWSResponseRepository;
+
+	@Autowired
+	IAWSCommandRepository iAWSCommandRepository;
+
 	@Override
 	public String createScenario1() throws FluffyCloudException
 	{
@@ -57,9 +66,9 @@ public class AWSServiceImpl implements AWSService
 			createScenario1Response.setCreateVPCResponse(createVPCResponse);
 
 			/* 2. Create a Security Group */
-			paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
-			String sgName = "TestSG-" + System.currentTimeMillis();
-			paramsToUdate.put("group-name", sgName);
+			paramsToUdate.put(AppParams.VPCID.getValue(), createVPCResponse.getVpc().getVpcId());
+			String sgName = AppParams.SGNAME.getValue() + System.currentTimeMillis();
+			paramsToUdate.put(AppParams.GROUPNAME.getValue(), sgName);
 			String jsonResponse = cliExecutor.performAction(Action.CREATESECURITYGROUP, paramsToUdate);
 			CreateSecurityGroupResponse createSecurityGroupResponse = gson.fromJson(jsonResponse,
 					CreateSecurityGroupResponse.class);
@@ -67,17 +76,17 @@ public class AWSServiceImpl implements AWSService
 
 			/* 3. Add Inbound Rules */
 			paramsToUdate.clear();
-			paramsToUdate.put("group-id", createSecurityGroupResponse.getGroupId());
+			paramsToUdate.put(AppParams.GROUPID.getValue(), createSecurityGroupResponse.getGroupId());
 			cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
 
 			/* 4. Add OutBound Rules */
 			paramsToUdate.clear();
-			paramsToUdate.put("group-id", createSecurityGroupResponse.getGroupId());
+			paramsToUdate.put(AppParams.GROUPID.getValue(), createSecurityGroupResponse.getGroupId());
 			cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPEGRESS, paramsToUdate);
 
 			/* 5. Get ingress/egress rules info */
 			paramsToUdate.clear();
-			paramsToUdate.put("group-ids", createSecurityGroupResponse.getGroupId());
+			paramsToUdate.put(AppParams.GROUPIDS.getValue(), createSecurityGroupResponse.getGroupId());
 			String describeSGResponseJSON = cliExecutor.performAction(Action.DESCRIBESECURITYGROUPS, paramsToUdate);
 			DescribeSecurityGroupResponse describeSGesponse = gson.fromJson(describeSGResponseJSON,
 					DescribeSecurityGroupResponse.class);
@@ -85,7 +94,7 @@ public class AWSServiceImpl implements AWSService
 
 			/* 6. Create subnet */
 			paramsToUdate.clear();
-			paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
+			paramsToUdate.put(AppParams.VPCID.getValue(), createVPCResponse.getVpc().getVpcId());
 			String createSubnetResponseJSON = cliExecutor.performAction(Action.CREATESUBNET, paramsToUdate);
 			CreateSubnetResponse createSubnetResponse = gson.fromJson(createSubnetResponseJSON,
 					CreateSubnetResponse.class);
@@ -93,9 +102,9 @@ public class AWSServiceImpl implements AWSService
 
 			/* 7. Run instance with configured or default AMI */
 			paramsToUdate.clear();
-			paramsToUdate.put("instance-type", InstanceTypes.t1MICRO.getValue());
-			paramsToUdate.put("subnet-id", createSubnetResponse.getSubnet().getSubnetId());
-			paramsToUdate.put("security-group-ids", createSecurityGroupResponse.getGroupId());
+			paramsToUdate.put(AppParams.INSTANCETYPE.getValue(), InstanceTypes.t1MICRO.getValue());
+			paramsToUdate.put(AppParams.SUBNETID.getValue(), createSubnetResponse.getSubnet().getSubnetId());
+			paramsToUdate.put(AppParams.SGIDS.getValue(), createSecurityGroupResponse.getGroupId());
 			String runInstanceResponseJSON = cliExecutor.performAction(Action.RUNINSTANCES, paramsToUdate);
 			RunInstanceResponse runInstanceResponse = gson.fromJson(runInstanceResponseJSON, RunInstanceResponse.class);
 			createScenario1Response.setRunInstanceResponse(runInstanceResponse);
@@ -113,9 +122,9 @@ public class AWSServiceImpl implements AWSService
 
 			/* 10. Attach Internet Gateway to VPC */
 			paramsToUdate.clear();
-			paramsToUdate.put("internet-gateway-id", createInternetGatewayResponse.getInternetGateway()
+			paramsToUdate.put(AppParams.IGID.getValue(), createInternetGatewayResponse.getInternetGateway()
 					.getInternetGatewayId());
-			paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
+			paramsToUdate.put(AppParams.VPCID.getValue(), createVPCResponse.getVpc().getVpcId());
 			String attachInternetGatewayResponseJson = cliExecutor.performAction(Action.ATTACHINTERNETGATEWAY,
 					paramsToUdate);
 			ResponseFlag attachInternetGatewayResponse = gson.fromJson(attachInternetGatewayResponseJson,
@@ -132,8 +141,8 @@ public class AWSServiceImpl implements AWSService
 			/* 12. Associate elastic IP address to instance */
 			paramsToUdate.clear();
 			String instanceId = runInstanceResponse.getInstances().get(0).getInstanceId();
-			paramsToUdate.put("instance-id", instanceId);
-			paramsToUdate.put("allocation-id", allocateAddressReponse.getAllocationID());
+			paramsToUdate.put(AppParams.INSTANCEID.getValue(), instanceId);
+			paramsToUdate.put(AppParams.ALLOCID.getValue(), allocateAddressReponse.getAllocationID());
 			String associateAddressResponseJSON = cliExecutor.performAction(Action.ASSOCIATEADDRESS, paramsToUdate);
 			ResponseFlag associateAddressResponse = gson.fromJson(associateAddressResponseJSON, ResponseFlag.class);
 			createScenario1Response.setAssociateAddressResponse(associateAddressResponse);
@@ -179,15 +188,15 @@ public class AWSServiceImpl implements AWSService
 		{
 			/* 1. Create a VPC instance */
 			paramsToUdate.clear();
-			paramsToUdate.put("cidr-block", "10.0.0.0/16");
+			paramsToUdate.put(AppParams.CIDRBLOCK.getValue(), "10.0.0.0/16");
 			String createVPCResponseJSON = cliExecutor.performAction(Action.CREATEVPC, paramsToUdate);
 			CreateVPCResponse createVPCResponse = gson.fromJson(createVPCResponseJSON, CreateVPCResponse.class);
 			createScenario2Response.setCreateVPCResponse(createVPCResponse);
 
 			/* 2. Create public subnet */
 			paramsToUdate.clear();
-			paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
-			paramsToUdate.put("cidr-block", "10.0.0.0/24");
+			paramsToUdate.put(AppParams.VPCID.getValue(), createVPCResponse.getVpc().getVpcId());
+			paramsToUdate.put(AppParams.CIDRBLOCK.getValue(), "10.0.0.0/24");
 			String createPublicSubnetResponseJSON = cliExecutor.performAction(Action.CREATESUBNET, paramsToUdate);
 			CreateSubnetResponse createPublicSubnetResponse = gson.fromJson(createPublicSubnetResponseJSON,
 					CreateSubnetResponse.class);
@@ -195,8 +204,8 @@ public class AWSServiceImpl implements AWSService
 
 			/* Create private subnet */
 			paramsToUdate.clear();
-			paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
-			paramsToUdate.put("cidr-block", "10.0.1.0/24");
+			paramsToUdate.put(AppParams.VPCID.getValue(), createVPCResponse.getVpc().getVpcId());
+			paramsToUdate.put(AppParams.CIDRBLOCK.getValue(), "10.0.1.0/24");
 			String createPrivateSubnetResponseJSON = cliExecutor.performAction(Action.CREATESUBNET, paramsToUdate);
 			CreateSubnetResponse createPrivateSubnetResponse = gson.fromJson(createPrivateSubnetResponseJSON,
 					CreateSubnetResponse.class);
@@ -206,50 +215,50 @@ public class AWSServiceImpl implements AWSService
 
 			/* --Webserver SG-- */
 			paramsToUdate.clear();
-			paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
+			paramsToUdate.put(AppParams.VPCID.getValue(), createVPCResponse.getVpc().getVpcId());
 			String sgName = "WebserverSG-" + System.currentTimeMillis();
-			paramsToUdate.put("group-name", sgName);
+			paramsToUdate.put(AppParams.GROUPNAME.getValue(), sgName);
 			String jsonWebSGResponse = cliExecutor.performAction(Action.CREATESECURITYGROUP, paramsToUdate);
 			CreateSecurityGroupResponse createWebSecurityGroupResponse = gson.fromJson(jsonWebSGResponse,
 					CreateSecurityGroupResponse.class);
 
 			/* Add Inbound Rules */
 			paramsToUdate.clear();
-			paramsToUdate.put("cidr", "0.0.0.0/0");
+			paramsToUdate.put(AppParams.CIDR.getValue(), "0.0.0.0/0");
 			paramsToUdate.put("port", "80");
-			paramsToUdate.put("protocol", "tcp");
-			paramsToUdate.put("group-id", createWebSecurityGroupResponse.getGroupId());
+			paramsToUdate.put(AppParams.PROTOCOL.getValue(), "tcp");
+			paramsToUdate.put(AppParams.GROUPID.getValue(), createWebSecurityGroupResponse.getGroupId());
 			cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
 
 			paramsToUdate.clear();
-			paramsToUdate.put("cidr", "0.0.0.0/0");
+			paramsToUdate.put(AppParams.CIDR.getValue(), "0.0.0.0/0");
 			paramsToUdate.put("port", "443");
-			paramsToUdate.put("protocol", "tcp");
-			paramsToUdate.put("group-id", createWebSecurityGroupResponse.getGroupId());
+			paramsToUdate.put(AppParams.PROTOCOL.getValue(), "tcp");
+			paramsToUdate.put(AppParams.GROUPID.getValue(), createWebSecurityGroupResponse.getGroupId());
 			cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
 
 			paramsToUdate.clear();
-			paramsToUdate.put("cidr", "10.0.0.0/24");
+			paramsToUdate.put(AppParams.CIDR.getValue(), "10.0.0.0/24");
 			paramsToUdate.put("port", "22");
-			paramsToUdate.put("protocol", "tcp");
-			paramsToUdate.put("group-id", createWebSecurityGroupResponse.getGroupId());
+			paramsToUdate.put(AppParams.PROTOCOL.getValue(), "tcp");
+			paramsToUdate.put(AppParams.GROUPID.getValue(), createWebSecurityGroupResponse.getGroupId());
 			cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
 
 			paramsToUdate.clear();
-			paramsToUdate.put("cidr", "10.0.0.0/24");
+			paramsToUdate.put(AppParams.CIDR.getValue(), "10.0.0.0/24");
 			paramsToUdate.put("port", "3389");
-			paramsToUdate.put("protocol", "tcp");
-			paramsToUdate.put("group-id", createWebSecurityGroupResponse.getGroupId());
+			paramsToUdate.put(AppParams.PROTOCOL.getValue(), "tcp");
+			paramsToUdate.put(AppParams.GROUPID.getValue(), createWebSecurityGroupResponse.getGroupId());
 			cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
 
 			/* Add OutBound Rules */
 			paramsToUdate.clear();
-			paramsToUdate.put("group-id", createWebSecurityGroupResponse.getGroupId());
+			paramsToUdate.put(AppParams.GROUPID.getValue(), createWebSecurityGroupResponse.getGroupId());
 			cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPEGRESS, paramsToUdate);
 
 			/* Get ingress/egress rules info */
 			paramsToUdate.clear();
-			paramsToUdate.put("group-ids", createWebSecurityGroupResponse.getGroupId());
+			paramsToUdate.put(AppParams.GROUPIDS.getValue(), createWebSecurityGroupResponse.getGroupId());
 			String describeWebSGJsonResponse = cliExecutor.performAction(Action.DESCRIBESECURITYGROUPS, paramsToUdate);
 			DescribeSecurityGroupResponse describeWebSGResponse = gson.fromJson(describeWebSGJsonResponse,
 					DescribeSecurityGroupResponse.class);
@@ -257,52 +266,52 @@ public class AWSServiceImpl implements AWSService
 
 			/* --NAT server SG-- */
 			paramsToUdate.clear();
-			paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
+			paramsToUdate.put(AppParams.VPCID.getValue(), createVPCResponse.getVpc().getVpcId());
 			sgName = "NatserverSG-" + System.currentTimeMillis();
-			paramsToUdate.put("group-name", sgName);
+			paramsToUdate.put(AppParams.GROUPNAME.getValue(), sgName);
 			String jsonNatSGResponse = cliExecutor.performAction(Action.CREATESECURITYGROUP, paramsToUdate);
 			CreateSecurityGroupResponse createNatSecurityGroupResponse = gson.fromJson(jsonNatSGResponse,
 					CreateSecurityGroupResponse.class);
 
 			/* Add Inbound Rules */
 			paramsToUdate.clear();
-			paramsToUdate.put("cidr", "10.0.1.0/24");
+			paramsToUdate.put(AppParams.CIDR.getValue(), "10.0.1.0/24");
 			paramsToUdate.put("port", "80");
-			paramsToUdate.put("protocol", "tcp");
-			paramsToUdate.put("group-id", createNatSecurityGroupResponse.getGroupId());
+			paramsToUdate.put(AppParams.PROTOCOL.getValue(), "tcp");
+			paramsToUdate.put(AppParams.GROUPID.getValue(), createNatSecurityGroupResponse.getGroupId());
 			cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
 
 			paramsToUdate.clear();
-			paramsToUdate.put("cidr", "10.0.1.0/24");
+			paramsToUdate.put(AppParams.CIDR.getValue(), "10.0.1.0/24");
 			paramsToUdate.put("port", "443");
-			paramsToUdate.put("protocol", "tcp");
-			paramsToUdate.put("group-id", createNatSecurityGroupResponse.getGroupId());
+			paramsToUdate.put(AppParams.PROTOCOL.getValue(), "tcp");
+			paramsToUdate.put(AppParams.GROUPID.getValue(), createNatSecurityGroupResponse.getGroupId());
 			cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
 
 			paramsToUdate.clear();
-			paramsToUdate.put("cidr", "203.0.113.0/24");
+			paramsToUdate.put(AppParams.CIDR.getValue(), "203.0.113.0/24");
 			paramsToUdate.put("port", "443");
-			paramsToUdate.put("protocol", "tcp");
-			paramsToUdate.put("group-id", createNatSecurityGroupResponse.getGroupId());
+			paramsToUdate.put(AppParams.PROTOCOL.getValue(), "tcp");
+			paramsToUdate.put(AppParams.GROUPID.getValue(), createNatSecurityGroupResponse.getGroupId());
 			cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
 
 			/* Add OutBound Rules */
 			paramsToUdate.clear();
-			paramsToUdate.put("cidr", "0.0.0.0/0");
+			paramsToUdate.put(AppParams.CIDR.getValue(), "0.0.0.0/0");
 			paramsToUdate.put("port", "443");
-			paramsToUdate.put("protocol", "tcp");
-			paramsToUdate.put("group-id", createNatSecurityGroupResponse.getGroupId());
+			paramsToUdate.put(AppParams.PROTOCOL.getValue(), "tcp");
+			paramsToUdate.put(AppParams.GROUPID.getValue(), createNatSecurityGroupResponse.getGroupId());
 			cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPEGRESS, paramsToUdate);
 
 			paramsToUdate.clear();
-			paramsToUdate.put("cidr", "0.0.0.0/0");
+			paramsToUdate.put(AppParams.CIDR.getValue(), "0.0.0.0/0");
 			paramsToUdate.put("port", "443");
-			paramsToUdate.put("protocol", "tcp");
-			paramsToUdate.put("group-id", createNatSecurityGroupResponse.getGroupId());
+			paramsToUdate.put(AppParams.PROTOCOL.getValue(), "tcp");
+			paramsToUdate.put(AppParams.GROUPID.getValue(), createNatSecurityGroupResponse.getGroupId());
 
 			/* Get ingress/egress rules info */
 			paramsToUdate.clear();
-			paramsToUdate.put("group-ids", createNatSecurityGroupResponse.getGroupId());
+			paramsToUdate.put(AppParams.GROUPIDS.getValue(), createNatSecurityGroupResponse.getGroupId());
 			String describeNatSGJsonResponse = cliExecutor.performAction(Action.DESCRIBESECURITYGROUPS, paramsToUdate);
 			DescribeSecurityGroupResponse describeNatSGResponse = gson.fromJson(describeNatSGJsonResponse,
 					DescribeSecurityGroupResponse.class);
@@ -310,26 +319,26 @@ public class AWSServiceImpl implements AWSService
 
 			/* --DB server SG-- */
 			paramsToUdate.clear();
-			paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
+			paramsToUdate.put(AppParams.VPCID.getValue(), createVPCResponse.getVpc().getVpcId());
 			sgName = "DBserverSG-" + System.currentTimeMillis();
-			paramsToUdate.put("group-name", sgName);
+			paramsToUdate.put(AppParams.GROUPNAME.getValue(), sgName);
 			String jsonDBSGResponse = cliExecutor.performAction(Action.CREATESECURITYGROUP, paramsToUdate);
 			CreateSecurityGroupResponse createDBSecurityGroupResponse = gson.fromJson(jsonDBSGResponse,
 					CreateSecurityGroupResponse.class);
 
 			/* Add Inbound Rules */
 			paramsToUdate.clear();
-			paramsToUdate.put("group-id", createDBSecurityGroupResponse.getGroupId());
+			paramsToUdate.put(AppParams.GROUPID.getValue(), createDBSecurityGroupResponse.getGroupId());
 			cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
 
 			/* Add OutBound Rules */
 			paramsToUdate.clear();
-			paramsToUdate.put("group-id", createDBSecurityGroupResponse.getGroupId());
+			paramsToUdate.put(AppParams.GROUPID.getValue(), createDBSecurityGroupResponse.getGroupId());
 			cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPEGRESS, paramsToUdate);
 
 			/* Get ingress/egress rules info */
 			paramsToUdate.clear();
-			paramsToUdate.put("group-ids", createDBSecurityGroupResponse.getGroupId());
+			paramsToUdate.put(AppParams.GROUPIDS.getValue(), createDBSecurityGroupResponse.getGroupId());
 			String describeDBSGJsonResponse = cliExecutor.performAction(Action.DESCRIBESECURITYGROUPS, paramsToUdate);
 			DescribeSecurityGroupResponse describeDBSGResponse = gson.fromJson(describeDBSGJsonResponse,
 					DescribeSecurityGroupResponse.class);
@@ -345,9 +354,9 @@ public class AWSServiceImpl implements AWSService
 
 			/* 6. Attach Internet Gateway to VPC */
 			paramsToUdate.clear();
-			paramsToUdate.put("internet-gateway-id", createInternetGatewayResponse.getInternetGateway()
+			paramsToUdate.put(AppParams.IGID.getValue(), createInternetGatewayResponse.getInternetGateway()
 					.getInternetGatewayId());
-			paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
+			paramsToUdate.put(AppParams.VPCID.getValue(), createVPCResponse.getVpc().getVpcId());
 			String attachInternetGatewayJsonResponse = cliExecutor.performAction(Action.ATTACHINTERNETGATEWAY,
 					paramsToUdate);
 			ResponseFlag attachInternetGatewayResponse = gson.fromJson(attachInternetGatewayJsonResponse,
@@ -356,7 +365,7 @@ public class AWSServiceImpl implements AWSService
 
 			/* 7. Create custom Route Table */
 			paramsToUdate.clear();
-			paramsToUdate.put("vpc-id", createVPCResponse.getVpc().getVpcId());
+			paramsToUdate.put(AppParams.VPCID.getValue(), createVPCResponse.getVpc().getVpcId());
 			String createRouteTableResponseJSON = cliExecutor.performAction(Action.CREATEROUTETABLE, paramsToUdate);
 			CreateRouteTableResponse createRouteTableResponse = gson.fromJson(createRouteTableResponseJSON,
 					CreateRouteTableResponse.class);
@@ -364,9 +373,11 @@ public class AWSServiceImpl implements AWSService
 
 			/* Add Route */
 			paramsToUdate.clear();
-			paramsToUdate.put("route-table-id", createRouteTableResponse.getRouteTable().getRouteTableId());
-			paramsToUdate.put("gateway-id", createInternetGatewayResponse.getInternetGateway().getInternetGatewayId());
-			paramsToUdate.put("destination-cidr-block", "0.0.0.0/0");
+			paramsToUdate.put(AppParams.ROUTETABLEID.getValue(), createRouteTableResponse.getRouteTable()
+					.getRouteTableId());
+			paramsToUdate.put(AppParams.GATEID.getValue(), createInternetGatewayResponse.getInternetGateway()
+					.getInternetGatewayId());
+			paramsToUdate.put(AppParams.DESTCIDRBLOCK.getValue(), "0.0.0.0/0");
 			String createRouteJsonResponse = cliExecutor.performAction(Action.CREATEROUTE, paramsToUdate);
 			ResponseFlag createRouteResponse = gson.fromJson(createRouteJsonResponse, ResponseFlag.class);
 			createScenario2Response.setCreateRouteResponse(createRouteResponse);
@@ -374,9 +385,9 @@ public class AWSServiceImpl implements AWSService
 			/* 7. Run instance with configured or default AMI */
 			/*--Launch web server instance in public subnet--*/
 			paramsToUdate.clear();
-			paramsToUdate.put("instance-type", InstanceTypes.t1MICRO.getValue());
-			paramsToUdate.put("subnet-id", createPublicSubnetResponse.getSubnet().getSubnetId());
-			paramsToUdate.put("security-group-ids", createWebSecurityGroupResponse.getGroupId());
+			paramsToUdate.put(AppParams.INSTANCETYPE.getValue(), InstanceTypes.t1MICRO.getValue());
+			paramsToUdate.put(AppParams.SUBNETID.getValue(), createPublicSubnetResponse.getSubnet().getSubnetId());
+			paramsToUdate.put(AppParams.SGIDS.getValue(), createWebSecurityGroupResponse.getGroupId());
 			String runWebserverInstanceResponseJSON = cliExecutor.performAction(Action.RUNINSTANCES, paramsToUdate);
 			RunInstanceResponse runWebserverInstanceResponse = gson.fromJson(runWebserverInstanceResponseJSON,
 					RunInstanceResponse.class);
@@ -387,9 +398,9 @@ public class AWSServiceImpl implements AWSService
 
 			/*--Launch NAT server instance in public subnet--*/
 			paramsToUdate.clear();
-			paramsToUdate.put("instance-type", InstanceTypes.t1MICRO.getValue());
-			paramsToUdate.put("subnet-id", createPublicSubnetResponse.getSubnet().getSubnetId());
-			paramsToUdate.put("security-group-ids", createNatSecurityGroupResponse.getGroupId());
+			paramsToUdate.put(AppParams.INSTANCETYPE.getValue(), InstanceTypes.t1MICRO.getValue());
+			paramsToUdate.put(AppParams.SUBNETID.getValue(), createPublicSubnetResponse.getSubnet().getSubnetId());
+			paramsToUdate.put(AppParams.SGIDS.getValue(), createNatSecurityGroupResponse.getGroupId());
 			String runNatserverInstanceResponseJSON = cliExecutor.performAction(Action.RUNINSTANCES, paramsToUdate);
 			RunInstanceResponse runNatserverInstanceResponse = gson.fromJson(runNatserverInstanceResponseJSON,
 					RunInstanceResponse.class);
@@ -400,9 +411,9 @@ public class AWSServiceImpl implements AWSService
 
 			/*--Launch DB server instance in private subnet--*/
 			paramsToUdate.clear();
-			paramsToUdate.put("instance-type", InstanceTypes.t1MICRO.getValue());
-			paramsToUdate.put("subnet-id", createPrivateSubnetResponse.getSubnet().getSubnetId());
-			paramsToUdate.put("security-group-ids", createDBSecurityGroupResponse.getGroupId());
+			paramsToUdate.put(AppParams.INSTANCETYPE.getValue(), InstanceTypes.t1MICRO.getValue());
+			paramsToUdate.put(AppParams.SUBNETID.getValue(), createPrivateSubnetResponse.getSubnet().getSubnetId());
+			paramsToUdate.put(AppParams.SGIDS.getValue(), createDBSecurityGroupResponse.getGroupId());
 			String runDBserverInstanceResponseJSON = cliExecutor.performAction(Action.RUNINSTANCES, paramsToUdate);
 			RunInstanceResponse runDBserverInstanceResponse = gson.fromJson(runDBserverInstanceResponseJSON,
 					RunInstanceResponse.class);
@@ -418,7 +429,7 @@ public class AWSServiceImpl implements AWSService
 			List<String> values = new ArrayList<String>();
 			Filter vpcFilter = new Filter();
 			values.add(createVPCResponse.getVpc().getVpcId());
-			vpcFilter.setName("vpc-id");
+			vpcFilter.setName(AppParams.VPCID.getValue());
 			vpcFilter.setValues(values);
 			filters.add(vpcFilter);
 			String describeRouteTableResponseJson = cliExecutor.performAction(Action.DESCRIBEROUTETABLES,
@@ -430,9 +441,10 @@ public class AWSServiceImpl implements AWSService
 			String mainRouteTableId = getMainRouteTableId(describeRouteTableResponse);
 			/*--Add rule for Nat instance--*/
 			paramsToUdate.clear();
-			paramsToUdate.put("route-table-id", mainRouteTableId);
-			paramsToUdate.put("instance-id", runNatserverInstanceResponse.getInstances().get(0).getInstanceId());
-			paramsToUdate.put("destination-cidr-block", "0.0.0.0/0");
+			paramsToUdate.put(AppParams.ROUTETABLEID.getValue(), mainRouteTableId);
+			paramsToUdate.put(AppParams.INSTANCEID.getValue(), runNatserverInstanceResponse.getInstances().get(0)
+					.getInstanceId());
+			paramsToUdate.put(AppParams.DESTCIDRBLOCK.getValue(), "0.0.0.0/0");
 			cliExecutor.performAction(Action.CREATEROUTE, paramsToUdate);
 			getMainRouteTableId(describeRouteTableResponse);
 
@@ -448,8 +460,8 @@ public class AWSServiceImpl implements AWSService
 			/* Associate elastic IP address to Web instance */
 			paramsToUdate.clear();
 			String webInstanceId = runWebserverInstanceResponse.getInstances().get(0).getInstanceId();
-			paramsToUdate.put("instance-id", webInstanceId);
-			paramsToUdate.put("allocation-id", allocateWebInstanceAddressReponse.getAllocationID());
+			paramsToUdate.put(AppParams.INSTANCEID.getValue(), webInstanceId);
+			paramsToUdate.put(AppParams.ALLOCID.getValue(), allocateWebInstanceAddressReponse.getAllocationID());
 			String associateAddressResponseJSON = cliExecutor.performAction(Action.ASSOCIATEADDRESS, paramsToUdate);
 			ResponseFlag associateAddressResponse = gson.fromJson(associateAddressResponseJSON, ResponseFlag.class);
 			createScenario2Response.setAssociateAddressResponse(associateAddressResponse);
@@ -465,8 +477,8 @@ public class AWSServiceImpl implements AWSService
 			/* Associate elastic IP address to Nat instance */
 			paramsToUdate.clear();
 			String natInstanceId = runNatserverInstanceResponse.getInstances().get(0).getInstanceId();
-			paramsToUdate.put("instance-id", natInstanceId);
-			paramsToUdate.put("allocation-id", allocateWebInstanceAddressReponse.getAllocationID());
+			paramsToUdate.put(AppParams.INSTANCEID.getValue(), natInstanceId);
+			paramsToUdate.put(AppParams.ALLOCID.getValue(), allocateWebInstanceAddressReponse.getAllocationID());
 			String associateNatInstanceAddressResponseJSON = cliExecutor.performAction(Action.ASSOCIATEADDRESS,
 					paramsToUdate);
 			ResponseFlag associateNatInstanceAddressResponse = gson.fromJson(associateNatInstanceAddressResponseJSON,

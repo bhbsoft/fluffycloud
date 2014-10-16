@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import com.google.gson.annotations.SerializedName;
 
-public class DescribeRouteTableResponse
+public class DescribeRouteTableResponse extends BaseResponse
 {
 	@SerializedName("RouteTables")
 	private ArrayList<RouteTable> routeTables;

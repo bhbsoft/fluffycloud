@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import com.google.gson.annotations.SerializedName;
 
-public class DescribeInstanceStatusResponse
+public class DescribeInstanceStatusResponse extends BaseResponse
 {
 
 	@SerializedName("InstanceStatuses")

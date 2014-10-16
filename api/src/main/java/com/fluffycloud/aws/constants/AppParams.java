@@ -5,7 +5,9 @@ public enum AppParams
 
 	DBHOST("host"), DBPORT("port"), DBNAME("FluffyCloudDB"), VPCID("vpc-id"), SGNAME("TestSG-"),
 	GROUPNAME("group-name"), GROUPID("group-id"), GROUPIDS("group-ids"), INSTANCETYPE("instance-type"), SUBNETID(
-			"subnet-id"), SGIDS("security-group-ids"), IGID("internet-gateway-id"), ALLOCID("allocation-id");
+			"subnet-id"), SGIDS("security-group-ids"), IGID("internet-gateway-id"), ALLOCID("allocation-id"),
+	CIDRBLOCK("cidr-block"), CIDR("cidr"), PROTOCOL("protocol"), ROUTETABLEID("route-table-id"), GATEID("gateway-id"),
+	DESTCIDRBLOCK("destination-cidr-block"), INSTANCEID("instance-id"),;
 
 	public String typeName;
 

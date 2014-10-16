@@ -7,6 +7,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.stereotype.Component;
 
 import com.mongodb.MongoClient;
@@ -14,6 +15,7 @@ import com.mongodb.MongoClient;
 @Component
 @Configuration
 @PropertySource(value = "classpath:db.properties")
+@EnableMongoRepositories
 public class MongoConfig
 {
 	@Autowired
