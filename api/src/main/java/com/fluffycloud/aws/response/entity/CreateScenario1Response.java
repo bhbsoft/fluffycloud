@@ -1,14 +1,17 @@
 package com.fluffycloud.aws.response.entity;
 
-import org.springframework.data.annotation.Id;
-
+import com.fluffycloud.aws.entity.CommonRequestParams;
 import com.google.gson.annotations.SerializedName;
 
 public class CreateScenario1Response extends BaseResponse
 {
-	@Id
-	private String action;
-	
+	// @Id
+	// private String action;
+	// TODO ID for this
+
+	@SerializedName("UserDetail")
+	private CommonRequestParams userDetail;
+
 	@SerializedName("VPC")
 	private CreateVPCResponse createVPCResponse;
 
@@ -35,6 +38,16 @@ public class CreateScenario1Response extends BaseResponse
 
 	@SerializedName("AddressAssociated")
 	private ResponseFlag associateAddressResponse;
+
+	public CommonRequestParams getUserDetail()
+	{
+		return userDetail;
+	}
+
+	public void setUserDetail(CommonRequestParams userDetail)
+	{
+		this.userDetail = userDetail;
+	}
 
 	public ResponseFlag getInternetGatewayAttached()
 	{

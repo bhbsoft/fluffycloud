@@ -1,9 +1,17 @@
 package com.fluffycloud.aws.response.entity;
 
+import com.fluffycloud.aws.entity.CommonRequestParams;
 import com.google.gson.annotations.SerializedName;
 
 public class CreateScenario2Response extends BaseResponse
 {
+	// @Id
+	// private String action;
+	// TODO ID for this
+
+	@SerializedName("UserDetail")
+	private CommonRequestParams userDetail;
+
 	@SerializedName("VPC")
 	private CreateVPCResponse createVPCResponse;
 
@@ -57,6 +65,16 @@ public class CreateScenario2Response extends BaseResponse
 
 	@SerializedName("PublicIPAssociatedToNatInstance")
 	private ResponseFlag associateNatInstanceAddressResponse;
+
+	public CommonRequestParams getUserDetail()
+	{
+		return userDetail;
+	}
+
+	public void setUserDetail(CommonRequestParams userDetail)
+	{
+		this.userDetail = userDetail;
+	}
 
 	public CreateVPCResponse getCreateVPCResponse()
 	{

@@ -6,5 +6,5 @@ import com.fluffycloud.aws.entity.Command;
 
 public interface IAWSCommandRepository extends MongoRepository<Command, String>
 {
-
+	Command findByAction(String action);
 }

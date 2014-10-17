@@ -17,6 +17,7 @@ import com.fluffycloud.aws.constants.Action;
 import com.fluffycloud.aws.constants.AppParams;
 import com.fluffycloud.aws.constants.InstanceTypes;
 import com.fluffycloud.aws.entity.Command;
+import com.fluffycloud.aws.entity.CommonRequestParams;
 import com.fluffycloud.aws.entity.Filter;
 import com.fluffycloud.aws.response.entity.AllocateAddressReponse;
 import com.fluffycloud.aws.response.entity.Association;
@@ -51,7 +52,7 @@ public class AWSServiceImpl implements AWSService
 	IAWSCommandRepository iAWSCommandRepository;
 
 	@Override
-	public String createScenario1() throws FluffyCloudException
+	public String createScenario1(CommonRequestParams params) throws FluffyCloudException
 	{
 		Map<String, String> paramsToUdate = new HashMap<String, String>();
 		Gson gson = new Gson();
@@ -147,7 +148,7 @@ public class AWSServiceImpl implements AWSService
 			ResponseFlag associateAddressResponse = gson.fromJson(associateAddressResponseJSON, ResponseFlag.class);
 			createScenario1Response.setAssociateAddressResponse(associateAddressResponse);
 
-			mongoOperations.insert(createScenario1Response);
+			createScenario1Response = iAWSResponseRepository.save(createScenario1Response);
 
 			return gson.toJson(createScenario1Response);
 		}
@@ -162,7 +163,8 @@ public class AWSServiceImpl implements AWSService
 	{
 		for (Action action : Action.values())
 		{
-			Command command = mongoOperations.findById(action.getAction(), Command.class);
+			Command command = iAWSCommandRepository.findByAction(action.getAction());
+
 			if (null == command)
 			{
 				command = cliExecutor.getDefaultCommand(action);
@@ -175,11 +177,11 @@ public class AWSServiceImpl implements AWSService
 				System.out.println(command.getAction() + " command json already exists");
 			}
 		}
-		return " Saved To DB";
+		return " Added to DB";
 	}
 
 	@Override
-	public String createScenario2() throws FluffyCloudException
+	public String createScenario2(CommonRequestParams params) throws FluffyCloudException
 	{
 		Map<String, String> paramsToUdate = new HashMap<String, String>();
 		Gson gson = new Gson();
@@ -225,28 +227,28 @@ public class AWSServiceImpl implements AWSService
 			/* Add Inbound Rules */
 			paramsToUdate.clear();
 			paramsToUdate.put(AppParams.CIDR.getValue(), "0.0.0.0/0");
-			paramsToUdate.put("port", "80");
+			paramsToUdate.put(AppParams.PORT.getValue(), "80");
 			paramsToUdate.put(AppParams.PROTOCOL.getValue(), "tcp");
 			paramsToUdate.put(AppParams.GROUPID.getValue(), createWebSecurityGroupResponse.getGroupId());
 			cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
 
 			paramsToUdate.clear();
 			paramsToUdate.put(AppParams.CIDR.getValue(), "0.0.0.0/0");
-			paramsToUdate.put("port", "443");
+			paramsToUdate.put(AppParams.PORT.getValue(), "443");
 			paramsToUdate.put(AppParams.PROTOCOL.getValue(), "tcp");
 			paramsToUdate.put(AppParams.GROUPID.getValue(), createWebSecurityGroupResponse.getGroupId());
 			cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
 
 			paramsToUdate.clear();
 			paramsToUdate.put(AppParams.CIDR.getValue(), "10.0.0.0/24");
-			paramsToUdate.put("port", "22");
+			paramsToUdate.put(AppParams.PORT.getValue(), "22");
 			paramsToUdate.put(AppParams.PROTOCOL.getValue(), "tcp");
 			paramsToUdate.put(AppParams.GROUPID.getValue(), createWebSecurityGroupResponse.getGroupId());
 			cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
 
 			paramsToUdate.clear();
 			paramsToUdate.put(AppParams.CIDR.getValue(), "10.0.0.0/24");
-			paramsToUdate.put("port", "3389");
+			paramsToUdate.put(AppParams.PORT.getValue(), "3389");
 			paramsToUdate.put(AppParams.PROTOCOL.getValue(), "tcp");
 			paramsToUdate.put(AppParams.GROUPID.getValue(), createWebSecurityGroupResponse.getGroupId());
 			cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
@@ -276,21 +278,21 @@ public class AWSServiceImpl implements AWSService
 			/* Add Inbound Rules */
 			paramsToUdate.clear();
 			paramsToUdate.put(AppParams.CIDR.getValue(), "10.0.1.0/24");
-			paramsToUdate.put("port", "80");
+			paramsToUdate.put(AppParams.PORT.getValue(), "80");
 			paramsToUdate.put(AppParams.PROTOCOL.getValue(), "tcp");
 			paramsToUdate.put(AppParams.GROUPID.getValue(), createNatSecurityGroupResponse.getGroupId());
 			cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
 
 			paramsToUdate.clear();
 			paramsToUdate.put(AppParams.CIDR.getValue(), "10.0.1.0/24");
-			paramsToUdate.put("port", "443");
+			paramsToUdate.put(AppParams.PORT.getValue(), "443");
 			paramsToUdate.put(AppParams.PROTOCOL.getValue(), "tcp");
 			paramsToUdate.put(AppParams.GROUPID.getValue(), createNatSecurityGroupResponse.getGroupId());
 			cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
 
 			paramsToUdate.clear();
 			paramsToUdate.put(AppParams.CIDR.getValue(), "203.0.113.0/24");
-			paramsToUdate.put("port", "443");
+			paramsToUdate.put(AppParams.PORT.getValue(), "443");
 			paramsToUdate.put(AppParams.PROTOCOL.getValue(), "tcp");
 			paramsToUdate.put(AppParams.GROUPID.getValue(), createNatSecurityGroupResponse.getGroupId());
 			cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPINGRESS, paramsToUdate);
@@ -298,14 +300,14 @@ public class AWSServiceImpl implements AWSService
 			/* Add OutBound Rules */
 			paramsToUdate.clear();
 			paramsToUdate.put(AppParams.CIDR.getValue(), "0.0.0.0/0");
-			paramsToUdate.put("port", "443");
+			paramsToUdate.put(AppParams.PORT.getValue(), "443");
 			paramsToUdate.put(AppParams.PROTOCOL.getValue(), "tcp");
 			paramsToUdate.put(AppParams.GROUPID.getValue(), createNatSecurityGroupResponse.getGroupId());
 			cliExecutor.performAction(Action.AUTHORIZESECURITYGROUPEGRESS, paramsToUdate);
 
 			paramsToUdate.clear();
 			paramsToUdate.put(AppParams.CIDR.getValue(), "0.0.0.0/0");
-			paramsToUdate.put("port", "443");
+			paramsToUdate.put(AppParams.PORT.getValue(), "443");
 			paramsToUdate.put(AppParams.PROTOCOL.getValue(), "tcp");
 			paramsToUdate.put(AppParams.GROUPID.getValue(), createNatSecurityGroupResponse.getGroupId());
 

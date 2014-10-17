@@ -82,8 +82,7 @@ public class AWSMockController
 	public String createScenario1(@Valid CommonRequestParams params) throws IOException, FluffyCloudException,
 			InterruptedException
 	{
-		System.out.println(params.toString());
-		return aWSService.createScenario1();
+		return aWSService.createScenario1(params);
 	}
 
 	@RequestMapping("/aws/create/scenario2")
@@ -92,11 +91,10 @@ public class AWSMockController
 			InterruptedException
 	{
 
-		System.out.println(params.toString());
-		return aWSService.createScenario1();
+		return aWSService.createScenario1(params);
 	}
 
-	/*Sample Implementation to show configured DB*/
+	/* Sample Implementation to show configured DB */
 	@RequestMapping("/aws/add/command")
 	public String dBSample(@RequestHeader(value = "content-type") String contentType) throws IOException,
 			FluffyCloudException, InterruptedException
