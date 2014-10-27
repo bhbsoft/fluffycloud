@@ -35,6 +35,7 @@ dependencies {
   // end::actuator[]
   compile("org.apache.commons:commons-exec:1.2")
   compile("com.google.code.gson:gson:2.3")
+  compile('org.springframework.data:spring-data-mongodb:1.6.0.RELEASE')
   
   testCompile("junit:junit")
 }
