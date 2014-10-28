@@ -1,0 +1,74 @@
+
+body{
+    margin:0px;
+    padding: 0px;
+    font-size:14px;
+}
+.navbar{
+     border-bottom: 1px solid #DBDBDB;
+}
+.navbar>.container-fluid .navbar-brand.logo{
+    background: #EAEAEA;
+    border: 1px solid #DBDBDB;
+    height: 90px;
+    margin-left: 0px;
+}
+.logo{
+    cursor: pointer;
+}
+.logo h3{
+    font-size: 20px;    
+}
+.navbar ul.main-nav{
+    float: right;
+    margin-top: 10px;
+}
+.navbar ul.main-nav li{
+     border-right: 1px solid #DBDBDB;
+}
+.navbar ul.main-nav li a{
+    padding-top:2px;
+    padding-bottom: 2px;
+}
+.custom_thubnail{
+    border:0px;
+}
+.custom_thubnail h5{
+    margin-top:0px;
+}
+.custom_thubnail .img_block{
+    background: #eaeaea;
+    cursor: pointer;
+}
+.custom_thubnail .dark_green.img_block{
+    background: #51b11d;
+}
+.custom_thubnail .light_green.img_block{
+    background: #74c14a;
+}
+.custom_thubnail .red.img_block{
+    background: #dc0800;
+}
+.footer_cat li{
+    width: 50%;
+    display: inline-block;
+    float: left;
+}
+.social_block a{
+    font-size: 40px;
+    color:#000;
+    margin-top: 7px;
+    margin-right: 7px;
+}
+.social_block a:hover{
+    background-color: transparent;
+    text-decoration: none;
+}
+
+@media (max-width:767px){
+
+.footer_cat li{
+    width: 100%;
+}
+
+}
