@@ -3,6 +3,7 @@ package com.fluffycloud.aws.constants;
 public enum Action
 {
 	DESCRIBEROUTETABLES("describe-route-tables"),
+	DESCRIBEVPCS("describe-vpcs"),
 	ATTACHVOLUME("attach-volume"),
 	MODIFYINSTANCEATTRIBUTE("modify-instance-attribute"),
 	DESCRIBEDHCPOPTIONS("describe-dhcp-options"),

@@ -30,6 +30,7 @@ import com.fluffycloud.aws.response.entity.CreateSubnetResponse;
 import com.fluffycloud.aws.response.entity.CreateVPCResponse;
 import com.fluffycloud.aws.response.entity.DescribeRouteTableResponse;
 import com.fluffycloud.aws.response.entity.DescribeSecurityGroupResponse;
+import com.fluffycloud.aws.response.entity.DescribeVPCsResponse;
 import com.fluffycloud.aws.response.entity.ResponseFlag;
 import com.fluffycloud.aws.response.entity.RouteTable;
 import com.fluffycloud.aws.response.entity.RunInstanceResponse;
@@ -161,23 +162,30 @@ public class AWSServiceImpl implements AWSService
 	@Override
 	public String addCommand() throws FluffyCloudException
 	{
-		for (Action action : Action.values())
+		try
 		{
-			Command command = iAWSCommandRepository.findByAction(action.getAction());
+			for (Action action : Action.values())
+			{
+				Command command = iAWSCommandRepository.findByAction(action.getAction());
 
-			if (null == command)
-			{
-				command = cliExecutor.getDefaultCommand(action);
-				System.out.println(command.getAction());
-				mongoOperations.insert(command);
-				System.out.println(command.getAction() + " command Json Saved.");
+				if (null == command)
+				{
+					command = cliExecutor.getDefaultCommand(action);
+					System.out.println(command.getAction());
+					mongoOperations.insert(command);
+					System.out.println(command.getAction() + " command Json Saved.");
+				}
+				else
+				{
+					System.out.println(command.getAction() + " command json already exists");
+				}
 			}
-			else
-			{
-				System.out.println(command.getAction() + " command json already exists");
-			}
+			return " Added to DB";
 		}
-		return " Added to DB";
+		catch (Exception exception)
+		{
+			throw new FluffyCloudException(exception.getMessage());
+		}
 	}
 
 	@Override
@@ -510,5 +518,25 @@ public class AWSServiceImpl implements AWSService
 		}
 
 		return null;
+	}
+
+	@Override
+	public String describeVPCs(CommonRequestParams params) throws FluffyCloudException
+	{
+		Map<String, String> paramsToUdate = new HashMap<String, String>();
+		Gson gson = new Gson();
+		try
+		{
+			paramsToUdate.clear();
+			String describeVPCsJsonResponse = cliExecutor.performAction(Action.DESCRIBEVPCS, paramsToUdate);
+			DescribeVPCsResponse describeVPCsResponse = gson.fromJson(describeVPCsJsonResponse,
+					DescribeVPCsResponse.class);
+			return gson.toJson(describeVPCsResponse);
+		}
+		catch (Exception exception)
+		{
+			throw new FluffyCloudException(exception.getMessage());
+		}
+
 	}
 }

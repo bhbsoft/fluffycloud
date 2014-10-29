@@ -1,6 +1,5 @@
 package com.fluffycloud.api;
 
-import java.io.IOException;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -78,26 +77,29 @@ public class AWSMockController
 		return mockResponse;
 	}
 
+	@RequestMapping("/aws/ec2/describevpcs")
+	public String describeVPCs(@Valid CommonRequestParams params) throws FluffyCloudException
+	{
+		return aWSService.describeVPCs(params);
+	}
+
 	@RequestMapping("/aws/create/scenario1")
-	public String createScenario1(@Valid CommonRequestParams params) throws IOException, FluffyCloudException,
-			InterruptedException
+	public String createScenario1(@Valid CommonRequestParams params) throws FluffyCloudException, InterruptedException
 	{
 		return aWSService.createScenario1(params);
 	}
 
 	@RequestMapping("/aws/create/scenario2")
 	public String createScenario2(@Valid CommonRequestParams params,
-			@RequestHeader(value = "content-type") String contentType) throws IOException, FluffyCloudException,
+			@RequestHeader(value = "content-type") String contentType) throws FluffyCloudException,
 			InterruptedException
 	{
-
-		return aWSService.createScenario1(params);
+		return aWSService.createScenario2(params);
 	}
 
 	/* Sample Implementation to show configured DB */
 	@RequestMapping("/aws/add/command")
-	public String dBSample(@RequestHeader(value = "content-type") String contentType) throws IOException,
-			FluffyCloudException, InterruptedException
+	public String dBSample(@RequestHeader(value = "content-type") String contentType) throws FluffyCloudException
 	{
 		return aWSService.addCommand();
 	}

@@ -7,7 +7,7 @@ define([ 'angular', 'app' ], function(angular, app) {
 
 		$stateProvider.state('vpcview', {
 			url : '/vpc',
-			templateUrl : 'views/DemoVPC.html'
+			templateUrl : 'views/vpcdetails.html'
 		})
 	})
 });
