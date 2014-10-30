@@ -5,10 +5,14 @@
 <meta charset="utf-8">
 
 <!-- Bootstrap -->
-<link href="styles/bootstrap.min.css" rel="stylesheet" type="text/css" media="screen">
-<link href="styles/font-awesome.min.css" rel="stylesheet" type="text/css" media="screen">
-<link href="styles/master-layout.css" rel="stylesheet" type="text/css" media="screen">
-<script data-main="scripts/main" src="scripts/vendor/requirejs/require.js"></script>
+<link href="styles/bootstrap.min.css" rel="stylesheet" type="text/css"
+	media="screen">
+<link href="styles/font-awesome.min.css" rel="stylesheet"
+	type="text/css" media="screen">
+<link href="styles/master-layout.css" rel="stylesheet" type="text/css"
+	media="screen">
+<script data-main="scripts/main"
+	src="scripts/vendor/requirejs/require.js"></script>
 <title>Fluffy Cloud</title>
 </head>
 
@@ -17,8 +21,10 @@
 		<div class="navbar" role="navigation">
 			<div class="container-fluid">
 				<div class="navbar-header">
-					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
-						<span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span
+					<button type="button" class="navbar-toggle collapsed"
+						data-toggle="collapse" data-target=".navbar-collapse">
+						<span class="sr-only">Toggle navigation</span> <span
+							class="icon-bar"></span> <span class="icon-bar"></span> <span
 							class="icon-bar"></span>
 					</button>
 					<div class="navbar-brand logo">
@@ -78,33 +84,13 @@
 					<br />
 				</aside>
 				<div class="col-md-8 col-xs-12 col-sm-8">
-					<div class="row">
-						<div class="col-sm-6 col-md-4">
+					<div class="row" ng-controller="EC2CTRL">
+						<div class="col-sm-6 col-md-4" ng-repeat="vpc in vpcs">
 							<div class="thumbnail custom_thubnail">
 								<div class="caption">
-									<h5 class="text-center">VPC 1</h5>
+									<h5 class="text-center">VPC {{$index + 1}}</h5>
 								</div>
 								<div class="img_block" ui-sref="vpcview">
-									<img src="img/demo_vpc.jpg" alt="" class="img-responsive">
-								</div>
-							</div>
-						</div>
-						<div class="col-sm-6 col-md-4">
-							<div class="thumbnail custom_thubnail">
-								<div class="caption">
-									<h5 class="text-center">VPC 2</h5>
-								</div>
-								<div class="img_block">
-									<img src="img/demo_vpc.jpg" alt="" class="img-responsive">
-								</div>
-							</div>
-						</div>
-						<div class="col-sm-6 col-md-4">
-							<div class="thumbnail custom_thubnail">
-								<div class="caption">
-									<h5 class="text-center">VPC 3</h5>
-								</div>
-								<div class="img_block">
 									<img src="img/demo_vpc.jpg" alt="" class="img-responsive">
 								</div>
 							</div>
@@ -180,7 +166,8 @@
 					</ul>
 				</div>
 				<div class="col-md-2 col-sm-4 col-xs-12 social_block">
-					<a href="#" class="fa fa-twitter-square"></a> <a href="#" class="fa fa-facebook-square"></a>
+					<a href="#" class="fa fa-twitter-square"></a> <a href="#"
+						class="fa fa-facebook-square"></a>
 				</div>
 
 

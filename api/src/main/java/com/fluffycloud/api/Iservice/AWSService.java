@@ -12,4 +12,6 @@ public interface AWSService
 	public String addCommand() throws FluffyCloudException;
 
 	public String describeVPCs(CommonRequestParams params) throws FluffyCloudException;
+
+	String describeInstances(CommonRequestParams params) throws FluffyCloudException;
 }
