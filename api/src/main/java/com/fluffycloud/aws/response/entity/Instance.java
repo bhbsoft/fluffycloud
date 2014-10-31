@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class Instance
 {
+
 	@SerializedName("KernelId")
 	private String kernelId;
 	@SerializedName("ImageId")
@@ -13,7 +14,11 @@ public class Instance
 	@SerializedName("InstanceType")
 	private String instanceType;
 	@SerializedName("RootDeviceType")
-	private String iootDeviceType;
+	private String rootDeviceType;
+	@SerializedName("VpcId")
+	private String vpcId;
+	@SerializedName("SecurityGroups")
+	private String securityGroups;
 
 	public String getKernelId()
 	{
@@ -55,14 +60,29 @@ public class Instance
 		this.instanceType = instanceType;
 	}
 
-	public String getIootDeviceType()
+	public String getVpcId()
 	{
-		return iootDeviceType;
+		return vpcId;
 	}
 
-	public void setIootDeviceType(String iootDeviceType)
+	public void setVpcId(String vpcId)
 	{
-		this.iootDeviceType = iootDeviceType;
+		this.vpcId = vpcId;
+	}
+
+	public String getSecurityGroups()
+	{
+		return securityGroups;
+	}
+
+	public void setSecurityGroups(String securityGroups)
+	{
+		this.securityGroups = securityGroups;
+	}
+
+	public void setRootDeviceType(String rootDeviceType)
+	{
+		this.rootDeviceType = rootDeviceType;
 	}
 
 }

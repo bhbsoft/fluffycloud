@@ -83,6 +83,13 @@ public class AWSMockController
 		return aWSService.describeVPCs(params);
 	}
 
+	@RequestMapping(value = "/aws/ec2/describeinstances")
+	public String describeInstances(@Valid CommonRequestParams params) throws FluffyCloudException
+	{
+		System.out.println(params.getFilter());
+		return aWSService.describeInstances(params);
+	}
+
 	@RequestMapping("/aws/create/scenario1")
 	public String createScenario1(@Valid CommonRequestParams params) throws FluffyCloudException, InterruptedException
 	{

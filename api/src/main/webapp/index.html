@@ -91,7 +91,8 @@
 									<h5 class="text-center">VPC {{$index + 1}}</h5>
 								</div>
 								<div class="img_block" ui-sref="vpcview">
-									<img src="img/demo_vpc.jpg" alt="" class="img-responsive">
+									<img src="img/demo_vpc.jpg" alt="" class="img-responsive"
+										ng-click="describeInstances(vpc.VpcId)">
 								</div>
 							</div>
 						</div>

@@ -28,6 +28,7 @@ import com.fluffycloud.aws.response.entity.CreateScenario2Response;
 import com.fluffycloud.aws.response.entity.CreateSecurityGroupResponse;
 import com.fluffycloud.aws.response.entity.CreateSubnetResponse;
 import com.fluffycloud.aws.response.entity.CreateVPCResponse;
+import com.fluffycloud.aws.response.entity.DescribeInstancesResponse;
 import com.fluffycloud.aws.response.entity.DescribeRouteTableResponse;
 import com.fluffycloud.aws.response.entity.DescribeSecurityGroupResponse;
 import com.fluffycloud.aws.response.entity.DescribeVPCsResponse;
@@ -36,6 +37,7 @@ import com.fluffycloud.aws.response.entity.RouteTable;
 import com.fluffycloud.aws.response.entity.RunInstanceResponse;
 import com.fluffycloud.exceptions.FluffyCloudException;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 @Component
 public class AWSServiceImpl implements AWSService
@@ -539,7 +541,7 @@ public class AWSServiceImpl implements AWSService
 		}
 
 	}
-	
+
 	@Override
 	public String describeInstances(CommonRequestParams params) throws FluffyCloudException
 	{
@@ -548,10 +550,14 @@ public class AWSServiceImpl implements AWSService
 		try
 		{
 			paramsToUdate.clear();
-			String describeVPCsJsonResponse = cliExecutor.performAction(Action.DESCRIBEINSTANCES, paramsToUdate);
-			DescribeVPCsResponse describeVPCsResponse = gson.fromJson(describeVPCsJsonResponse,
-					DescribeVPCsResponse.class);
-			return gson.toJson(describeVPCsResponse);
+			List<Filter> filter = gson.fromJson(params.getFilter(), new TypeToken<List<Filter>>()
+			{
+			}.getType());
+			String describeVPCsJsonResponse = cliExecutor
+					.performAction(Action.DESCRIBEINSTANCES, paramsToUdate, filter);
+			DescribeInstancesResponse describeInstancesResponse = gson.fromJson(describeVPCsJsonResponse,
+					DescribeInstancesResponse.class);
+			return gson.toJson(describeInstancesResponse);
 		}
 		catch (Exception exception)
 		{

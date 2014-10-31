@@ -17,7 +17,7 @@ define([ 'angular' ], function(angular) {
 				}
 
 				this.describeInstances = function(payLoad) {
-					return $http.get(Constants.baseUrl + '/ec2/describevpcs',
+					return $http.get(Constants.baseUrl + '/ec2/describeinstances',
 							jsonConfig, payLoad);
 				}
 

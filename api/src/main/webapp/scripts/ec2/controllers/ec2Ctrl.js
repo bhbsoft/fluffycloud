@@ -10,9 +10,13 @@ define([], function() {
 					});
 				}
 
-				$scope.describeImages = function(vpcId) {
-					EC2SERVICE.describeVpcs().success(function(data, status) {
-						$scope.vpcs = data.Vpcs;
+				$scope.describeInstances = function(vpcId) {
+					var vpcFilter = [ {
+						name : "vpc-id",
+						values : [ vpcId ]
+					} ];
+					EC2SERVICE.describeInstances(vpcFilter).success(function(data, status) {
+						console.log(data, status);
 					}).error(function(data, status) {
 						console.log(data, status);
 					});

@@ -2,12 +2,23 @@ package com.fluffycloud.aws.entity;
 
 public class CommonRequestParams
 {
-
 	private String accessKey;
 
 	private String accessKeyId;
 
 	private String region;
+
+	private String filter;
+
+	public String getFilter()
+	{
+		return filter;
+	}
+
+	public void setFilter(String filter)
+	{
+		this.filter = filter;
+	}
 
 	public String getAccessKey()
 	{
