@@ -1,18 +1,20 @@
 package com.fluffycloud.aws.response.entity;
 
+import java.util.List;
+
 import com.google.gson.annotations.SerializedName;
 
 public class DescribeInstancesResponse
 {
 	@SerializedName("Reservations")
-	private Reservations reservations;
+	private List<Reservations> reservations;
 
-	public Reservations getReservations()
+	public List<Reservations> getReservations()
 	{
 		return reservations;
 	}
 
-	public void setReservations(Reservations reservations)
+	public void setReservations(List<Reservations> reservations)
 	{
 		this.reservations = reservations;
 	}

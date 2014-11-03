@@ -11,12 +11,16 @@
 	type="text/css" media="screen">
 <link href="styles/master-layout.css" rel="stylesheet" type="text/css"
 	media="screen">
+<link href="styles/loader.css" rel="stylesheet" type="text/css"
+	media="screen">
 <script data-main="scripts/main"
 	src="scripts/vendor/requirejs/require.js"></script>
 <title>Fluffy Cloud</title>
 </head>
 
 <body>
+	<toaster-container
+		toaster-options="{'time-out': 3000, 'close-button':false, 'position-class': 'toast-bottom-left'}"></toaster-container>
 	<header>
 		<div class="navbar" role="navigation">
 			<div class="container-fluid">
@@ -83,20 +87,28 @@
 					</div>
 					<br />
 				</aside>
-				<div class="col-md-8 col-xs-12 col-sm-8">
-					<div class="row" ng-controller="EC2CTRL">
+
+				<div class="col-md-8 col-xs-12 col-sm-8" ng-controller="EC2CTRL">
+					<div class="row">
 						<div class="col-sm-6 col-md-4" ng-repeat="vpc in vpcs">
 							<div class="thumbnail custom_thubnail">
 								<div class="caption">
 									<h5 class="text-center">VPC {{$index + 1}}</h5>
 								</div>
-								<div class="img_block" ui-sref="vpcview">
+								<div class="img_block" ui-sref="vpcview"
+									ng-if="vpc.State =='available'">
+									<img src="img/dark_green.jpg" alt="" class="img-responsive"
+										ng-click="describeInstances(vpc.VpcId)">
+								</div>
+								<div class="img_block" ui-sref="vpcview"
+									ng-if="vpc.State !='available'">
 									<img src="img/demo_vpc.jpg" alt="" class="img-responsive"
 										ng-click="describeInstances(vpc.VpcId)">
 								</div>
 							</div>
 						</div>
 					</div>
+					<div class="loader" ng-show="isVpcsLoading"></div>
 					<div ui-view></div>
 				</div>
 				<aside class="col-md-2 col-xs-12 col-sm-2">

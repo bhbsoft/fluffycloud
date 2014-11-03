@@ -1,7 +1,9 @@
 'use strict';
 
-define([ 'angular', 'uiRouter', 'angularBootstrap', './ec2/module'], function(
-		angular, uiRouter, uibootstrap, ec2) {
+define([ 'angular', 'angularAnimate', 'uiRouter', 'angularBootstrap',
+		'toaster', './ec2/module' ], function(angular, angularAnimate,
+		uiRouter, uibootstrap, toaster, ec2) {
 
-	return angular.module('fluffyCloud', [ 'ui.router', 'ui.bootstrap', 'fluffyCloud.ec2' ]);
+	return angular.module('fluffyCloud', [ 'ui.router', 'ui.bootstrap',
+			'toaster', 'fluffyCloud.ec2', 'ngAnimate' ]);
 });

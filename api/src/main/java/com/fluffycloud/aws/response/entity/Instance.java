@@ -1,5 +1,7 @@
 package com.fluffycloud.aws.response.entity;
 
+import java.util.List;
+
 import com.google.gson.annotations.SerializedName;
 
 public class Instance
@@ -18,7 +20,31 @@ public class Instance
 	@SerializedName("VpcId")
 	private String vpcId;
 	@SerializedName("SecurityGroups")
-	private String securityGroups;
+	private List<SecurityGroup> securityGroups;
+	@SerializedName("State")
+	private State state;
+	@SerializedName("StateReason")
+	private State stateReason;
+
+	public State getState()
+	{
+		return state;
+	}
+
+	public void setState(State state)
+	{
+		this.state = state;
+	}
+
+	public State getStateReason()
+	{
+		return stateReason;
+	}
+
+	public void setStateReason(State stateReason)
+	{
+		this.stateReason = stateReason;
+	}
 
 	public String getKernelId()
 	{
@@ -70,19 +96,24 @@ public class Instance
 		this.vpcId = vpcId;
 	}
 
-	public String getSecurityGroups()
+	public void setRootDeviceType(String rootDeviceType)
+	{
+		this.rootDeviceType = rootDeviceType;
+	}
+
+	public List<SecurityGroup> getSecurityGroups()
 	{
 		return securityGroups;
 	}
 
-	public void setSecurityGroups(String securityGroups)
+	public void setSecurityGroups(List<SecurityGroup> securityGroups)
 	{
 		this.securityGroups = securityGroups;
 	}
 
-	public void setRootDeviceType(String rootDeviceType)
+	public String getRootDeviceType()
 	{
-		this.rootDeviceType = rootDeviceType;
+		return rootDeviceType;
 	}
 
 }
