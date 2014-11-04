@@ -39,9 +39,9 @@ require.config({
 window.name = "NG_DEFER_BOOTSTRAP!";
 
 require([ 'angular', 'angularAnimate', 'app', 'uiRouter', 'angularTouch',
-		'angularBootstrap', 'jquery', 'toaster', 'routes' ], function(angular,
+		'angularBootstrap', 'jquery', 'routes' ], function(angular,
 		angularAnimate, app, uiRouter, angularTouch, angularBootstrap, jquery,
-		toaster, routes) {
+		routes) {
 	var $html = angular.element(document.getElementsByTagName('html')[0]);
 
 	angular.element().ready(function() {

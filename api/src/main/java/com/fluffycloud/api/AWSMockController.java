@@ -11,16 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fluffycloud.api.Iservice.AWSService;
-import com.fluffycloud.aws.cli.utils.PropertyReader;
 import com.fluffycloud.aws.entity.CommonRequestParams;
 import com.fluffycloud.exceptions.FluffyCloudException;
 
 @RestController
 public class AWSMockController
 {
-
-	@Autowired
-	PropertyReader propertyReader;
 
 	@Autowired
 	AWSService aWSService;
@@ -71,8 +67,6 @@ public class AWSMockController
 
 		// Sample response for POC
 		String mockResponse = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<DescribeImagesResponse xmlns=\"http://ec2.amazonaws.com/doc/2013-10-15/\">\n    <requestId>fd0fa9ac-a547-4497-8263-407781bbbe57</requestId>\n    <imagesSet>\n        <item>\n            <imageId>ami-xxxxxx</imageId>\n            <imageLocation>amazon/amzn-ami-pv-2014.03.2.x86_64-ebs</imageLocation>\n            <imageState>available</imageState>\n            <imageOwnerId>137112412989</imageOwnerId>\n            <isPublic>true</isPublic>\n            <architecture>x86_64</architecture>\n            <imageType>machine</imageType>\n            <kernelId>aki-xxxxxxxxx</kernelId>\n            <imageOwnerAlias>amazon</imageOwnerAlias>\n            <name>amzn-ami-xxxx-2014.03.2.x86_64-ebs</name>\n            <description>Amazon Linux AMI x86_64 PV EBS</description>\n            <rootDeviceType>ebs</rootDeviceType>\n            <rootDeviceName>/dev/sda1</rootDeviceName>\n            <blockDeviceMapping>\n                <item>\n                    <deviceName>/dev/sda1</deviceName>\n                    <ebs>\n                        <snapshotId>snap-8347b454</snapshotId>\n                        <volumeSize>8</volumeSize>\n                        <deleteOnTermination>true</deleteOnTermination>\n                        <volumeType>standard</volumeType>\n                    </ebs>\n                </item>\n            </blockDeviceMapping>\n            <virtualizationType>paravirtual</virtualizationType>\n            <hypervisor>xen</hypervisor>\n        </item>\n    </imagesSet>\n</DescribeImagesResponse>";
-
-		System.out.println(propertyReader.getEnv().getProperty("host"));
 
 		return mockResponse;
 	}

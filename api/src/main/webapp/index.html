@@ -13,6 +13,8 @@
 	media="screen">
 <link href="styles/loader.css" rel="stylesheet" type="text/css"
 	media="screen">
+<link href="styles/toaster.css" rel="stylesheet" type="text/css"
+	media="screen">
 <script data-main="scripts/main"
 	src="scripts/vendor/requirejs/require.js"></script>
 <title>Fluffy Cloud</title>
@@ -20,7 +22,7 @@
 
 <body>
 	<toaster-container
-		toaster-options="{'time-out': 3000, 'close-button':false, 'position-class': 'toast-bottom-left'}"></toaster-container>
+		toaster-options="{'time-out': 3000, 'close-button':true, 'position-class': 'toast-bottom-left'}"></toaster-container>
 	<header>
 		<div class="navbar" role="navigation">
 			<div class="container-fluid">
@@ -108,7 +110,17 @@
 							</div>
 						</div>
 					</div>
-					<div class="loader" ng-show="isVpcsLoading"></div>
+					<div class="loading bar" ng-show="isVpcsLoading">
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+					</div>
+
 					<div ui-view></div>
 				</div>
 				<aside class="col-md-2 col-xs-12 col-sm-2">
