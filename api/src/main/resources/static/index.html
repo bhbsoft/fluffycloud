@@ -90,12 +90,12 @@
 					<br />
 				</aside>
 
-				<div class="col-md-8 col-xs-12 col-sm-8" ng-controller="EC2CTRL">
+				<div class="col-md-8 col-xs-12 col-sm-8" ng-controller="EC2CTRL" >
 					<div class="row">
 						<div class="col-sm-6 col-md-4" ng-repeat="vpc in vpcs">
 							<div class="thumbnail custom_thubnail">
 								<div class="caption">
-									<h5 class="text-center">VPC {{$index + 1}}</h5>
+									<h5 class="text-center" ng-cloak>VPC {{$index + 1}}</h5>
 								</div>
 								<div class="img_block" ui-sref="vpcview"
 									ng-if="vpc.State =='available'">
