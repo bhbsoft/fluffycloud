@@ -565,4 +565,28 @@ public class AWSServiceImpl implements AWSService
 		}
 
 	}
+
+	@Override
+	public String describeSecurityGroup(CommonRequestParams params) throws FluffyCloudException
+	{
+		Map<String, String> paramsToUdate = new HashMap<String, String>();
+		Gson gson = new Gson();
+		try
+		{
+			paramsToUdate.clear();
+			List<Filter> filter = gson.fromJson(params.getFilter(), new TypeToken<List<Filter>>()
+			{
+			}.getType());
+			String describeVPCsJsonResponse = cliExecutor
+					.performAction(Action.DESCRIBESECURITYGROUPS, paramsToUdate, filter);
+			DescribeInstancesResponse describeInstancesResponse = gson.fromJson(describeVPCsJsonResponse,
+					DescribeInstancesResponse.class);
+			return gson.toJson(describeInstancesResponse);
+		}
+		catch (Exception exception)
+		{
+			throw new FluffyCloudException(exception.getMessage());
+		}
+
+	}
 }
