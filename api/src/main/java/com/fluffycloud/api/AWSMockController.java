@@ -1,11 +1,13 @@
 package com.fluffycloud.api;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -83,7 +85,7 @@ public class AWSMockController
 		System.out.println(params.getFilter());
 		return aWSService.describeInstances(params);
 	}
-	
+
 	@RequestMapping(value = "/aws/ec2/describesg")
 	public String describeSecurityGroup(@Valid CommonRequestParams params) throws FluffyCloudException
 	{
@@ -105,11 +107,64 @@ public class AWSMockController
 		return aWSService.createScenario2(params);
 	}
 
-	/* Sample Implementation to show configured DB */
+	/*Update local JSON TO DB */
 	@RequestMapping("/aws/add/command")
 	public String dBSample(@RequestHeader(value = "content-type") String contentType) throws FluffyCloudException
 	{
 		return aWSService.addCommand();
+	}
+
+	@RequestMapping("/aws/ec2/startinstances")
+	public String startInstances(@Valid CommonRequestParams params,
+			@ModelAttribute("InstanceIds") ArrayList<String> instanceIds) throws FluffyCloudException
+	{
+		return aWSService.startInstances(params, instanceIds);
+	}
+
+	@RequestMapping("/aws/ec2/stopinstances")
+	public String stopInstances(@Valid CommonRequestParams params,
+			@ModelAttribute("InstanceIds") ArrayList<String> instanceIds) throws FluffyCloudException
+	{
+		return aWSService.stopInstances(params, instanceIds);
+	}
+
+	@ModelAttribute("InstanceIds")
+	public ArrayList<String> getIds(HttpServletRequest request)
+	{
+		Map<String, String[]> requestParams = request.getParameterMap();
+		return parseInstanceIds(requestParams);
+	}
+
+	private ArrayList<String> parseInstanceIds(Map<String, String[]> requestParams)
+	{
+
+		ArrayList<String> instanceIds = new ArrayList<String>();
+		for (String key : requestParams.keySet())
+		{
+			if (key.matches("^InstanceId.([0-9]+)$"))
+			{
+				instanceIds.add(requestParams.get(key)[0]);
+			}
+		}
+		return instanceIds;
+	}
+	
+	@RequestMapping(value = "/aws/ec2/describeroutetables")
+	public String describeRouteTables(@Valid CommonRequestParams params) throws FluffyCloudException
+	{	
+		return aWSService.describeRouteTables(params);
+	}
+	
+	@RequestMapping(value = "/aws/ec2/describesubnets")
+	public String describeSubnets(@Valid CommonRequestParams params) throws FluffyCloudException
+	{	
+		return aWSService.describeSubnets(params);
+	}
+	
+	@RequestMapping(value = "/aws/ec2/describetags")
+	public String describeTags(@Valid CommonRequestParams params) throws FluffyCloudException
+	{	
+		return aWSService.describeTags(params);
 	}
 
 }

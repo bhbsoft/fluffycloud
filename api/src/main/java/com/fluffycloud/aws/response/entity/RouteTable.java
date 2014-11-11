@@ -1,6 +1,6 @@
 package com.fluffycloud.aws.response.entity;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -14,10 +14,10 @@ public class RouteTable
 	private String vpcId;
 
 	@SerializedName("Routes")
-	private ArrayList<Route> routes;
+	private List<Route> routes;
 
 	@SerializedName("Associations")
-	private ArrayList<Association> associations;
+	private List<Association> associations;
 
 	public String getRouteTableId()
 	{
@@ -39,22 +39,22 @@ public class RouteTable
 		this.vpcId = vpcId;
 	}
 
-	public ArrayList<Route> getRoutes()
+	public List<Route> getRoutes()
 	{
 		return routes;
 	}
 
-	public void setRoutes(ArrayList<Route> routes)
+	public void setRoutes(List<Route> routes)
 	{
 		this.routes = routes;
 	}
 
-	public ArrayList<Association> getAssociations()
+	public List<Association> getAssociations()
 	{
 		return associations;
 	}
 
-	public void setAssociations(ArrayList<Association> associations)
+	public void setAssociations(List<Association> associations)
 	{
 		this.associations = associations;
 	}
