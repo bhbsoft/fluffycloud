@@ -4,8 +4,7 @@ define([ 'angular' ], function(angular) {
 
 	return {
 		version : '1.0',
-		// baseUrl: 'http://192.168.201.121:7070/welcomekitstoreweb/services',
-		baseUrl : 'aws',
+		baseUrl : 'aws/ec2',
 		success : 'SUCCESS',
 		failure : 'FAILURE',
 		sucessAlert : 'success',

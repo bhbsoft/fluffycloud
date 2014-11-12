@@ -587,7 +587,6 @@ public class AWSServiceImpl implements AWSService
 		Gson gson = new Gson();
 		try
 		{
-			paramsToUdate.clear();
 			List<Filter> filter = gson.fromJson(params.getFilter(), new TypeToken<List<Filter>>()
 			{
 			}.getType());
@@ -605,7 +604,7 @@ public class AWSServiceImpl implements AWSService
 	}
 
 	@Override
-	public String startInstances(CommonRequestParams params, final ArrayList<String> instanceIds)
+	public String startInstances(CommonRequestParams params, final List<String> instanceIds)
 			throws FluffyCloudException
 	{
 		Map<String, String> paramsToUdate = new HashMap<String, String>();
@@ -625,8 +624,7 @@ public class AWSServiceImpl implements AWSService
 	}
 
 	@Override
-	public String stopInstances(CommonRequestParams params, final ArrayList<String> instanceIds)
-			throws FluffyCloudException
+	public String stopInstances(CommonRequestParams params, final List<String> instanceIds) throws FluffyCloudException
 	{
 		Map<String, String> paramsToUdate = new HashMap<String, String>();
 		Gson gson = new Gson();

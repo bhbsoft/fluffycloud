@@ -1,6 +1,10 @@
 package com.fluffycloud.api;
 
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -73,33 +77,31 @@ public class AWSMockController
 		return mockResponse;
 	}
 
-	@RequestMapping("/aws/ec2/describevpcs")
+	@RequestMapping(value = "/aws/ec2/describevpcs", method = GET)
 	public String describeVPCs(@Valid CommonRequestParams params) throws FluffyCloudException
 	{
 		return aWSService.describeVPCs(params);
 	}
 
-	@RequestMapping(value = "/aws/ec2/describeinstances")
+	@RequestMapping(value = "/aws/ec2/describeinstances", method = GET)
 	public String describeInstances(@Valid CommonRequestParams params) throws FluffyCloudException
 	{
-		System.out.println(params.getFilter());
 		return aWSService.describeInstances(params);
 	}
 
-	@RequestMapping(value = "/aws/ec2/describesg")
+	@RequestMapping(value = "/aws/ec2/describesg", method = GET)
 	public String describeSecurityGroup(@Valid CommonRequestParams params) throws FluffyCloudException
 	{
-		System.out.println(params.getFilter());
 		return aWSService.describeSecurityGroup(params);
 	}
 
-	@RequestMapping("/aws/create/scenario1")
+	@RequestMapping(value = "/aws/create/scenario1", method = POST)
 	public String createScenario1(@Valid CommonRequestParams params) throws FluffyCloudException, InterruptedException
 	{
 		return aWSService.createScenario1(params);
 	}
 
-	@RequestMapping("/aws/create/scenario2")
+	@RequestMapping(value = "/aws/create/scenario2", method = POST)
 	public String createScenario2(@Valid CommonRequestParams params,
 			@RequestHeader(value = "content-type") String contentType) throws FluffyCloudException,
 			InterruptedException
@@ -107,38 +109,37 @@ public class AWSMockController
 		return aWSService.createScenario2(params);
 	}
 
-	/*Update local JSON TO DB */
-	@RequestMapping("/aws/add/command")
+	/* Update local JSON TO DB */
+	@RequestMapping(value = "/aws/add/command", method = POST)
 	public String dBSample(@RequestHeader(value = "content-type") String contentType) throws FluffyCloudException
 	{
 		return aWSService.addCommand();
 	}
 
-	@RequestMapping("/aws/ec2/startinstances")
+	@RequestMapping(value = "/aws/ec2/startinstances", method = GET)
 	public String startInstances(@Valid CommonRequestParams params,
-			@ModelAttribute("InstanceIds") ArrayList<String> instanceIds) throws FluffyCloudException
+			@ModelAttribute("InstanceIds") List<String> instanceIds) throws FluffyCloudException
 	{
 		return aWSService.startInstances(params, instanceIds);
 	}
 
-	@RequestMapping("/aws/ec2/stopinstances")
+	@RequestMapping(value = "/aws/ec2/stopinstances", method = GET)
 	public String stopInstances(@Valid CommonRequestParams params,
-			@ModelAttribute("InstanceIds") ArrayList<String> instanceIds) throws FluffyCloudException
+			@ModelAttribute("InstanceIds") List<String> instanceIds) throws FluffyCloudException
 	{
 		return aWSService.stopInstances(params, instanceIds);
 	}
 
 	@ModelAttribute("InstanceIds")
-	public ArrayList<String> getIds(HttpServletRequest request)
+	public List<String> getIds(HttpServletRequest request)
 	{
 		Map<String, String[]> requestParams = request.getParameterMap();
 		return parseInstanceIds(requestParams);
 	}
 
-	private ArrayList<String> parseInstanceIds(Map<String, String[]> requestParams)
+	private List<String> parseInstanceIds(Map<String, String[]> requestParams)
 	{
-
-		ArrayList<String> instanceIds = new ArrayList<String>();
+		List<String> instanceIds = new ArrayList<String>();
 		for (String key : requestParams.keySet())
 		{
 			if (key.matches("^InstanceId.([0-9]+)$"))
@@ -148,22 +149,22 @@ public class AWSMockController
 		}
 		return instanceIds;
 	}
-	
-	@RequestMapping(value = "/aws/ec2/describeroutetables")
+
+	@RequestMapping(value = "/aws/ec2/describeroutetables", method = GET)
 	public String describeRouteTables(@Valid CommonRequestParams params) throws FluffyCloudException
-	{	
+	{
 		return aWSService.describeRouteTables(params);
 	}
-	
-	@RequestMapping(value = "/aws/ec2/describesubnets")
+
+	@RequestMapping(value = "/aws/ec2/describesubnets", method = GET)
 	public String describeSubnets(@Valid CommonRequestParams params) throws FluffyCloudException
-	{	
+	{
 		return aWSService.describeSubnets(params);
 	}
-	
-	@RequestMapping(value = "/aws/ec2/describetags")
+
+	@RequestMapping(value = "/aws/ec2/describetags", method = GET)
 	public String describeTags(@Valid CommonRequestParams params) throws FluffyCloudException
-	{	
+	{
 		return aWSService.describeTags(params);
 	}
 
