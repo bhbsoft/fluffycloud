@@ -29,19 +29,11 @@ define([ 'angular' ], function(angular) {
 		}
 		
 		this.startInstances = function(payLoad) {
-			return $http.get(Constants.baseUrl + '/startinstances', {
-				params : {
-					filter : JSON.stringify(payLoad.Filter)
-				}
-			});
+			return $http.post(Constants.baseUrl + '/startinstances',JSON.stringify(payLoad), jsonConfig);
 		}
 		
 		this.stopInstances = function(payLoad) {
-			return $http.get(Constants.baseUrl + '/stopinstances', {
-				params : {
-					filter : JSON.stringify(payLoad.Filter)
-				}
-			});
+			return $http.post(Constants.baseUrl + '/stopinstances',JSON.stringify(payLoad), jsonConfig);
 		}
 		
 		this.describeRouteTables = function(payLoad) {

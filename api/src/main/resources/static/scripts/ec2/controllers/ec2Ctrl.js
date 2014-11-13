@@ -40,28 +40,47 @@ define([], function() {
 			});
 		}
 		
-		$scope.describeSecurityGroup = function(vpcId) {
-			$scope.vpcId = vpcId;
-			var vpcFilter = [ {
-				name : "vpc-id",
-				values : [ vpcId ]
-			} ];
-			EC2SERVICE.describeInstances(vpcFilter).success(function(data, status) {
-				$scope.isInstancesLoading = false;
-				console.log(data, status);
-				var reservations = data.Reservations[0];
-				if (!angular.isUndefined(reservations)) {
-					$scope.instances = reservations.Instances;
-				}
-				else {
-					toaster.pop('warning', 'No Instance Found');
-				}
+		
+		$scope.startInstances = function(instanceId) {	
+			var payLoad = {
+					accessKey:"accessKey",
+					instanceIds: [instanceId]
+			}
+			EC2SERVICE.startInstances(payLoad).success(function(data, status) {
+				console.log(data);	
+				
+				angular.forEach($scope.instances, function(value, key){
+					if(angular.equals(value.InstanceId, instanceId))
+					{
+						value.State.Name ='running';
+					}					
+				});
+				toaster.pop('success', 'Instance Started.');
 			}).error(function(data, status) {
-				toaster.pop('error', 'Try Again', 'Error while getting VPCs.');
-				$scope.isInstancesLoading = false;
-				console.log(data, status);
+				toaster.pop('error', 'Try Again', 'Error while starting instance.');				
 			});
 		}
+		
+		$scope.stopInstances = function(instanceId) {	
+			var payLoad = {
+					accessKey:"accessKey",
+					instanceIds: [instanceId]
+			}
+			EC2SERVICE.stopInstances(payLoad).success(function(data, status) {
+				console.log(data);	
+				angular.forEach($scope.instances, function(value, key){
+					if(angular.equals(value.InstanceId, instanceId))
+					{
+						value.State.Name ='stopped';
+					}					
+				});
+				toaster.pop('success', 'Instance Stopped.');
+			}).error(function(data, status) {
+				toaster.pop('error', 'Try Again', 'Error while stopping instance.');
+				
+			});
+		}
+
 
 		var init = function() {
 			$scope.describeVpcs();

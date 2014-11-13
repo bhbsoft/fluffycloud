@@ -12,6 +12,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -116,18 +117,17 @@ public class AWSMockController
 		return aWSService.addCommand();
 	}
 
-	@RequestMapping(value = "/aws/ec2/startinstances", method = GET)
-	public String startInstances(@Valid CommonRequestParams params,
-			@ModelAttribute("InstanceIds") List<String> instanceIds) throws FluffyCloudException
+	@RequestMapping(value = "/aws/ec2/startinstances", method = POST)
+	public String startInstances(@Valid @RequestBody CommonRequestParams params)
+			throws FluffyCloudException
 	{
-		return aWSService.startInstances(params, instanceIds);
+		return aWSService.startInstances(params);
 	}
 
-	@RequestMapping(value = "/aws/ec2/stopinstances", method = GET)
-	public String stopInstances(@Valid CommonRequestParams params,
-			@ModelAttribute("InstanceIds") List<String> instanceIds) throws FluffyCloudException
+	@RequestMapping(value = "/aws/ec2/stopinstances", method = POST)
+	public String stopInstances(@Valid @RequestBody CommonRequestParams params) throws FluffyCloudException
 	{
-		return aWSService.stopInstances(params, instanceIds);
+		return aWSService.stopInstances(params);
 	}
 
 	@ModelAttribute("InstanceIds")

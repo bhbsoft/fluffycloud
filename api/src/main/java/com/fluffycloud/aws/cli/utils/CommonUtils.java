@@ -6,8 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
@@ -45,5 +43,5 @@ public class CommonUtils
 		reader.close();
 		return sbJSONCommand.toString();
 	}
-	
+
 }

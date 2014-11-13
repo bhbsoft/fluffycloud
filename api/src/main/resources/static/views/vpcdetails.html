@@ -20,6 +20,12 @@
 					<div class="caption">
 						<h5 class="text-center">Instance-{{$index + 1}}</h5>
 					</div>
+					<div class="caption">
+						<button class="btn btn-success"
+							ng-click="startInstances(instance.InstanceId)" ng-show="instance.State.Name =='stopped'">Start</button>
+						<button class="btn btn-warning"
+							ng-click="stopInstances(instance.InstanceId)" ng-show="instance.State.Name =='running'">Stop</button>
+					</div>
 				</div>
 				<div class="col-md-8">
 					<div class="caption">

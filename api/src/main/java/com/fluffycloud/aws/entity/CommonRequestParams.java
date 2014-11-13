@@ -1,5 +1,7 @@
 package com.fluffycloud.aws.entity;
 
+import java.util.List;
+
 public class CommonRequestParams
 {
 	private String accessKey;
@@ -9,6 +11,18 @@ public class CommonRequestParams
 	private String region;
 
 	private String filter;
+
+	private List<String> instanceIds;
+
+	public List<String> getInstanceIds()
+	{
+		return instanceIds;
+	}
+
+	public void setInstanceIds(List<String> instanceIds)
+	{
+		this.instanceIds = instanceIds;
+	}
 
 	public String getFilter()
 	{

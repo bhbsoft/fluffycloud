@@ -1,5 +1,7 @@
 package com.fluffycloud.api.service;
 
+import static org.springframework.util.StringUtils.collectionToCommaDelimitedString;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -604,13 +606,14 @@ public class AWSServiceImpl implements AWSService
 	}
 
 	@Override
-	public String startInstances(CommonRequestParams params, final List<String> instanceIds)
-			throws FluffyCloudException
+	public String startInstances(CommonRequestParams params) throws FluffyCloudException
 	{
 		Map<String, String> paramsToUdate = new HashMap<String, String>();
 		Gson gson = new Gson();
 		try
 		{
+			paramsToUdate.put(AppParams.INSTANCEIDS.getValue(),
+					collectionToCommaDelimitedString(params.getInstanceIds()));
 			final String startInstancesJsonResponse = cliExecutor.performAction(Action.STARTINSTANCES, paramsToUdate);
 			StartInstancesResponse startInstancesResponse = gson.fromJson(startInstancesJsonResponse,
 					StartInstancesResponse.class);
@@ -624,12 +627,14 @@ public class AWSServiceImpl implements AWSService
 	}
 
 	@Override
-	public String stopInstances(CommonRequestParams params, final List<String> instanceIds) throws FluffyCloudException
+	public String stopInstances(CommonRequestParams params) throws FluffyCloudException
 	{
 		Map<String, String> paramsToUdate = new HashMap<String, String>();
 		Gson gson = new Gson();
 		try
 		{
+			paramsToUdate.put(AppParams.INSTANCEIDS.getValue(),
+					collectionToCommaDelimitedString(params.getInstanceIds()));
 			final String stopInstancesJsonResponse = cliExecutor.performAction(Action.STOPINSTANCES, paramsToUdate);
 			StopInstancesResponse stopInstancesResponse = gson.fromJson(stopInstancesJsonResponse,
 					StopInstancesResponse.class);
@@ -639,7 +644,6 @@ public class AWSServiceImpl implements AWSService
 		{
 			throw new FluffyCloudException(exception.getMessage());
 		}
-
 	}
 
 	@Override
