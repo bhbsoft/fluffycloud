@@ -2,27 +2,16 @@ define([], function() {
 	'use strict';
 	return [ '$scope', '$rootScope', 'EC2SERVICE', 'toaster', function($scope, $rootScope, EC2SERVICE, toaster) {
 
-		$scope.isInstancesLoading = true;
-		$scope.instances = null;
-
-		$scope.describeVpcs = function() {
-			$scope.isVpcsLoading = true;
-			EC2SERVICE.describeVpcs().success(function(data, status) {
-				$scope.isVpcsLoading = false;
-				$scope.vpcs = data.Vpcs;
-			}).error(function(data, status) {
-				toaster.pop('error', 'Error while getting VPC details');
-				$scope.isVpcsLoading = false;
-				console.log(data, status);
-			});
-		}
-
+		$scope.isInstancesLoading = false;
+		
 		$scope.describeInstances = function(vpcId) {
 			$scope.vpcId = vpcId;
+			$scope.instances=null;
 			var vpcFilter = [ {
 				name : "vpc-id",
 				values : [ vpcId ]
 			} ];
+			$scope.isInstancesLoading = true;
 			EC2SERVICE.describeInstances(vpcFilter).success(function(data, status) {
 				$scope.isInstancesLoading = false;
 				console.log(data, status);
@@ -39,48 +28,18 @@ define([], function() {
 				console.log(data, status);
 			});
 		}
-		
-		
-		$scope.startInstances = function(instanceId) {	
-			var payLoad = {
-					accessKey:"accessKey",
-					instanceIds: [instanceId]
-			}
-			EC2SERVICE.startInstances(payLoad).success(function(data, status) {
-				console.log(data);	
-				
-				angular.forEach($scope.instances, function(value, key){
-					if(angular.equals(value.InstanceId, instanceId))
-					{
-						value.State.Name ='running';
-					}					
-				});
-				toaster.pop('success', 'Instance Started.');
-			}).error(function(data, status) {
-				toaster.pop('error', 'Try Again', 'Error while starting instance.');				
-			});
-		}
-		
-		$scope.stopInstances = function(instanceId) {	
-			var payLoad = {
-					accessKey:"accessKey",
-					instanceIds: [instanceId]
-			}
-			EC2SERVICE.stopInstances(payLoad).success(function(data, status) {
-				console.log(data);	
-				angular.forEach($scope.instances, function(value, key){
-					if(angular.equals(value.InstanceId, instanceId))
-					{
-						value.State.Name ='stopped';
-					}					
-				});
-				toaster.pop('success', 'Instance Stopped.');
-			}).error(function(data, status) {
-				toaster.pop('error', 'Try Again', 'Error while stopping instance.');
-				
-			});
-		}
 
+		$scope.describeVpcs = function() {
+			$scope.isVpcsLoading = true;
+			EC2SERVICE.describeVpcs().success(function(data, status) {
+				$scope.isVpcsLoading = false;
+				$scope.vpcs = data.Vpcs;
+			}).error(function(data, status) {
+				toaster.pop('error', 'Error while getting VPC details');
+				$scope.isVpcsLoading = false;
+				console.log(data, status);
+			});
+		}	
 
 		var init = function() {
 			$scope.describeVpcs();

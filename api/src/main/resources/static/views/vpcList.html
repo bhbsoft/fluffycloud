@@ -1,0 +1,31 @@
+<div class="col-md-8 col-xs-12 col-sm-8">
+	<div class="row">
+		<div class="col-sm-6 col-md-4" ng-repeat="vpc in vpcs">
+			<div class="thumbnail custom_thubnail">
+				<div class="caption">
+					<h5 class="text-center" ng-cloak>VPC {{$index + 1}}</h5>
+				</div>
+				<div class="img_block" ui-sref="home.vpc"
+					ng-if="vpc.State =='available'">
+					<img src="img/dark_green.jpg" alt="" class="img-responsive"
+						ng-click="describeInstances(vpc.VpcId)">
+				</div>
+				<div class="img_block" ui-sref="vpcview"
+					ng-if="vpc.State !='available'">
+					<img src="img/demo_vpc.jpg" alt="" class="img-responsive"
+						ng-click="describeInstances(vpc.VpcId)">
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row" ui-view="instancedetails"></div>
+	<div class="loading bar" ng-show="isVpcsLoading">
+		<div></div>
+		<div></div>
+		<div></div>
+		<div></div>
+		<div></div>
+		<div></div>
+		<div></div>
+		<div></div>
+	</div>
