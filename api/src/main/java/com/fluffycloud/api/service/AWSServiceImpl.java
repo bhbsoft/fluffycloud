@@ -589,6 +589,7 @@ public class AWSServiceImpl implements AWSService
 		Gson gson = new Gson();
 		try
 		{
+			paramsToUdate.put(AppParams.GROUPIDS.getValue(), collectionToCommaDelimitedString(params.getIds()));
 			List<Filter> filter = gson.fromJson(params.getFilter(), new TypeToken<List<Filter>>()
 			{
 			}.getType());
@@ -612,8 +613,7 @@ public class AWSServiceImpl implements AWSService
 		Gson gson = new Gson();
 		try
 		{
-			paramsToUdate.put(AppParams.INSTANCEIDS.getValue(),
-					collectionToCommaDelimitedString(params.getInstanceIds()));
+			paramsToUdate.put(AppParams.INSTANCEIDS.getValue(), collectionToCommaDelimitedString(params.getIds()));
 			final String startInstancesJsonResponse = cliExecutor.performAction(Action.STARTINSTANCES, paramsToUdate);
 			StartInstancesResponse startInstancesResponse = gson.fromJson(startInstancesJsonResponse,
 					StartInstancesResponse.class);
@@ -633,8 +633,7 @@ public class AWSServiceImpl implements AWSService
 		Gson gson = new Gson();
 		try
 		{
-			paramsToUdate.put(AppParams.INSTANCEIDS.getValue(),
-					collectionToCommaDelimitedString(params.getInstanceIds()));
+			paramsToUdate.put(AppParams.INSTANCEIDS.getValue(), collectionToCommaDelimitedString(params.getIds()));
 			final String stopInstancesJsonResponse = cliExecutor.performAction(Action.STOPINSTANCES, paramsToUdate);
 			StopInstancesResponse stopInstancesResponse = gson.fromJson(stopInstancesJsonResponse,
 					StopInstancesResponse.class);

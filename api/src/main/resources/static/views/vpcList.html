@@ -9,8 +9,9 @@
 					ng-if="vpc.State =='available'">
 					<img src="img/dark_green.jpg" alt="" class="img-responsive"
 						ng-click="describeInstances(vpc.VpcId)">
+
 				</div>
-				<div class="img_block" ui-sref="vpcview"
+				<div class="img_block" ui-sref="home.vpc"
 					ng-if="vpc.State !='available'">
 					<img src="img/demo_vpc.jpg" alt="" class="img-responsive"
 						ng-click="describeInstances(vpc.VpcId)">

@@ -15,6 +15,7 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Component;
 
 import com.fluffycloud.aws.constants.Action;
+import com.fluffycloud.aws.constants.AppParams;
 import com.fluffycloud.aws.entity.Command;
 import com.fluffycloud.aws.entity.Filter;
 import com.fluffycloud.aws.entity.Parameters;
@@ -203,7 +204,7 @@ public class CLIExecutor
 					throws IOException, FluffyCloudException
 	{
 		paramsToUdate.clear();
-		paramsToUdate.put("instance-id", runInstanceResponse.getInstances().get(0).getInstanceId());
+		paramsToUdate.put(AppParams.INSTANCEID.getValue(), runInstanceResponse.getInstances().get(0).getInstanceId());
 		String command = performAction(Action.DESCRIBEINSTANCESTATUS, paramsToUdate, null);
 		DescribeInstanceStatusResponse response = gson.fromJson(command, DescribeInstanceStatusResponse.class);
 

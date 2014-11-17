@@ -12,16 +12,16 @@ public class CommonRequestParams
 
 	private String filter;
 
-	private List<String> instanceIds;
+	private List<String> ids;
 
-	public List<String> getInstanceIds()
+	public List<String> getIds()
 	{
-		return instanceIds;
+		return ids;
 	}
 
-	public void setInstanceIds(List<String> instanceIds)
+	public void setIds(List<String> ids)
 	{
-		this.instanceIds = instanceIds;
+		this.ids = ids;
 	}
 
 	public String getFilter()

@@ -32,9 +32,17 @@ define([ 'angular', 'app' ], function(angular, app) {
 			url : '/vpc',
 			views : {
 				'instancedetails@home' : {
-					templateUrl : 'views/vpcdetails.html', controller:'INSTANCECTRL'
+					templateUrl : 'views/vpcdetails.html',
+					controller : 'INSTANCECTRL'
 				}
 			}
-		})
+		}).state('home.vpc.summary', {
+			url : '/sg',
+			views : {
+				'summarysection' : {
+					templateUrl : 'views/sgsummary.html'
+				}
+			}
+		});
 	})
 });

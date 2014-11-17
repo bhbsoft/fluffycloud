@@ -23,6 +23,7 @@ define([ 'angular' ], function(angular) {
 		this.describeSecurityGroup = function(payLoad) {
 			return $http.get(Constants.baseUrl + '/describesg', {
 				params : {
+					ids : payLoad.ids,
 					filter : JSON.stringify(payLoad.Filter)
 				}
 			});

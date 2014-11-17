@@ -22,9 +22,11 @@
 					</div>
 					<div class="caption">
 						<button class="btn btn-success"
-							ng-click="startInstances(instance.InstanceId)" ng-show="instance.State.Name =='stopped'">Start</button>
+							ng-click="startInstances(instance.InstanceId)"
+							ng-show="instance.State.Name =='stopped'">Start</button>
 						<button class="btn btn-warning"
-							ng-click="stopInstances(instance.InstanceId)" ng-show="instance.State.Name =='running'">Stop</button>
+							ng-click="stopInstances(instance.InstanceId)"
+							ng-show="instance.State.Name =='running'">Stop</button>
 					</div>
 				</div>
 				<div class="col-md-8">
@@ -50,16 +52,18 @@
 						</tr>
 						<tr>
 							<td>Security Groups</td>
-							<td ng-repeat="group in instance.SecurityGroups">
-								{{group.GroupId}}</td>
+							<td ng-repeat="group in instance.SecurityGroups"
+								ng-click="describeSG(group.GroupId)">{{group.GroupId}}</td>
 					</table>
-
-				</div>
+					<div class="row">
+				<button class="btn btn-info pull-right" ui-sref="home.vpc.summary">View Summary</button>
 			</div>
-
-
+				</div>
+			</div>			
 		</div>
 	</div>
+	<hr />
+	<div class="row" ui-view="summarysection"></div>
 	<div class="loading bar" ng-show="isInstancesLoading">
 		<div></div>
 		<div></div>
