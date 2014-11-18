@@ -55,14 +55,21 @@ define([], function() {
 							});
 				}
 
-				$scope.describeSG = function(grouId) {
+				$scope.describeSG = function(groups) {
+
 					var payLoad = {
 						accessKey : "accessKey",
-						ids : [ grouId ]
-					}
+						ids : []
+					};
+
+					angular.forEach(groups, function(value, key) {
+						payLoad.ids.push(value.GroupId);
+					});
+
 					EC2SERVICE.describeSecurityGroup(payLoad).success(
 							function(data, status) {
 								console.log(data);
+								$scope.SecurityGroups = data.SecurityGroups;
 								toaster.pop('success', 'Got SG');
 							}).error(function(data, status) {
 						console.log(data);

@@ -1,162 +1,138 @@
 <div class="row">
-	<div class="col-sm-10">
-		<div class="panel panel-default">
-			<div class="panel-body">
-				<div role="tabpanel">
-					<!-- Nav tabs -->
-					<ul class="nav nav-tabs" role="tablist">
-						<li role="presentation" class="active"><a aria-controls="one"
-							role="tab" data-toggle="tab">One</a></li>
-						<li role="presentation"><a aria-controls="two" role="tab"
-							data-toggle="tab">Two</a></li>
-					</ul>
+	<div class="panel-body">
+		<div role="tabpanel">
+			<!-- Nav tabs -->
+			<ul class="nav nav-tabs" role="tablist">
+				<li role="presentation" class="active"><a aria-controls="one"
+					role="tab" data-toggle="tab">Security Group</a></li>
+				<li role="presentation"><a aria-controls="two" role="tab"
+					data-toggle="tab">Route</a></li>
+			</ul>
+			<!-- Tab panes -->
+			<div class="tab-content">
+				<div role="tabpanel" class="tab-pane active" id="one">
+					<div ng-repeat="group in SecurityGroups">
+						<h3>{{group.GroupName}}({{group.GroupId}})</h3>
+						<h5>{{group.Description}}</h5>
+						<ul class="list-unstyled">
+							<li>
+								<div class="row">
+									<div class="col-sm-3 text-right">
+										<h5>VPC</h5>
+									</div>
+									<div class="col-sm-9">
+										<ul class="list-group">
+											<li class="list-group-item list-group-item-success">{{group.VpcId}}</li>
+										</ul>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-3 text-right">
+										<h5>Owner</h5>
+									</div>
+									<div class="col-sm-9">
+										<ul class="list-group">
+											<li class="list-group-item list-group-item-success">{{group.OwnerId}}</li>
+										</ul>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-3 text-right">
+										<h5>IP Permissions</h5>
+									</div>
+									<div class="col-sm-9">
+										<ul class="list-group">
+											<li class="list-group-item list-group-item-success">
+												<table class="table table-hover">
+													<thead>
+														<td>From Port</td>
+														<td>To Port</td>
+														<td>Protocol</td>
+														<td>CIDR</td>
+													</thead>
+													<tbody>
+														<tr ng-repeat="permission in group.IpPermissions">
+															<td>{{permission.FromPort}}</td>
+															<td>{{permission.ToPort}}</td>
+															<td>{{permission.IpProtocol}}</td>
+															<td>{{permission.IpRanges[0].CidrIp}}</td>
+														</tr>
+													</tbody>
+												</table>
+											</li>
+										</ul>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-3 text-right">
+										<h5>IP Permissions Egress</h5>
+									</div>
+									<div class="col-sm-9">
+										<ul class="list-group">
+											<li class="list-group-item list-group-item-success">
+												<table class="table table-hover">
+													<thead>
+														<td>From Port</td>
+														<td>To Port</td>
+														<td>Protocol</td>
+														<td>CIDR</td>
+													</thead>
+													<tbody>
+														<tr ng-repeat="permission in group.IpPermissions">
+															<td>{{permission.FromPort == null ? "ALL":
+																permission.FromPort}}</td>
+															<td>{{permission.ToPort == null ? "ALL":
+																permission.ToPort}}</td>
+															<td>{{permission.IpProtocol == -1 ? "ALL":
+																permission.IpProtocol}}</td>
+															<td>{{permission.IpRanges[0].CidrIp}}</td>
+														</tr>
+													</tbody>
+												</table>
+											</li>
+										</ul>
+									</div>
+								</div>
 
-					<!-- Tab panes -->
-					<div class="tab-content">
-						<div role="tabpanel" class="tab-pane active" id="one">
-							<h3>Security Group</h3>
-							<ul class="list-unstyled">
-								<li>
-									<div class="row">
-										<div class="col-sm-3 text-right">
-											<h5>Four Block</h5>
-										</div>
-										<div class="col-sm-9">
-											<ul class="list-group">
-												<li class="list-group-item list-group-item-success">Dapibus
-													ac facilisis in</li>
-												<li class="list-group-item list-group-item-success">Cras
-													sit amet nibh libero</li>
-												<li class="list-group-item list-group-item-success">Porta
-													ac consectetur ac</li>
-												<li class="list-group-item list-group-item-success">Vestibulum
-													at eros</li>
-											</ul>
-										</div>
-									</div>
-								</li>
-								<li>
-									<div class="row">
-										<div class="col-sm-3 text-right">
-											<h5>Three</h5>
-										</div>
-										<div class="col-sm-9">
-											<ul class="list-group">
-												<li class="list-group-item list-group-item-success">Cras
-													sit amet nibh libero</li>
-												<li class="list-group-item list-group-item-success">Porta
-													ac consectetur ac</li>
-												<li class="list-group-item list-group-item-success">Vestibulum
-													at eros</li>
-											</ul>
-										</div>
-									</div>
-								</li>
-							</ul>
-						</div>
-						<div role="tabpanel" class="tab-pane" id="two">
-							<h3>Heading</h3>
-							<ul class="list-unstyled">
-								<li>
-									<div class="row">
-										<div class="col-sm-3 text-right">
-											<h5>One Block</h5>
-										</div>
-										<div class="col-sm-9">
-											<ul class="list-group">
-												<li class="list-group-item list-group-item-success">Vestibulum
-													at eros</li>
-											</ul>
-										</div>
-									</div>
-								</li>
-								<li>
-									<div class="row">
-										<div class="col-sm-3 text-right">
-											<h5>Two Block</h5>
-										</div>
-										<div class="col-sm-9">
-											<ul class="list-group">
-												<li class="list-group-item list-group-item-success">Porta
-													ac consectetur ac</li>
-												<li class="list-group-item list-group-item-success">Vestibulum
-													at eros</li>
-											</ul>
-										</div>
-									</div>
-								</li>
-							</ul>
-						</div>
+							</li>
+						</ul>
 					</div>
 				</div>
-			</div>
-		</div>
-	</div>
-	<div class="col-sm-2">
-
-		<!-- Small modal -->
-		<button type="button" class="btn btn-primary" data-toggle="modal"
-			data-target=".bs-example-modal-md">Small modal</button>
-		<div class="modal fade bs-example-modal-md" tabindex="-1"
-			role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-			<div class="modal-dialog modal-md">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h3>Heading</h3>
-					</div>
-					<div class="modal-body">
-						<form action="#">
-							<ul class="list-unstyled">
-								<li>
-									<div class="row">
-										<div class="col-sm-3 text-right">
-											<h5>First Name</h5>
-										</div>
-										<div class="col-sm-9">
-											<input type="text" class="form-control">
-										</div>
-									</div>
-								</li>
-								<li>
-									<div class="row">
-										<div class="col-sm-3 text-right">
-											<h5>Last Name</h5>
-										</div>
-										<div class="col-sm-9">
-											<input type="text" class="form-control">
-										</div>
-									</div>
-								</li>
-								<li>
-									<div class="row">
-										<div class="col-sm-3 text-right">
-											<h5>Address</h5>
-										</div>
-										<div class="col-sm-9">
-											<input type="text" class="form-control">
-										</div>
-									</div>
-								</li>
-								<li>
-									<div class="row">
-										<div class="col-sm-3 text-right">
-											<h5>Team Name</h5>
-										</div>
-										<div class="col-sm-9">
-											<input type="text" class="form-control">
-										</div>
-									</div>
-								</li>
-							</ul>
-							<div class="text-right">
-								<button class="btn btn-primary">Submit</button>
-								<button class="btn btn-info">Cancel</button>
+				<div role="tabpanel" class="tab-pane" id="two">
+					<h3>Heading</h3>
+					<ul class="list-unstyled">
+						<li>
+							<div class="row">
+								<div class="col-sm-3 text-right">
+									<h5>One Block</h5>
+								</div>
+								<div class="col-sm-9">
+									<ul class="list-group">
+										<li class="list-group-item list-group-item-success">Vestibulum
+											at eros</li>
+									</ul>
+								</div>
 							</div>
-						</form>
-					</div>
+						</li>
+						<li>
+							<div class="row">
+								<div class="col-sm-3 text-right">
+									<h5>Two Block</h5>
+								</div>
+								<div class="col-sm-9">
+									<ul class="list-group">
+										<li class="list-group-item list-group-item-success">Porta
+											ac consectetur ac</li>
+										<li class="list-group-item list-group-item-success">Vestibulum
+											at eros</li>
+									</ul>
+								</div>
+							</div>
+						</li>
+					</ul>
 				</div>
 			</div>
 		</div>
-
 	</div>
+
 </div>

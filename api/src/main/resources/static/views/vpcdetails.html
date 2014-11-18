@@ -52,14 +52,15 @@
 						</tr>
 						<tr>
 							<td>Security Groups</td>
-							<td ng-repeat="group in instance.SecurityGroups"
-								ng-click="describeSG(group.GroupId)">{{group.GroupId}}</td>
+							<td ng-repeat="group in instance.SecurityGroups">{{group.GroupId}}</td>
 					</table>
 					<div class="row">
-				<button class="btn btn-info pull-right" ui-sref="home.vpc.summary">View Summary</button>
-			</div>
+						<button class="btn btn-info pull-right"
+							ng-click="describeSG(instance.SecurityGroups)" ui-sref="home.vpc.summary">View
+							Summary</button>
+					</div>
 				</div>
-			</div>			
+			</div>
 		</div>
 	</div>
 	<hr />
