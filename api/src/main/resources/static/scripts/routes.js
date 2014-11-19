@@ -37,10 +37,23 @@ define([ 'angular', 'app' ], function(angular, app) {
 				}
 			}
 		}).state('home.vpc.summary', {
-			url : '/sg',
 			views : {
 				'summarysection' : {
-					templateUrl : 'views/sgsummary.html'
+					templateUrl : 'views/summary.html'
+				}
+			}
+		}).state('home.vpc.summary.securitygroup', {
+			url : '/sg',
+			views : {
+				'tabcontent' : {
+					templateUrl : 'views/sgroup.html'
+				}
+			}
+		}).state('home.vpc.summary.routetable', {
+			url : '/rt',
+			views : {
+				'tabcontent' : {
+					templateUrl : 'views/rtable.html'
 				}
 			}
 		});

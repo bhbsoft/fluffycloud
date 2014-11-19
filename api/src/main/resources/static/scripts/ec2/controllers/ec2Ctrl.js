@@ -5,7 +5,7 @@ define([], function() {
 		$scope.isInstancesLoading = false;
 		
 		$scope.describeInstances = function(vpcId) {
-			$scope.vpcId = vpcId;
+			$rootScope.vpcId = vpcId;
 			$scope.instances=null;
 			var vpcFilter = [ {
 				name : "vpc-id",

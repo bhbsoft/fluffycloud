@@ -5,7 +5,32 @@ define([], function() {
 			'$rootScope',
 			'EC2SERVICE',
 			'toaster',
-			function($scope, $rootScope, EC2SERVICE, toaster) {
+			'$state',
+			function($scope, $rootScope, EC2SERVICE, toaster, $state) {
+
+				$scope.tabs = [ {
+					heading : "Security Groups",
+					route : "home.vpc.summary.securitygroup",
+					active : true
+				}, {
+					heading : "Route Tables",
+					route : "home.vpc.summary.routetable",
+					active : false
+				} ];
+
+				$scope.go = function(route) {
+					$state.go(route);
+				}
+
+				$scope.active = function(route) {
+					return $state.is(route);
+				}
+
+				$scope.$on("$stateChangeSuccess", function() {
+					$scope.tabs.forEach(function(tab) {
+						tab.active = $scope.active(tab.route);
+					});
+				})
 
 				$scope.startInstances = function(instanceId) {
 					var payLoad = {
@@ -71,6 +96,26 @@ define([], function() {
 								console.log(data);
 								$scope.SecurityGroups = data.SecurityGroups;
 								toaster.pop('success', 'Got SG');
+							}).error(function(data, status) {
+						console.log(data);
+						toaster.pop('error', 'Try Again');
+
+					});
+				}
+				$scope.describeRouteTables = function() {
+
+					var payLoad = {
+						Filter : [ {
+							name : "vpc-id",
+							values : [ $rootScope.vpcId ]
+						} ]
+					};
+
+					EC2SERVICE.describeRouteTables(payLoad).success(
+							function(data, status) {
+								console.log(data);
+								$scope.RouteTables = data.RouteTables;
+								toaster.pop('success', 'Got Routes');
 							}).error(function(data, status) {
 						console.log(data);
 						toaster.pop('error', 'Try Again');
