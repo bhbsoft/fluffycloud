@@ -56,7 +56,7 @@
 					</table>
 					<div class="row">
 						<button class="btn btn-info pull-right"
-							ng-click="describeSG(instance.SecurityGroups)" ui-sref="home.vpc.summary">View
+							ng-click="setActiveInstance(instance)" ui-sref="home.vpc.summary">View
 							Summary</button>
 					</div>
 				</div>
@@ -65,16 +65,7 @@
 	</div>
 	<hr />
 	<div class="row" ui-view="summarysection"></div>
-	<div class="loading bar" ng-show="isInstancesLoading">
-		<div></div>
-		<div></div>
-		<div></div>
-		<div></div>
-		<div></div>
-		<div></div>
-		<div></div>
-		<div></div>
-	</div>
+	<loader ng-show="isInstancesLoading"></loader>
 	<!-- <div class="col-sm-3 col-md-3">
 		<div class="thumbnail custom_thubnail">
 			<div class="img_block">

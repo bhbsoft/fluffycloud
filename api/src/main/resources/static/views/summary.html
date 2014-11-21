@@ -2,13 +2,12 @@
 	<div class="panel-body">
 		<div role="tabpanel">
 			<!-- Nav tabs -->
-			<tabset>
-			<tab ng-repeat="tab in tabs"  heading="{{tab.heading}}" select="go(tab.route)" active="tab.active"></tab>
-			</tabset>			
+			<tabset> <tab ng-repeat="tab in tabs"
+				heading="{{tab.heading}}" select="go(tab.route)" active="tab.active"></tab>
+			</tabset>
 			<!-- Tab panes -->
 			<div class="tab-content">
-			<div ui-view="tabcontent"></div>				
-				
+				<div ui-view="tabcontent"></div>
 			</div>
 		</div>
 	</div>

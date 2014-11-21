@@ -16,6 +16,10 @@ define([], function() {
 					heading : "Route Tables",
 					route : "home.vpc.summary.routetable",
 					active : false
+				}, {
+					heading : "Subnets",
+					route : "home.vpc.summary.subnet",
+					active : false
 				} ];
 
 				$scope.go = function(route) {
@@ -80,14 +84,22 @@ define([], function() {
 							});
 				}
 
-				$scope.describeSG = function(groups) {
+				$scope.setActiveInstance = function(instance) {
+					$scope.RouteTables = {};
+					$scope.SecurityGroups = {};
+					EC2SERVICE.clearActiveContext();
+					EC2SERVICE.setActiveInstance(instance);
+				}
 
+				$scope.describeSG = function() {
 					var payLoad = {
 						accessKey : "accessKey",
 						ids : []
 					};
+					var instance = EC2SERVICE.getActiveInstance();
 
-					angular.forEach(groups, function(value, key) {
+					angular.forEach(instance.SecurityGroups, function(value,
+							key) {
 						payLoad.ids.push(value.GroupId);
 					});
 
@@ -103,7 +115,6 @@ define([], function() {
 					});
 				}
 				$scope.describeRouteTables = function() {
-
 					var payLoad = {
 						Filter : [ {
 							name : "vpc-id",
@@ -115,7 +126,26 @@ define([], function() {
 							function(data, status) {
 								console.log(data);
 								$scope.RouteTables = data.RouteTables;
-								toaster.pop('success', 'Got Routes');
+							}).error(function(data, status) {
+						console.log(data);
+						toaster.pop('error', 'Try Again');
+
+					});
+				}
+
+				$scope.describeSubnets = function() {
+					var payLoad = {
+						Filter : [ {
+							name : "vpc-id",
+							values : [ $rootScope.vpcId ]
+						} ]
+					};
+
+					EC2SERVICE.describeSubnets(payLoad).success(
+							function(data, status) {
+								console.log(data);
+								$scope.subnets = data.Subnets;
+
 							}).error(function(data, status) {
 						console.log(data);
 						toaster.pop('error', 'Try Again');

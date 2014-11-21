@@ -1,33 +1,59 @@
-<div role="tabpanel" class="tab-pane" id="two">
-	<h3>Heading</h3>
-	<ul class="list-unstyled">
-		<li>
-			<div class="row">
-				<div class="col-sm-3 text-right">
-					<h5>One Block</h5>
+<div role="tabpanel" class="tab-pane" id="two"
+	ng-init="describeRouteTables()">
+	<h3>Route Tables</h3>
+	<div ng-repeat="rtable in RouteTables">
+		<h4>{{rtable.RouteTableId}}</h4>
+		<ul class="list-unstyled">
+			<li>
+				<div class="row">
+					<div class="col-sm-3 text-right">
+						<h5>Routes</h5>
+					</div>
+					<div class="col-sm-9">
+						<ul class="list-group">
+							<li class="list-group-item list-group-item-success"><table
+									class="table table-hover table-responsive">
+									<thead>
+										<td>Gateway</td>
+										<td>State</td>
+										<td>Destination CIDR</td>
+									</thead>
+									<tbody>
+										<tr ng-repeat="route in rtable.Routes">
+											<td>{{route.GatewayId}}</td>
+											<td>{{route.State}}</td>
+											<td>{{route.DestinationCidrBlock}}</td>
+										</tr>
+									</tbody>
+								</table></li>
+						</ul>
+					</div>
 				</div>
-				<div class="col-sm-9">
-					<ul class="list-group">
-						<li class="list-group-item list-group-item-success">Vestibulum
-							at eros</li>
-					</ul>
+			</li>
+			<li ng-if="rtable.Associations.length > 0">
+				<div class="row">
+					<div class="col-sm-3 text-right">
+						<h5>Associations</h5>
+					</div>
+					<div class="col-sm-9">
+						<ul class="list-group">
+							<li class="list-group-item list-group-item-success"><table
+									class="table table-hover  table-responsive">
+									<thead>
+										<td>Main</td>
+										<td>Association Id</td>
+									</thead>
+									<tbody>
+										<tr ng-repeat="association in rtable.Associations">
+											<td>{{association.Main}}</td>
+											<td>{{association.RouteTableAssociationId}}</td>
+										</tr>
+									</tbody>
+								</table></li>
+						</ul>
+					</div>
 				</div>
-			</div>
-		</li>
-		<li>
-			<div class="row">
-				<div class="col-sm-3 text-right">
-					<h5>Two Block</h5>
-				</div>
-				<div class="col-sm-9">
-					<ul class="list-group">
-						<li class="list-group-item list-group-item-success">Porta ac
-							consectetur ac</li>
-						<li class="list-group-item list-group-item-success">Vestibulum
-							at eros</li>
-					</ul>
-				</div>
-			</div>
-		</li>
-	</ul>
+			</li>
+		</ul>
+	</div>
 </div>

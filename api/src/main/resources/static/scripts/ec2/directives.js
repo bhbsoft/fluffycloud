@@ -23,5 +23,14 @@ define([ 'angular' ], function(angular) {
 
 	} ]);
 
+	module.directive('loader', function() {
+		return {
+			restrict : 'AE',
+			replace : 'true',
+			transclude : 'true',
+			templateUrl : 'views/loader.html'
+		};
+	})
+
 	return module;
 });

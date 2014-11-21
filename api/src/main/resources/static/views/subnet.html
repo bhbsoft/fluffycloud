@@ -1,0 +1,70 @@
+<div role="tabpanel" class="tab-pane" id="three"
+	ng-init="describeSubnets()">
+	<h3>Subnets</h3>
+	<div ng-repeat="subnet in subnets">
+		<h4>{{subnet.SubnetId}}</h4>
+		<h5>{{subnet.AvailabilityZone}}</h5>
+		<ul class="list-unstyled">
+			<li ng-if="subnet.CidrBlock != null">
+				<div class="row">
+					<div class="col-sm-3 text-right">
+						<h5>CIDR</h5>
+					</div>
+					<div class="col-sm-9">
+						<ul class="list-group">
+							<li class="list-group-item list-group-item-success">{{subnet.CidrBlock}}</li>
+						</ul>
+					</div>
+				</div>
+			</li>
+			<li ng-if="subnet.AvailableIpAddressCount != null">
+				<div class="row">
+					<div class="col-sm-3 text-right">
+						<h5>IP Count</h5>
+					</div>
+					<div class="col-sm-9">
+						<ul class="list-group">
+							<li class="list-group-item list-group-item-success">{{subnet.AvailableIpAddressCount}}</li>
+						</ul>
+					</div>
+				</div>
+			</li>
+			<li ng-if="subnet.State != null">
+				<div class="row">
+					<div class="col-sm-3 text-right">
+						<h5>State</h5>
+					</div>
+					<div class="col-sm-9">
+						<ul class="list-group">
+							<li class="list-group-item list-group-item-success">{{subnet.State}}</li>
+						</ul>
+					</div>
+				</div>
+			</li>
+			<li ng-if="subnet.MapPublicIpOnLaunch != null">
+				<div class="row">
+					<div class="col-sm-3 text-right">
+						<h5>Map Public Ip On Launch</h5>
+					</div>
+					<div class="col-sm-9">
+						<ul class="list-group">
+							<li class="list-group-item list-group-item-success">{{subnet.MapPublicIpOnLaunch}}</li>
+						</ul>
+					</div>
+				</div>
+			</li>
+			<li ng-if="subnet.DefaultForAz != null">
+				<div class="row">
+					<div class="col-sm-3 text-right">
+						<h5>Dafault For Az</h5>
+					</div>
+					<div class="col-sm-9">
+						<ul class="list-group">
+							<li class="list-group-item list-group-item-success">{{subnet.DefaultForAz}}</li>
+						</ul>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+</div>

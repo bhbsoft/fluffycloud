@@ -1,4 +1,4 @@
-<div role="tabpanel" class="tab-pane" id="one">
+<div role="tabpanel" class="tab-pane" id="one" ng-init="describeSG()">
 	<div ng-repeat="group in SecurityGroups">
 		<h3>{{group.GroupName}}({{group.GroupId}})</h3>
 		<h5>{{group.Description}}</h5>
@@ -31,7 +31,7 @@
 					<div class="col-sm-9">
 						<ul class="list-group">
 							<li class="list-group-item list-group-item-success">
-								<table class="table table-hover">
+								<table class="table table-hover  table-responsive">
 									<thead>
 										<td>From Port</td>
 										<td>To Port</td>
@@ -44,6 +44,9 @@
 											<td>{{permission.ToPort}}</td>
 											<td>{{permission.IpProtocol}}</td>
 											<td>{{permission.IpRanges[0].CidrIp}}</td>
+										</tr>
+										<tr>
+											<button class="btn btn-info pull-right">Add Rule</button>
 										</tr>
 									</tbody>
 								</table>
@@ -58,7 +61,7 @@
 					<div class="col-sm-9">
 						<ul class="list-group">
 							<li class="list-group-item list-group-item-success">
-								<table class="table table-hover">
+								<table class="table table-hover table-responsive">
 									<thead>
 										<td>From Port</td>
 										<td>To Port</td>
@@ -74,6 +77,9 @@
 											<td>{{permission.IpProtocol == -1 ? "ALL":
 												permission.IpProtocol}}</td>
 											<td>{{permission.IpRanges[0].CidrIp}}</td>
+										</tr>
+										<tr>
+											<button class="btn btn-info pull-right">Add Rule</button>
 										</tr>
 									</tbody>
 								</table>

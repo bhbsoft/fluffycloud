@@ -56,6 +56,13 @@ define([ 'angular', 'app' ], function(angular, app) {
 					templateUrl : 'views/rtable.html'
 				}
 			}
+		}).state('home.vpc.summary.subnet', {
+			url : '/subnet',
+			views : {
+				'tabcontent' : {
+					templateUrl : 'views/subnet.html'
+				}
+			}
 		});
 	})
 });
