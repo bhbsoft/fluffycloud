@@ -1,0 +1,1 @@
+{"action":"create-tags","provider":"AWS","command":"ec2","parameters":{"parameterMap":{"tags":"Key\u003dName,Value\u003dTestVPC","resources":"vpc-00da5365"}}}

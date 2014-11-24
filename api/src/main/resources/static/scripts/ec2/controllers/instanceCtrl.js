@@ -92,6 +92,9 @@ define([], function() {
 				}
 
 				$scope.describeSG = function() {
+
+					$scope.isSGLoading = true;
+
 					var payLoad = {
 						accessKey : "accessKey",
 						ids : []
@@ -105,16 +108,19 @@ define([], function() {
 
 					EC2SERVICE.describeSecurityGroup(payLoad).success(
 							function(data, status) {
+								$scope.isSGLoading = false;
 								console.log(data);
 								$scope.SecurityGroups = data.SecurityGroups;
 								toaster.pop('success', 'Got SG');
 							}).error(function(data, status) {
+						$scope.isSGLoading = false;
 						console.log(data);
 						toaster.pop('error', 'Try Again');
 
 					});
 				}
 				$scope.describeRouteTables = function() {
+					$scope.isRTLoading = true;
 					var payLoad = {
 						Filter : [ {
 							name : "vpc-id",
@@ -124,16 +130,20 @@ define([], function() {
 
 					EC2SERVICE.describeRouteTables(payLoad).success(
 							function(data, status) {
+								$scope.isRTLoading = false;
 								console.log(data);
 								$scope.RouteTables = data.RouteTables;
 							}).error(function(data, status) {
+						$scope.isRTLoading = false;
 						console.log(data);
+
 						toaster.pop('error', 'Try Again');
 
 					});
 				}
 
 				$scope.describeSubnets = function() {
+					$scope.isSubnetLoading = true;
 					var payLoad = {
 						Filter : [ {
 							name : "vpc-id",
@@ -143,10 +153,12 @@ define([], function() {
 
 					EC2SERVICE.describeSubnets(payLoad).success(
 							function(data, status) {
+								$scope.isSubnetLoading = false;
 								console.log(data);
 								$scope.subnets = data.Subnets;
 
 							}).error(function(data, status) {
+						$scope.isSubnetLoading = true;
 						console.log(data);
 						toaster.pop('error', 'Try Again');
 

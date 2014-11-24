@@ -1,5 +1,6 @@
 package com.fluffycloud.api.Iservice;
 
+import com.fluffycloud.api.request.entity.CreateVpcRequest;
 import com.fluffycloud.aws.entity.CommonRequestParams;
 import com.fluffycloud.exceptions.FluffyCloudException;
 
@@ -26,4 +27,6 @@ public interface AWSService
 	public String describeSubnets(CommonRequestParams params) throws FluffyCloudException;
 
 	public String describeTags(CommonRequestParams params) throws FluffyCloudException;
+
+	public String createVpc(CommonRequestParams params, CreateVpcRequest createVpcRequest) throws FluffyCloudException;
 }

@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Component;
@@ -30,6 +32,8 @@ import com.google.gson.Gson;
 @Component
 public class CLIExecutor
 {
+	final static Logger logger = LoggerFactory.getLogger(CLIExecutor.class);
+
 	@Autowired
 	ResponseValidator responseValidator;
 
@@ -68,10 +72,13 @@ public class CLIExecutor
 	{
 		/* Get Default Command using JSON present on remote Database. */
 		Command defaultCommand = mongoOperations.findById(action.getAction(), Command.class);
+
 		if (null == defaultCommand)
 		{
+			logger.debug("Default command not found in DB.");
 			throw new CommandNotFoundException("Default Command not found for action: " + action.getAction());
 		}
+		logger.debug("Default command fetched from DB.");
 
 		/*
 		 * ------Get Default Command using JSON files present locally.------
@@ -110,6 +117,7 @@ public class CLIExecutor
 			params.setParameterMap(parameterMap);
 			defaultCommand.setParameters(params);
 		}
+		logger.debug("Default command updated with request parameters.");
 		return processCommand(defaultCommand);
 	}
 
@@ -153,10 +161,10 @@ public class CLIExecutor
 	{
 		String command = commandFromJSon.toString();
 		StringBuilder sb = new StringBuilder();
-		System.out.println(command);
 		String[] cliCommand = new String[]
 		{ "/bin/sh", "-c", command };
-
+		logger.info("Command execution started. " + command.toString());
+		logger.debug("Command execution started. " + command.toString());
 		Process proc = null;
 		try
 		{
@@ -164,6 +172,7 @@ public class CLIExecutor
 		}
 		catch (IOException e)
 		{
+			logger.debug("Error occured while executing command " + e.getMessage());
 			throw new CommandExecutionException(e.getMessage());
 		}
 		try (BufferedReader stdInput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
@@ -179,6 +188,7 @@ public class CLIExecutor
 
 			if (sb.length() > 0)
 			{
+				logger.info("Command executed.");
 				return sb.toString();
 			}
 			else
@@ -189,11 +199,13 @@ public class CLIExecutor
 					sb.append("\n");
 				}
 
+				logger.debug("Action: " + commandFromJSon.getAction() + ". " + sb.toString());
 				throw new CommandExecutionException("Action: " + commandFromJSon.getAction() + ". " + sb.toString());
 			}
 		}
 		catch (Exception e)
 		{
+			logger.debug("Exception occured while executing command: " + e.getMessage());
 			throw new CommandExecutionException(e.getMessage());
 		}
 

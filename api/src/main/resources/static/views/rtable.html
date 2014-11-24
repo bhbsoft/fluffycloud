@@ -1,5 +1,4 @@
-<div role="tabpanel" class="tab-pane" id="two"
-	ng-init="describeRouteTables()">
+<div role="tabpanel" class="tab-pane" ng-init="describeRouteTables()">
 	<h3>Route Tables</h3>
 	<div ng-repeat="rtable in RouteTables">
 		<h4>{{rtable.RouteTableId}}</h4>
@@ -57,3 +56,4 @@
 		</ul>
 	</div>
 </div>
+<loader ng-show="isRTLoading"></loader>

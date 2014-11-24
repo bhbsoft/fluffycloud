@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fluffycloud.api.Iservice.AWSService;
+import com.fluffycloud.api.request.entity.CreateVpcRequest;
 import com.fluffycloud.aws.entity.CommonRequestParams;
 import com.fluffycloud.exceptions.FluffyCloudException;
 
@@ -118,8 +119,7 @@ public class AWSMockController
 	}
 
 	@RequestMapping(value = "/aws/ec2/startinstances", method = POST)
-	public String startInstances(@Valid @RequestBody CommonRequestParams params)
-			throws FluffyCloudException
+	public String startInstances(@Valid @RequestBody CommonRequestParams params) throws FluffyCloudException
 	{
 		return aWSService.startInstances(params);
 	}
@@ -166,6 +166,13 @@ public class AWSMockController
 	public String describeTags(@Valid CommonRequestParams params) throws FluffyCloudException
 	{
 		return aWSService.describeTags(params);
+	}
+
+	@RequestMapping(value = "/aws/ec2/createvpc", method = POST)
+	public String createVpc(@Valid CommonRequestParams params, @Valid CreateVpcRequest createVpcRequest)
+			throws FluffyCloudException
+	{
+		return aWSService.createVpc(params, createVpcRequest);
 	}
 
 }

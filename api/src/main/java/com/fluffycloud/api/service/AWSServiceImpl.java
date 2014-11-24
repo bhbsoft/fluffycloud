@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Component;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Component;
 import com.fluffycloud.api.Iservice.AWSService;
 import com.fluffycloud.api.repository.IAWSCommandRepository;
 import com.fluffycloud.api.repository.IAWSResponseRepository;
+import com.fluffycloud.api.request.entity.CreateVpcRequest;
 import com.fluffycloud.aws.cli.utils.CLIExecutor;
 import com.fluffycloud.aws.constants.Action;
 import com.fluffycloud.aws.constants.AppParams;
@@ -40,6 +43,7 @@ import com.fluffycloud.aws.response.entity.RouteTable;
 import com.fluffycloud.aws.response.entity.RunInstanceResponse;
 import com.fluffycloud.aws.response.entity.StartInstancesResponse;
 import com.fluffycloud.aws.response.entity.StopInstancesResponse;
+import com.fluffycloud.aws.response.entity.VPC;
 import com.fluffycloud.exceptions.FluffyCloudException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -47,6 +51,8 @@ import com.google.gson.reflect.TypeToken;
 @Component
 public class AWSServiceImpl implements AWSService
 {
+	final static Logger logger = LoggerFactory.getLogger(AWSServiceImpl.class);
+
 	@Autowired
 	private CLIExecutor cliExecutor;
 
@@ -513,7 +519,6 @@ public class AWSServiceImpl implements AWSService
 					ResponseFlag.class);
 			createScenario2Response.setAssociateNatInstanceAddressResponse(associateNatInstanceAddressResponse);
 
-			// TODO Generate Scenario 2 JSON response
 			return gson.toJson(createScenario2Response);
 		}
 		catch (Exception exception)
@@ -690,7 +695,6 @@ public class AWSServiceImpl implements AWSService
 		{
 			throw new FluffyCloudException(exception.getMessage());
 		}
-
 	}
 
 	@Override
@@ -698,5 +702,27 @@ public class AWSServiceImpl implements AWSService
 	{
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public String createVpc(CommonRequestParams params, CreateVpcRequest createVpcRequest) throws FluffyCloudException
+	{
+		Map<String, String> paramsToUdate = new HashMap<String, String>();
+		Gson gson = new Gson();
+		try
+		{
+			logger.info("creating vpc");
+			paramsToUdate.clear();
+			final String createVpcJsonResponse = cliExecutor.performAction(Action.CREATEVPC, paramsToUdate);
+			VPC vpc = gson.fromJson(createVpcJsonResponse, VPC.class);
+			logger.info("created vpc");
+			return gson.toJson(vpc);
+		}
+		catch (Exception exception)
+		{
+			logger.debug("Exception occured while creating vpc: " + exception.getMessage());
+			throw new FluffyCloudException(exception.getMessage());
+		}
+
 	}
 }
