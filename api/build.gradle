@@ -23,13 +23,11 @@ repositories {
 }
 
 dependencies {
-  // tag::jetty[]
   compile("org.springframework.boot:spring-boot-starter-web") {
       exclude module: "spring-boot-starter-tomcat"
     }
 
   compile 'org.springframework.boot:spring-boot-starter-jetty'
-  // tag::actuator
   compile 'org.springframework.boot:spring-boot-starter-actuator'
   compile 'org.apache.commons:commons-exec:1.2'
   compile 'com.google.code.gson:gson:2.3'
