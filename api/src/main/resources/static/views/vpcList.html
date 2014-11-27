@@ -19,5 +19,11 @@
 			</div>
 		</div>
 	</div>
+	<div class="row">
+		<button type="button" class="btn btn-success pull-right"
+			ng-click="openCreateVPCForm()">
+			<span class="glyphicon glyphicon-plus"></span> Add VPC
+		</button>
+	</div>
 	<div class="row" ui-view="instancedetails"></div>
 	<loader ng-show="isVpcsLoading"></loader>

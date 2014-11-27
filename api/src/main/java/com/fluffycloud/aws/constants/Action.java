@@ -4,6 +4,7 @@ public enum Action
 {
 	DESCRIBEROUTETABLES("describe-route-tables"),
 	DESCRIBEVPCS("describe-vpcs"),
+	CREATETAGS("create-tags"),
 	DESCRIBESUBNETS("describe-subnets"),
 	ATTACHVOLUME("attach-volume"),
 	MODIFYINSTANCEATTRIBUTE("modify-instance-attribute"),

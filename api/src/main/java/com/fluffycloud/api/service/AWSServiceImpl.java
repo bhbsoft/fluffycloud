@@ -17,6 +17,7 @@ import com.fluffycloud.api.Iservice.AWSService;
 import com.fluffycloud.api.repository.IAWSCommandRepository;
 import com.fluffycloud.api.repository.IAWSResponseRepository;
 import com.fluffycloud.api.request.entity.CreateVpcRequest;
+import com.fluffycloud.api.request.entity.ResourceTags;
 import com.fluffycloud.aws.cli.utils.CLIExecutor;
 import com.fluffycloud.aws.constants.Action;
 import com.fluffycloud.aws.constants.AppParams;
@@ -716,11 +717,47 @@ public class AWSServiceImpl implements AWSService
 			final String createVpcJsonResponse = cliExecutor.performAction(Action.CREATEVPC, paramsToUdate);
 			VPC vpc = gson.fromJson(createVpcJsonResponse, VPC.class);
 			logger.info("created vpc");
+
+			createVpcRequest.setResourceId(vpc.getVpcId());
+			addTags(params, createVpcRequest);
+
 			return gson.toJson(vpc);
 		}
 		catch (Exception exception)
 		{
 			logger.debug("Exception occured while creating vpc: " + exception.getMessage());
+			throw new FluffyCloudException(exception.getMessage());
+		}
+
+	}
+
+	@Override
+	public String addTags(CommonRequestParams params, ResourceTags createTagRequest) throws FluffyCloudException
+	{
+		Map<String, String> paramsToUdate = new HashMap<String, String>();
+		Gson gson = new Gson();
+		try
+		{
+			logger.info("creating tags");
+			paramsToUdate.clear();
+			paramsToUdate.put(AppParams.RESOURCES.getValue(), createTagRequest.getResourceId());
+
+			StringBuilder keyValue = new StringBuilder();
+			Map<String, String> tags = createTagRequest.getTags();
+			for (String tag : tags.keySet())
+			{
+				keyValue.append("Key=" + tag).append(" Value=" + tags.get(tag)).append(" ");
+			}
+
+			paramsToUdate.put(AppParams.TAGS.getValue(), keyValue.toString());
+			final String createTagJsonResponse = cliExecutor.performAction(Action.CREATETAGS, paramsToUdate);
+			ResponseFlag createTagResponse = gson.fromJson(createTagJsonResponse, ResponseFlag.class);
+			logger.info("created tags");
+			return gson.toJson(createTagResponse);
+		}
+		catch (Exception exception)
+		{
+			logger.debug("Exception occured while creating tags: " + exception.getMessage());
 			throw new FluffyCloudException(exception.getMessage());
 		}
 

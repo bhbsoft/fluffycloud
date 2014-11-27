@@ -17,4 +17,19 @@ public class CreateTagCommand extends Command
 		this.tags = tags;
 	}
 
+	@Override
+	public String toString()
+	{
+		StringBuilder command = new StringBuilder(super.toString());
+
+		if (null != this.tags && tags.size() > 0)
+		{
+			command.append("--tags ");
+			for (String tag : tags.keySet())
+			{
+				command.append("Key=" + tag).append(" Value=" + tags.get(tag));
+			}
+		}
+		return command.toString();
+	}
 }

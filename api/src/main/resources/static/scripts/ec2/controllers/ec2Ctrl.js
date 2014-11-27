@@ -7,7 +7,8 @@ define(
 					'$rootScope',
 					'EC2SERVICE',
 					'toaster',
-					function($scope, $rootScope, EC2SERVICE, toaster) {
+					'$modal',
+					function($scope, $rootScope, EC2SERVICE, toaster, $modal) {
 
 						$scope.isInstancesLoading = false;
 
@@ -63,6 +64,15 @@ define(
 												$scope.isVpcsLoading = false;
 												console.log(data, status);
 											});
+						}
+
+						$scope.openCreateVPCForm = function() {
+							var createVPCModal = $modal.open({
+								templateUrl : 'views/createform.html',
+								size : 'lg'
+
+							})
+
 						}
 
 						var init = function() {

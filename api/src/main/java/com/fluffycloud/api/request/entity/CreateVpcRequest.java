@@ -2,7 +2,7 @@ package com.fluffycloud.api.request.entity;
 
 import javax.validation.constraints.NotNull;
 
-public class CreateVpcRequest
+public class CreateVpcRequest extends ResourceTags
 {
 	@NotNull
 	private String cidrBlock;
