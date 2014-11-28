@@ -169,7 +169,7 @@ public class AWSMockController
 	}
 
 	@RequestMapping(value = "/aws/ec2/createvpc", method = POST)
-	public String createVpc(@Valid CommonRequestParams params, @Valid CreateVpcRequest createVpcRequest)
+	public String createVpc(@Valid CommonRequestParams params, @Valid @RequestBody CreateVpcRequest createVpcRequest)
 			throws FluffyCloudException
 	{
 		return aWSService.createVpc(params, createVpcRequest);

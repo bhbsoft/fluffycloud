@@ -27,7 +27,7 @@ public class CreateTagCommand extends Command
 			command.append("--tags ");
 			for (String tag : tags.keySet())
 			{
-				command.append("Key=" + tag).append(" Value=" + tags.get(tag));
+				command.append("Key=" + tag).append(",Value=" + tags.get(tag));
 			}
 		}
 		return command.toString();

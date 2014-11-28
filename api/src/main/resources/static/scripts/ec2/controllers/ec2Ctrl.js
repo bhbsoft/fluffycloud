@@ -8,9 +8,13 @@ define(
 					'EC2SERVICE',
 					'toaster',
 					'$modal',
-					function($scope, $rootScope, EC2SERVICE, toaster, $modal) {
+					'MODALSERVICE',
+
+					function($scope, $rootScope, EC2SERVICE, toaster, $modal,
+							MODALSERVICE) {
 
 						$scope.isInstancesLoading = false;
+						$scope.vpc = {};
 
 						$scope.describeInstances = function(vpcId) {
 							$rootScope.vpcId = vpcId;
@@ -66,13 +70,38 @@ define(
 											});
 						}
 
+						$scope.createVPC = function() {
+							$scope.vpcCreated = false;
+
+							var payLoad = {
+								cidrBlock : $scope.vpc.cidr,
+								instanceTenancy : $scope.vpc.tenancy,
+								tags : {
+									"Name" : $scope.vpc.name
+								}
+							}
+
+							EC2SERVICE.createVPC(payLoad).success(
+									function(data, status) {
+										$scope.vpcCreated = true;
+										// add to VPC list
+										console.log(data);
+										$scope.vpcs.push(data.Vpc);
+										toaster.pop('success', 'Created VPC.');
+										$scope.vpcModal.dismiss('cancel');
+									}).error(
+									function(data, status) {
+										toaster.pop('error',
+												'Error while createing VPC.');
+										$scope.isVpcsLoading = false;
+										console.log(data, status);
+										$scope.vpcModal.dismiss('cancel');
+									});
+						}
+
 						$scope.openCreateVPCForm = function() {
-							var createVPCModal = $modal.open({
-								templateUrl : 'views/createform.html',
-								size : 'lg'
-
-							})
-
+							$scope.vpcModal = MODALSERVICE.showModal(
+									'views/createform.html', $scope, 'lg');
 						}
 
 						var init = function() {

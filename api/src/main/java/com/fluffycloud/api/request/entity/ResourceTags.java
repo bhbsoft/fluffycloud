@@ -6,7 +6,6 @@ import javax.validation.constraints.NotNull;
 
 public class ResourceTags
 {
-	@NotNull
 	private String resourceId;
 
 	@NotNull

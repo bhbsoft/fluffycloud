@@ -58,6 +58,11 @@ define([ 'angular' ], function(angular) {
 							JSON.stringify(payLoad), jsonConfig);
 				}
 
+				this.createVPC = function(payLoad) {
+					return $http.post(Constants.baseUrl + '/createvpc', JSON
+							.stringify(payLoad), jsonConfig);
+				}
+
 				this.describeRouteTables = function(payLoad) {
 					return $http.get(
 							Constants.baseUrl + '/describeroutetables', {

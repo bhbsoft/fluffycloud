@@ -44,7 +44,6 @@ import com.fluffycloud.aws.response.entity.RouteTable;
 import com.fluffycloud.aws.response.entity.RunInstanceResponse;
 import com.fluffycloud.aws.response.entity.StartInstancesResponse;
 import com.fluffycloud.aws.response.entity.StopInstancesResponse;
-import com.fluffycloud.aws.response.entity.VPC;
 import com.fluffycloud.exceptions.FluffyCloudException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -714,14 +713,18 @@ public class AWSServiceImpl implements AWSService
 		{
 			logger.info("creating vpc");
 			paramsToUdate.clear();
+			paramsToUdate.put(AppParams.CIDRBLOCK.getValue(), createVpcRequest.getCidrBlock());
 			final String createVpcJsonResponse = cliExecutor.performAction(Action.CREATEVPC, paramsToUdate);
-			VPC vpc = gson.fromJson(createVpcJsonResponse, VPC.class);
+			CreateVPCResponse createVPCResponse = gson.fromJson(createVpcJsonResponse, CreateVPCResponse.class);
 			logger.info("created vpc");
 
-			createVpcRequest.setResourceId(vpc.getVpcId());
+			if (null != createVPCResponse.getVpc())
+			{
+				createVpcRequest.setResourceId(createVPCResponse.getVpc().getVpcId());
+			}
 			addTags(params, createVpcRequest);
 
-			return gson.toJson(vpc);
+			return gson.toJson(createVPCResponse);
 		}
 		catch (Exception exception)
 		{
@@ -746,7 +749,7 @@ public class AWSServiceImpl implements AWSService
 			Map<String, String> tags = createTagRequest.getTags();
 			for (String tag : tags.keySet())
 			{
-				keyValue.append("Key=" + tag).append(" Value=" + tags.get(tag)).append(" ");
+				keyValue.append("Key=" + tag).append(",Value=" + tags.get(tag)).append(" ");
 			}
 
 			paramsToUdate.put(AppParams.TAGS.getValue(), keyValue.toString());
