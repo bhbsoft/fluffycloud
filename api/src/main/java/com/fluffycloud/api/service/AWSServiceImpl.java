@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import com.fluffycloud.api.Iservice.AWSService;
 import com.fluffycloud.api.repository.IAWSCommandRepository;
 import com.fluffycloud.api.repository.IAWSResponseRepository;
+import com.fluffycloud.api.request.entity.CreateInstanceRequest;
 import com.fluffycloud.api.request.entity.CreateVpcRequest;
 import com.fluffycloud.api.request.entity.ResourceTags;
 import com.fluffycloud.aws.cli.utils.CLIExecutor;
@@ -764,5 +765,13 @@ public class AWSServiceImpl implements AWSService
 			throw new FluffyCloudException(exception.getMessage());
 		}
 
+	}
+
+	@Override
+	public String createVpc(CommonRequestParams params, CreateInstanceRequest createInstanceRequest)
+			throws FluffyCloudException
+	{
+		// TODO API Implementation
+		return null;
 	}
 }

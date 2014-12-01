@@ -1,16 +1,20 @@
 package com.fluffycloud.api.request.entity;
 
-import javax.validation.constraints.NotNull;
-
-public class CreateVpcRequest extends ResourceTags
+public class CreateSubnetRequest
 {
+	private String name;
 	private String vpcId;
-
-	@NotNull
 	private String cidrBlock;
 
-	@NotNull
-	private String instanceTenancy;
+	public String getName()
+	{
+		return name;
+	}
+
+	public void setName(String name)
+	{
+		this.name = name;
+	}
 
 	public String getVpcId()
 	{
@@ -32,13 +36,4 @@ public class CreateVpcRequest extends ResourceTags
 		this.cidrBlock = cidrBlock;
 	}
 
-	public String getInstanceTenancy()
-	{
-		return instanceTenancy;
-	}
-
-	public void setInstanceTenancy(String instanceTenancy)
-	{
-		this.instanceTenancy = instanceTenancy;
-	}
 }

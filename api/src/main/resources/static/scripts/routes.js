@@ -22,7 +22,8 @@ define([ 'angular', 'app' ], function(angular, app) {
 					controller : 'EC2CTRL'
 				},
 				'lefttemplate@home' : {
-					templateUrl : 'views/leftTemplate.html'
+					templateUrl : 'views/leftTemplate.html',
+					controller : 'INSTANCECTRL'
 				},
 				'footer@home' : {
 					templateUrl : 'views/footer.html'
@@ -61,6 +62,13 @@ define([ 'angular', 'app' ], function(angular, app) {
 			views : {
 				'tabcontent' : {
 					templateUrl : 'views/subnet.html'
+				}
+			}
+		}).state('home.instance', {
+			url : '/instance',
+			views : {
+				'maintemplate@home' : {
+					templateUrl : 'views/modals/createInstance.html'
 				}
 			}
 		});

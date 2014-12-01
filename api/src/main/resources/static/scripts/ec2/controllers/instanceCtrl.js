@@ -6,7 +6,9 @@ define([], function() {
 			'EC2SERVICE',
 			'toaster',
 			'$state',
-			function($scope, $rootScope, EC2SERVICE, toaster, $state) {
+			'MODALSERVICE',
+			function($scope, $rootScope, EC2SERVICE, toaster, $state,
+					MODALSERVICE) {
 
 				$scope.tabs = [ {
 					heading : "Security Groups",
@@ -165,5 +167,8 @@ define([], function() {
 					});
 				}
 
+				$scope.openCreateInstanceForm = function() {
+					$state.go('home.instance');
+				}
 			} ]
 });

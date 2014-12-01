@@ -1,5 +1,6 @@
 package com.fluffycloud.api.Iservice;
 
+import com.fluffycloud.api.request.entity.CreateInstanceRequest;
 import com.fluffycloud.api.request.entity.CreateVpcRequest;
 import com.fluffycloud.api.request.entity.ResourceTags;
 import com.fluffycloud.aws.entity.CommonRequestParams;
@@ -32,4 +33,7 @@ public interface AWSService
 	public String createVpc(CommonRequestParams params, CreateVpcRequest createVpcRequest) throws FluffyCloudException;
 
 	public String addTags(CommonRequestParams params, ResourceTags createTagRequest) throws FluffyCloudException;
+
+	public String createVpc(CommonRequestParams params, CreateInstanceRequest createInstanceRequest)
+			throws FluffyCloudException;
 }

@@ -9,7 +9,6 @@ define(
 					'toaster',
 					'$modal',
 					'MODALSERVICE',
-
 					function($scope, $rootScope, EC2SERVICE, toaster, $modal,
 							MODALSERVICE) {
 
@@ -101,7 +100,8 @@ define(
 
 						$scope.openCreateVPCForm = function() {
 							$scope.vpcModal = MODALSERVICE.showModal(
-									'views/createform.html', $scope, 'lg');
+									'views/modals/createVPCform.html', $scope,
+									'lg');
 						}
 
 						var init = function() {
