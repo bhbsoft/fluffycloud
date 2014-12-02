@@ -1,10 +1,24 @@
 package com.fluffycloud.api.request.entity;
 
-public class CreateSubnetRequest
+public class CreateSubnetRequest extends ResourceTags
 {
+	private String subnetId;
+
 	private String name;
+
 	private String vpcId;
+
 	private String cidrBlock;
+
+	public String getSubnetId()
+	{
+		return subnetId;
+	}
+
+	public void setSubnetId(String subnetId)
+	{
+		this.subnetId = subnetId;
+	}
 
 	public String getName()
 	{

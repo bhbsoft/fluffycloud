@@ -17,6 +17,8 @@ import com.fluffycloud.api.Iservice.AWSService;
 import com.fluffycloud.api.repository.IAWSCommandRepository;
 import com.fluffycloud.api.repository.IAWSResponseRepository;
 import com.fluffycloud.api.request.entity.CreateInstanceRequest;
+import com.fluffycloud.api.request.entity.CreateSecurityGroupRequest;
+import com.fluffycloud.api.request.entity.CreateSubnetRequest;
 import com.fluffycloud.api.request.entity.CreateVpcRequest;
 import com.fluffycloud.api.request.entity.ResourceTags;
 import com.fluffycloud.aws.cli.utils.CLIExecutor;
@@ -729,7 +731,7 @@ public class AWSServiceImpl implements AWSService
 		}
 		catch (Exception exception)
 		{
-			logger.debug("Exception occured while creating vpc: " + exception.getMessage());
+			logger.error("Exception occured while creating vpc: " + exception.getMessage());
 			throw new FluffyCloudException(exception.getMessage());
 		}
 
@@ -761,17 +763,117 @@ public class AWSServiceImpl implements AWSService
 		}
 		catch (Exception exception)
 		{
-			logger.debug("Exception occured while creating tags: " + exception.getMessage());
+			logger.error("Exception occured while creating tags: " + exception.getMessage());
 			throw new FluffyCloudException(exception.getMessage());
 		}
 
 	}
 
 	@Override
-	public String createVpc(CommonRequestParams params, CreateInstanceRequest createInstanceRequest)
+	public String createSubnet(CommonRequestParams params, CreateSubnetRequest createSubnetRequest)
 			throws FluffyCloudException
 	{
-		// TODO API Implementation
-		return null;
+		Map<String, String> paramsToUdate = new HashMap<String, String>();
+		Gson gson = new Gson();
+		try
+		{
+			logger.info("Creating Subnet.");
+			paramsToUdate.clear();
+			paramsToUdate.put(AppParams.VPCID.getValue(), createSubnetRequest.getVpcId());
+			paramsToUdate.put(AppParams.CIDRBLOCK.getValue(), createSubnetRequest.getCidrBlock());
+			final String createSubnetResponseJSON = cliExecutor.performAction(Action.CREATESUBNET, paramsToUdate);
+			CreateSubnetResponse createPrivateSubnetResponse = gson.fromJson(createSubnetResponseJSON,
+					CreateSubnetResponse.class);
+			logger.info("Subnet Created.");
+			createSubnetRequest.setResourceId(createPrivateSubnetResponse.getSubnet().getSubnetId());
+			addTags(params, createSubnetRequest);
+			return createSubnetResponseJSON;
+		}
+		catch (Exception exception)
+		{
+			logger.error("Exception occured while creating subnet: " + exception.getMessage());
+			throw new FluffyCloudException(exception.getMessage());
+		}
+
+	}
+
+	@Override
+	public String
+			createSecurityGroup(CommonRequestParams params, CreateSecurityGroupRequest createSecurityGroupRequest)
+					throws FluffyCloudException
+	{
+		Map<String, String> paramsToUdate = new HashMap<String, String>();
+		try
+		{
+			logger.info("Creating security group.");
+			paramsToUdate.put(AppParams.VPCID.getValue(), createSecurityGroupRequest.getVpcId());
+			paramsToUdate.put(AppParams.GROUPNAME.getValue(), createSecurityGroupRequest.getName());
+			final String createSecurityGroupJSON = cliExecutor.performAction(Action.CREATESECURITYGROUP, paramsToUdate);
+			logger.info("Security group Created.");
+			return createSecurityGroupJSON;
+		}
+		catch (Exception exception)
+		{
+			logger.error("Exception occured while creating security group: " + exception.getMessage());
+			throw new FluffyCloudException(exception.getMessage());
+		}
+
+	}
+
+	@Override
+	public String createInstance(CommonRequestParams params, CreateInstanceRequest createInstanceRequest)
+			throws FluffyCloudException
+	{
+		Map<String, String> paramsToUdate = new HashMap<String, String>();
+		Gson gson = new Gson();
+
+		try
+		{
+			logger.info("Creating instance.");
+			CreateVpcRequest createVpcRequest = createInstanceRequest.getCreateVpcRequest();
+			CreateSubnetRequest createSubnetRequest = createInstanceRequest.getCreateSubnetRequest();
+			CreateSecurityGroupRequest createSecurityGroupRequest = createInstanceRequest
+					.getCreateSecurityGroupRequest();
+			if (null == createVpcRequest.getVpcId())
+			{
+				CreateVPCResponse createVPCResponse = gson.fromJson(createVpc(params, createVpcRequest),
+						CreateVPCResponse.class);
+				final String vpcId = createVPCResponse.getVpc().getVpcId();
+				createVpcRequest.setVpcId(vpcId);
+				createSubnetRequest.setVpcId(vpcId);
+				createSecurityGroupRequest.setVpcId(vpcId);
+			}
+
+			if (null == createSubnetRequest.getSubnetId())
+			{
+				CreateSubnetResponse createSubnetResponse = gson.fromJson(
+						createSubnet(params, createInstanceRequest.getCreateSubnetRequest()),
+						CreateSubnetResponse.class);
+				createSubnetRequest.setSubnetId(createSubnetResponse.getSubnet().getSubnetId());
+			}
+
+			if (null == createSecurityGroupRequest.getSecurityGroupId())
+			{
+				CreateSecurityGroupResponse createSecurityGroupResponse = gson.fromJson(
+						createSecurityGroup(params, createSecurityGroupRequest), CreateSecurityGroupResponse.class);
+				createSecurityGroupRequest.setSecurityGroupId(createSecurityGroupResponse.getGroupId());
+			}
+
+			paramsToUdate.put(AppParams.SUBNETID.getValue(), createSubnetRequest.getSubnetId());
+			paramsToUdate.put(AppParams.VPCID.getValue(), createVpcRequest.getVpcId());
+			paramsToUdate.put(AppParams.INSTANCETYPE.getValue(), createInstanceRequest.getInstanceType().getValue());
+			paramsToUdate.put(AppParams.SGIDS.getValue(), createSecurityGroupRequest.getSecurityGroupId());
+			final String runDBserverInstanceResponseJSON = cliExecutor
+					.performAction(Action.RUNINSTANCES, paramsToUdate);
+			RunInstanceResponse runInstanceResponse = gson.fromJson(runDBserverInstanceResponseJSON,
+					RunInstanceResponse.class);
+			logger.info("Instance created.");
+			return gson.toJson(runInstanceResponse);
+		}
+		catch (Exception exception)
+		{
+			logger.error("Exception occured while creating instance: " + exception.getMessage());
+			throw new FluffyCloudException(exception.getMessage());
+		}
 	}
 }

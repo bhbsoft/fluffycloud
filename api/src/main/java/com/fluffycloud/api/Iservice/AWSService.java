@@ -1,6 +1,8 @@
 package com.fluffycloud.api.Iservice;
 
 import com.fluffycloud.api.request.entity.CreateInstanceRequest;
+import com.fluffycloud.api.request.entity.CreateSecurityGroupRequest;
+import com.fluffycloud.api.request.entity.CreateSubnetRequest;
 import com.fluffycloud.api.request.entity.CreateVpcRequest;
 import com.fluffycloud.api.request.entity.ResourceTags;
 import com.fluffycloud.aws.entity.CommonRequestParams;
@@ -34,6 +36,13 @@ public interface AWSService
 
 	public String addTags(CommonRequestParams params, ResourceTags createTagRequest) throws FluffyCloudException;
 
-	public String createVpc(CommonRequestParams params, CreateInstanceRequest createInstanceRequest)
+	public String createInstance(CommonRequestParams params, CreateInstanceRequest createInstanceRequest)
 			throws FluffyCloudException;
+
+	public String createSubnet(CommonRequestParams params, CreateSubnetRequest createSubnetRequest)
+			throws FluffyCloudException;
+
+	public String
+			createSecurityGroup(CommonRequestParams params, CreateSecurityGroupRequest createSecurityGroupRequest)
+					throws FluffyCloudException;
 }

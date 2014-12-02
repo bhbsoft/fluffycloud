@@ -1,12 +1,27 @@
 package com.fluffycloud.api.request.entity;
 
-public class CreateSecurityGroupRequest
+public class CreateSecurityGroupRequest extends ResourceTags
 {
 
 	private String securityGroupId;
+
 	private String name;
+
 	private String description;
+
 	private AddRuleRequest addRuleRequest;
+
+	private String vpcId;
+
+	public String getVpcId()
+	{
+		return vpcId;
+	}
+
+	public void setVpcId(String vpcId)
+	{
+		this.vpcId = vpcId;
+	}
 
 	public String getSecurityGroupId()
 	{

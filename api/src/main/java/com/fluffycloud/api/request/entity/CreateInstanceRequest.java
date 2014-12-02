@@ -1,11 +1,35 @@
 package com.fluffycloud.api.request.entity;
 
-public class CreateInstanceRequest
+import javax.validation.constraints.NotNull;
+
+import com.fluffycloud.aws.constants.InstanceTypes;
+
+public class CreateInstanceRequest extends ResourceTags
 {
+	@NotNull
 	private String name;
+
+	@NotNull
 	private CreateVpcRequest createVpcRequest;
+
+	@NotNull
 	private CreateSubnetRequest createSubnetRequest;
+
+	@NotNull
+	private InstanceTypes instanceType;
+
+	@NotNull
 	private CreateSecurityGroupRequest createSecurityGroupRequest;
+
+	public InstanceTypes getInstanceType()
+	{
+		return instanceType;
+	}
+
+	public void setInstanceType(InstanceTypes instanceType)
+	{
+		this.instanceType = instanceType;
+	}
 
 	public String getName()
 	{
