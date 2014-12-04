@@ -860,6 +860,7 @@ public class AWSServiceImpl implements AWSService
 			}
 
 			paramsToUdate.put(AppParams.SUBNETID.getValue(), createSubnetRequest.getSubnetId());
+			paramsToUdate.put(AppParams.KEYPAIR.getValue(), createInstanceRequest.getKeyPairName());
 			paramsToUdate.put(AppParams.VPCID.getValue(), createVpcRequest.getVpcId());
 			paramsToUdate.put(AppParams.INSTANCETYPE.getValue(), createInstanceRequest.getInstanceType().getValue());
 			paramsToUdate.put(AppParams.SGIDS.getValue(), createSecurityGroupRequest.getSecurityGroupId());

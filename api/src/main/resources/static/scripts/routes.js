@@ -68,7 +68,8 @@ define([ 'angular', 'app' ], function(angular, app) {
 			url : '/instance',
 			views : {
 				'maintemplate@home' : {
-					templateUrl : 'views/modals/createInstance.html'
+					templateUrl : 'views/modals/createInstance.html',
+					controller : 'INSTANCECTRL'
 				}
 			}
 		});

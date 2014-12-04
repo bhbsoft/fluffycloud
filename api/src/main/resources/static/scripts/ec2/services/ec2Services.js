@@ -80,5 +80,10 @@ define([ 'angular' ], function(angular) {
 					});
 				}
 
+				this.createInstance = function(payLoad) {
+					return $http.post(Constants.baseUrl + '/createinstance',
+							JSON.stringify(payLoad), jsonConfig);
+				}
+
 			} ];
 });

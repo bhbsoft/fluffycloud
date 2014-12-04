@@ -170,5 +170,19 @@ define([], function() {
 				$scope.openCreateInstanceForm = function() {
 					$state.go('home.instance');
 				}
+
+				$scope.createInstance = function() {
+					console.log($scope.createInstanceRequest);
+					EC2SERVICE.createInstance($scope.createInstanceRequest)
+							.success(function(data, status) {
+								// TODO clear form and move to homepage
+								toaster.pop('success', 'Instance created');
+
+							}).error(function(data, status) {
+
+								toaster.pop('error', 'Try Again');
+
+							});
+				}
 			} ]
 });

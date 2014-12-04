@@ -1,15 +1,4 @@
 <div class="col-md-8 col-xs-12 col-sm-8">
-	<script>
-		$(document).ready(
-				function() {
-					$('.popover_block').click(
-							function() {
-								$(this).parent().parent().find(
-										".custom_popover").slideToggle();
-							});
-
-				});
-	</script>
 	<h3>Add Instance Form</h3>
 	<div class="container-fluid">
 		<div class="row">
@@ -18,13 +7,33 @@
 					<div class="form-group">
 						<label class="col-sm-2 control-label">Name</label>
 						<div class="col-sm-10 field_block">
-							<input class="form-control">
+							<input class="form-control" ng-model="createInstanceRequest.name"
+								placeholder="Enter Name">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">Instance Type</label>
+						<div class="col-sm-10 field_block">
+							<select class="form-control"
+								ng-model="createInstanceRequest.instanceType">
+								<option ng-value="t1.micro">t1.micro</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">Key Pair</label>
+						<div class="col-sm-10 field_block">
+							<select class="form-control"
+								ng-model="createInstanceRequest.keyPairName">
+								<option ng-value="myKeypair">Key pair</option>
+							</select>
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-sm-2 control-label">VPC</label>
 						<div class="col-sm-10 field_block">
-							<select class="form-control">
+							<select class="form-control" ng-disabled="showVPCForm"
+								ng-model="createInstanceRequest.createVpcRequest.vpcId">
 								<option>1</option>
 								<option>2</option>
 								<option>3</option>
@@ -32,30 +41,29 @@
 								<option>5</option>
 							</select>
 							<div class="btn_block">
-								<button type="button" class="btn btn-primary popover_block">
-									Create New VPC</button>
+								<button type="button" class="btn btn-primary popover_block"
+									ng-click="showVPCForm = !showVPCForm">Create New VPC</button>
 							</div>
-							<div class="custom_popover" style="display: none;">
+							<div class="custom_popover" data-slide-toggle="showVPCForm"
+								data-slide-toggle-duration="250" style="display: none;">
+
 								<div class="form-group">
-									<label class="control-label">Name</label> <input
-										class="form-control">
+									<input class="form-control"
+										ng-model="createInstanceRequest.createVpcRequest.name"
+										placeholder="Enter VPC Name"
+										ng-click="createInstanceRequest.createVpcRequest.vpcId=null">
 								</div>
 								<div class="form-group">
-									<label class="control-label">Select</label> <select
-										class="form-control">
-										<option>1</option>
-										<option>2</option>
-										<option>3</option>
-										<option>4</option>
-										<option>5</option>
+									<input class="form-control"
+										ng-model="createInstanceRequest.createVpcRequest.cidrBlock"
+										placeholder="Enter Cidr">
+								</div>
+								<div class="form-group">
+									<label class="control-label">Tenancy</label> <select
+										ng-model="createInstanceRequest.createVpcRequest.instanceTenancy">
+										<option selected="selected">Default</option>
+										<option>Dedicated</option>
 									</select>
-								</div>
-								<div class="checkbox form-group">
-									<label class="checkbox-inline"> <input type="checkbox">
-										1
-									</label> <label class="checkbox-inline"> <input type="checkbox">
-										2
-									</label>
 								</div>
 							</div>
 						</div>
@@ -63,7 +71,8 @@
 					<div class="form-group">
 						<label class="col-sm-2 control-label">Subnet</label>
 						<div class="col-sm-10 field_block">
-							<select class="form-control">
+							<select class="form-control" ng-disabled="showSubnetForm"
+								ng-model="createInstanceRequest.createSubnetRequest.subnetId">
 								<option>1</option>
 								<option>2</option>
 								<option>3</option>
@@ -71,51 +80,36 @@
 								<option>5</option>
 							</select>
 							<div class="btn_block">
-								<button type="button" class="btn btn-primary popover_block">
-									Create New Subnet</button>
+								<button type="button" class="btn btn-primary popover_block"
+									ng-click="showSubnetForm = !showSubnetForm">Create New
+									Subnet</button>
 							</div>
-							<div class="custom_popover" style="display: none;">
+							<div class="custom_popover" data-slide-toggle="showSubnetForm"
+								data-slide-toggle-duration="250" style="display: none;">
 								<div class="form-group">
-									<label class="control-label">Name</label> <input
-										class="form-control">
+									<input class="form-control"
+										ng-model="createInstanceRequest.createSubnetRequest.name"
+										placeholder="Enter Subnet Name"
+										ng-click="createInstanceRequest.createSubnetRequest.subnetId=null">
 								</div>
 								<div class="form-group">
-									<label class="control-label">Select</label> <select
-										class="form-control">
-										<option>1</option>
-										<option>2</option>
-										<option>3</option>
-										<option>4</option>
-										<option>5</option>
-									</select>
+									<input class="form-control"
+										ng-model="createInstanceRequest.createSubnetRequest.vpcId"
+										placeholder="Enter vpc">
 								</div>
-								<div class="checkbox form-group">
-									<label class="checkbox-inline"> <input type="checkbox">
-										1
-									</label> <label class="checkbox-inline"> <input type="checkbox">
-										2
-									</label>
+								<div class="form-group">
+									<input class="form-control"
+										ng-model="createInstanceRequest.createSubnetRequest.cidrBlock"
+										placeholder="Enter cidr">
 								</div>
 							</div>
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-sm-2 control-label">Auto Assign Public
-							IP</label>
-						<div class="col-sm-10 field_block">
-							<select class="form-control">
-								<option>1</option>
-								<option>2</option>
-								<option>3</option>
-								<option>4</option>
-								<option>5</option>
-							</select>
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-sm-2 control-label">Security Group</label>
 						<div class="col-sm-10 field_block">
-							<select class="form-control">
+							<select class="form-control" ng-disabled="showSGForm"
+								ng-model="createInstanceRequest.createSecurityGroupRequest.securityGroupId">
 								<option>1</option>
 								<option>2</option>
 								<option>3</option>
@@ -123,37 +117,39 @@
 								<option>5</option>
 							</select>
 							<div class="btn_block">
-								<button type="button" class="btn btn-primary popover_block">
-									Create New SG</button>
+								<button type="button" class="btn btn-primary popover_block"
+									ng-click="showSGForm = !showSGForm">Create New
+									Security Group</button>
 							</div>
-							<div class="custom_popover" style="display: none;">
+							<div class="custom_popover" data-slide-toggle="showSGForm"
+								data-slide-toggle-duration="250" style="display: none;">
 								<div class="form-group">
-									<label class="control-label">Name</label> <input
-										class="form-control">
+									<input class="form-control"
+										ng-model="createInstanceRequest.createSecurityGroupRequest.name"
+										placeholder="Enter Name"
+										ng-click="createInstanceRequest.createSecurityGroupRequest.securityGroupId=null">
 								</div>
 								<div class="form-group">
-									<label class="control-label">Select</label> <select
-										class="form-control">
-										<option>1</option>
-										<option>2</option>
-										<option>3</option>
-										<option>4</option>
-										<option>5</option>
-									</select>
+									<input class="form-control"
+										ng-model="createInstanceRequest.createSecurityGroupRequest.vpcId"
+										placeholder="Select vpc">
 								</div>
-								<div class="checkbox form-group">
-									<label class="checkbox-inline"> <input type="checkbox">
-										1
-									</label> <label class="checkbox-inline"> <input type="checkbox">
-										2
-									</label>
+								<div class="form-group">
+									<input class="form-control"
+										ng-model="createInstanceRequest.createSecurityGroupRequest.cidrBlock"
+										placeholder="Enter cidr block">
+								</div>
+								<div class="form-group">
+									<input class="form-control"
+										ng-model="createInstanceRequest.createSecurityGroupRequest.description"
+										placeholder="Enter description">
 								</div>
 							</div>
 						</div>
 					</div>
 					<div class="form-group">
 						<div class="col-sm-offset-2 col-sm-10">
-							<button type="submit" class="btn btn-default">Submit</button>
+							<button ng-click="createInstance()" class="btn btn-default">Submit</button>
 						</div>
 					</div>
 				</form>
