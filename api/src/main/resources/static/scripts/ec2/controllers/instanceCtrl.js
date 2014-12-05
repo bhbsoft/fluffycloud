@@ -10,6 +10,19 @@ define([], function() {
 			function($scope, $rootScope, EC2SERVICE, toaster, $state,
 					MODALSERVICE) {
 
+				$scope.createInstanceRequest = {
+					createVpcRequest : {
+						tags : {}
+					},
+					createSubnetRequest : {
+						"tags" : {}
+					},
+					createSecurityGroupRequest : {
+						tags : {}
+					},
+					tags : {}
+				}
+
 				$scope.tabs = [ {
 					heading : "Security Groups",
 					route : "home.vpc.summary.securitygroup",
@@ -144,12 +157,14 @@ define([], function() {
 					});
 				}
 
-				$scope.describeSubnets = function() {
+				$scope.describeSubnets = function(selectedVpc) {
 					$scope.isSubnetLoading = true;
+					var vpcId = (selectedVpc == null ? $rootScope.vpcId
+							: selectedVpc.VpcId);
 					var payLoad = {
 						Filter : [ {
 							name : "vpc-id",
-							values : [ $rootScope.vpcId ]
+							values : [ vpcId ]
 						} ]
 					};
 
@@ -184,5 +199,22 @@ define([], function() {
 
 							});
 				}
+
+				$scope.getVPCList = function() {
+					EC2SERVICE.describeVpcs().success(function(data, status) {
+						$scope.vpcs = data.Vpcs;
+					}).error(
+							function(data, status) {
+								toaster.pop('error',
+										'Error while getting VPC details');
+
+							});
+				}
+
+				var init = function() {
+					$scope.getVPCList();
+				}
+
+				init();
 			} ]
 });
