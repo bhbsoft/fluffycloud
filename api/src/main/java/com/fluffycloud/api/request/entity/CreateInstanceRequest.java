@@ -7,9 +7,6 @@ import com.fluffycloud.aws.constants.InstanceTypes;
 public class CreateInstanceRequest extends ResourceTags
 {
 	@NotNull
-	private String name;
-
-	@NotNull
 	private CreateVpcRequest createVpcRequest;
 
 	@NotNull
@@ -42,16 +39,6 @@ public class CreateInstanceRequest extends ResourceTags
 	public void setInstanceType(InstanceTypes instanceType)
 	{
 		this.instanceType = instanceType;
-	}
-
-	public String getName()
-	{
-		return name;
-	}
-
-	public void setName(String name)
-	{
-		this.name = name;
 	}
 
 	public CreateVpcRequest getCreateVpcRequest()

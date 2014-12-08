@@ -205,7 +205,7 @@ public class CLIExecutor
 		}
 		catch (Exception e)
 		{
-			logger.debug("Exception occured while executing command: " + e.getMessage());
+			logger.error("Exception occured while executing command: " + e.getMessage());
 			throw new CommandExecutionException(e.getMessage());
 		}
 
@@ -216,6 +216,7 @@ public class CLIExecutor
 					throws IOException, FluffyCloudException
 	{
 		paramsToUdate.clear();
+		logger.info("Checking instance state.");
 		paramsToUdate.put(AppParams.INSTANCEID.getValue(), runInstanceResponse.getInstances().get(0).getInstanceId());
 		String command = performAction(Action.DESCRIBEINSTANCESTATUS, paramsToUdate, null);
 		DescribeInstanceStatusResponse response = gson.fromJson(command, DescribeInstanceStatusResponse.class);
@@ -223,12 +224,12 @@ public class CLIExecutor
 		if (response.getInstanceStatuses().size() > 0
 				&& response.getInstanceStatuses().get(0).getInstanceState().getName().equalsIgnoreCase("running"))
 		{
-			System.out.println(response.getInstanceStatuses().get(0).getInstanceState().getName());
+			logger.info("Valid Instance state: " + response.getInstanceStatuses().get(0).getInstanceState().getName());
 			return;
 		}
 		else
 		{
-			System.out.println("Invalid Instance state");
+			logger.info("Invalid Instance state");
 			checkInstanceState(paramsToUdate, gson, runInstanceResponse);
 		}
 	}

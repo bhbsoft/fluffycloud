@@ -23,7 +23,6 @@ define([ 'angular', 'app' ], function(angular, app) {
 				},
 				'lefttemplate@home' : {
 					templateUrl : 'views/leftTemplate.html',
-					controller : 'INSTANCECTRL'
 				},
 				'footer@home' : {
 					templateUrl : 'views/footer.html'

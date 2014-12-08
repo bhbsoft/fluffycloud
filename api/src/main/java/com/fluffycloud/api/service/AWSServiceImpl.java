@@ -42,6 +42,7 @@ import com.fluffycloud.aws.response.entity.DescribeRouteTableResponse;
 import com.fluffycloud.aws.response.entity.DescribeSecurityGroupResponse;
 import com.fluffycloud.aws.response.entity.DescribeSubnetsResponse;
 import com.fluffycloud.aws.response.entity.DescribeVPCsResponse;
+import com.fluffycloud.aws.response.entity.Instance;
 import com.fluffycloud.aws.response.entity.ResponseFlag;
 import com.fluffycloud.aws.response.entity.RouteTable;
 import com.fluffycloud.aws.response.entity.RunInstanceResponse;
@@ -597,6 +598,7 @@ public class AWSServiceImpl implements AWSService
 		Gson gson = new Gson();
 		try
 		{
+			logger.info("fetching security groups");
 			paramsToUdate.put(AppParams.GROUPIDS.getValue(), collectionToCommaDelimitedString(params.getIds()));
 			List<Filter> filter = gson.fromJson(params.getFilter(), new TypeToken<List<Filter>>()
 			{
@@ -605,10 +607,12 @@ public class AWSServiceImpl implements AWSService
 					paramsToUdate, filter);
 			DescribeSecurityGroupResponse describeSecurityGroupResponse = gson.fromJson(describeSGJsonResponse,
 					DescribeSecurityGroupResponse.class);
+			logger.info("Security groups fetched.");
 			return gson.toJson(describeSecurityGroupResponse);
 		}
 		catch (Exception exception)
 		{
+			logger.error("Error while fetching security groups.");
 			throw new FluffyCloudException(exception.getMessage());
 		}
 
@@ -861,14 +865,20 @@ public class AWSServiceImpl implements AWSService
 
 			paramsToUdate.put(AppParams.SUBNETID.getValue(), createSubnetRequest.getSubnetId());
 			paramsToUdate.put(AppParams.KEYPAIR.getValue(), createInstanceRequest.getKeyPairName());
-			paramsToUdate.put(AppParams.VPCID.getValue(), createVpcRequest.getVpcId());
+
 			paramsToUdate.put(AppParams.INSTANCETYPE.getValue(), createInstanceRequest.getInstanceType().getValue());
 			paramsToUdate.put(AppParams.SGIDS.getValue(), createSecurityGroupRequest.getSecurityGroupId());
-			final String runDBserverInstanceResponseJSON = cliExecutor
-					.performAction(Action.RUNINSTANCES, paramsToUdate);
-			RunInstanceResponse runInstanceResponse = gson.fromJson(runDBserverInstanceResponseJSON,
-					RunInstanceResponse.class);
+			final String runInstanceResponseJSON = cliExecutor.performAction(Action.RUNINSTANCES, paramsToUdate);
+			RunInstanceResponse runInstanceResponse = gson.fromJson(runInstanceResponseJSON, RunInstanceResponse.class);
 			logger.info("Instance created.");
+
+			List<Instance> instances = runInstanceResponse.getInstances();
+			if (null != instances && instances.size() == 1)
+			{
+				cliExecutor.checkInstanceState(paramsToUdate, gson, runInstanceResponse);
+				createInstanceRequest.setResourceId(instances.get(0).getInstanceId());
+				addTags(params, createInstanceRequest);
+			}
 			return gson.toJson(runInstanceResponse);
 		}
 		catch (Exception exception)
