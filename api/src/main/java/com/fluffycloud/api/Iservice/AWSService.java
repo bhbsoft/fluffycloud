@@ -4,6 +4,7 @@ import com.fluffycloud.api.request.entity.CreateInstanceRequest;
 import com.fluffycloud.api.request.entity.CreateSecurityGroupRequest;
 import com.fluffycloud.api.request.entity.CreateSubnetRequest;
 import com.fluffycloud.api.request.entity.CreateVpcRequest;
+import com.fluffycloud.api.request.entity.DescribeInstanceStatusRequest;
 import com.fluffycloud.api.request.entity.ResourceTags;
 import com.fluffycloud.aws.entity.CommonRequestParams;
 import com.fluffycloud.exceptions.FluffyCloudException;
@@ -45,4 +46,7 @@ public interface AWSService
 	public String
 			createSecurityGroup(CommonRequestParams params, CreateSecurityGroupRequest createSecurityGroupRequest)
 					throws FluffyCloudException;
+
+	public String describeInstanceStatus(CommonRequestParams params,
+			DescribeInstanceStatusRequest describeInstanceStatusRequest) throws FluffyCloudException;
 }

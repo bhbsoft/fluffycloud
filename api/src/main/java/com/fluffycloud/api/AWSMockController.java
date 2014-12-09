@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fluffycloud.api.Iservice.AWSService;
 import com.fluffycloud.api.request.entity.CreateInstanceRequest;
 import com.fluffycloud.api.request.entity.CreateVpcRequest;
+import com.fluffycloud.api.request.entity.DescribeInstanceStatusRequest;
 import com.fluffycloud.aws.entity.CommonRequestParams;
 import com.fluffycloud.exceptions.FluffyCloudException;
 
@@ -181,6 +182,13 @@ public class AWSMockController
 			@Valid @RequestBody CreateInstanceRequest createInstanceRequest) throws FluffyCloudException
 	{
 		return aWSService.createInstance(params, createInstanceRequest);
+	}
+
+	@RequestMapping(value = "/aws/ec2/describeinstancestatus", method = GET)
+	public String describeInstanceStatus(@Valid CommonRequestParams params,
+			@Valid DescribeInstanceStatusRequest describeInstanceStatusRequest) throws FluffyCloudException
+	{
+		return aWSService.describeInstanceStatus(params, describeInstanceStatusRequest);
 	}
 
 }

@@ -20,6 +20,7 @@ import com.fluffycloud.api.request.entity.CreateInstanceRequest;
 import com.fluffycloud.api.request.entity.CreateSecurityGroupRequest;
 import com.fluffycloud.api.request.entity.CreateSubnetRequest;
 import com.fluffycloud.api.request.entity.CreateVpcRequest;
+import com.fluffycloud.api.request.entity.DescribeInstanceStatusRequest;
 import com.fluffycloud.api.request.entity.ResourceTags;
 import com.fluffycloud.aws.cli.utils.CLIExecutor;
 import com.fluffycloud.aws.constants.Action;
@@ -130,7 +131,8 @@ public class AWSServiceImpl implements AWSService
 			createScenario1Response.setRunInstanceResponse(runInstanceResponse);
 
 			/* 8. Check instance state before proceeding */
-			cliExecutor.checkInstanceState(paramsToUdate, gson, runInstanceResponse);
+			cliExecutor.checkInstanceState(paramsToUdate, gson, runInstanceResponse.getInstances().get(0)
+					.getInstanceId());
 
 			/* 9. Create Internet Gateway */
 			paramsToUdate.clear();
@@ -429,7 +431,8 @@ public class AWSServiceImpl implements AWSService
 			createScenario2Response.setRunWebserverInstanceResponse(runWebserverInstanceResponse);
 
 			/* Check instance state before proceeding */
-			cliExecutor.checkInstanceState(paramsToUdate, gson, runWebserverInstanceResponse);
+			cliExecutor.checkInstanceState(paramsToUdate, gson, runWebserverInstanceResponse.getInstances().get(0)
+					.getInstanceId());
 
 			/*--Launch NAT server instance in public subnet--*/
 			paramsToUdate.clear();
@@ -443,7 +446,8 @@ public class AWSServiceImpl implements AWSService
 			createScenario2Response.setRunNatserverInstanceResponse(runNatserverInstanceResponse);
 
 			/* Check instance state before proceeding */
-			cliExecutor.checkInstanceState(paramsToUdate, gson, runNatserverInstanceResponse);
+			cliExecutor.checkInstanceState(paramsToUdate, gson, runNatserverInstanceResponse.getInstances().get(0)
+					.getInstanceId());
 
 			/*--Launch DB server instance in private subnet--*/
 			paramsToUdate.clear();
@@ -457,7 +461,8 @@ public class AWSServiceImpl implements AWSService
 			createScenario2Response.setRunDBserverInstanceResponse(runDBserverInstanceResponse);
 
 			/* Check instance state before proceeding */
-			cliExecutor.checkInstanceState(paramsToUdate, gson, runDBserverInstanceResponse);
+			cliExecutor.checkInstanceState(paramsToUdate, gson, runDBserverInstanceResponse.getInstances().get(0)
+					.getInstanceId());
 
 			/* 8. Add Rule to Main Route Table */
 			/*--Get Main Route Table--*/
@@ -629,6 +634,7 @@ public class AWSServiceImpl implements AWSService
 			final String startInstancesJsonResponse = cliExecutor.performAction(Action.STARTINSTANCES, paramsToUdate);
 			StartInstancesResponse startInstancesResponse = gson.fromJson(startInstancesJsonResponse,
 					StartInstancesResponse.class);
+			cliExecutor.checkInstanceState(paramsToUdate, gson, collectionToCommaDelimitedString(params.getIds()));
 			return gson.toJson(startInstancesResponse);
 		}
 		catch (Exception exception)
@@ -649,6 +655,7 @@ public class AWSServiceImpl implements AWSService
 			final String stopInstancesJsonResponse = cliExecutor.performAction(Action.STOPINSTANCES, paramsToUdate);
 			StopInstancesResponse stopInstancesResponse = gson.fromJson(stopInstancesJsonResponse,
 					StopInstancesResponse.class);
+			cliExecutor.checkInstanceState(paramsToUdate, gson, collectionToCommaDelimitedString(params.getIds()));
 			return gson.toJson(stopInstancesResponse);
 		}
 		catch (Exception exception)
@@ -875,7 +882,7 @@ public class AWSServiceImpl implements AWSService
 			List<Instance> instances = runInstanceResponse.getInstances();
 			if (null != instances && instances.size() == 1)
 			{
-				cliExecutor.checkInstanceState(paramsToUdate, gson, runInstanceResponse);
+				cliExecutor.checkInstanceState(paramsToUdate, gson, instances.get(0).getInstanceId());
 				createInstanceRequest.setResourceId(instances.get(0).getInstanceId());
 				addTags(params, createInstanceRequest);
 			}
@@ -886,5 +893,19 @@ public class AWSServiceImpl implements AWSService
 			logger.error("Exception occured while creating instance: " + exception.getMessage());
 			throw new FluffyCloudException(exception.getMessage());
 		}
+	}
+
+	@Override
+	public String describeInstanceStatus(CommonRequestParams params,
+			DescribeInstanceStatusRequest describeInstanceStatusRequest) throws FluffyCloudException
+	{
+		Map<String, String> paramsToUdate = new HashMap<String, String>();
+		Gson gson = new Gson();
+
+		paramsToUdate.clear();
+		logger.info("Checking instance state.");
+		paramsToUdate.put(AppParams.INSTANCEID.getValue(), describeInstanceStatusRequest.getInstanceId());
+		return cliExecutor.getInstanceState(paramsToUdate, gson, describeInstanceStatusRequest.getInstanceId());
+
 	}
 }

@@ -18,11 +18,11 @@ import org.springframework.stereotype.Component;
 
 import com.fluffycloud.aws.constants.Action;
 import com.fluffycloud.aws.constants.AppParams;
+import com.fluffycloud.aws.constants.InstanceState;
 import com.fluffycloud.aws.entity.Command;
 import com.fluffycloud.aws.entity.Filter;
 import com.fluffycloud.aws.entity.Parameters;
-import com.fluffycloud.aws.response.entity.DescribeInstanceStatusResponse;
-import com.fluffycloud.aws.response.entity.RunInstanceResponse;
+import com.fluffycloud.aws.response.entity.DescribeInstancesResponse;
 import com.fluffycloud.exceptions.CommandExecutionException;
 import com.fluffycloud.exceptions.CommandNotFoundException;
 import com.fluffycloud.exceptions.DefaultJsonNotFoundException;
@@ -50,7 +50,7 @@ public class CLIExecutor
 	 * @throws FluffyCloudException
 	 */
 	public String performAction(Action action, Map<String, String> paramsToUdate, List<Filter> filters)
-			throws IOException, FluffyCloudException
+			throws FluffyCloudException
 	{
 		Command defaultCommand = getDefaultCommand(action);
 		defaultCommand.setFilters(filters);
@@ -211,26 +211,34 @@ public class CLIExecutor
 
 	}
 
-	public void
-			checkInstanceState(Map<String, String> paramsToUdate, Gson gson, RunInstanceResponse runInstanceResponse)
-					throws IOException, FluffyCloudException
+	public void checkInstanceState(final Map<String, String> paramsToUdate, final Gson gson, final String instanceId)
+			throws IOException, FluffyCloudException
+	{
+		final String state = getInstanceState(paramsToUdate, gson, instanceId);
+		if (InstanceState.isValidState(state))
+		{
+			if (InstanceState.isRunning(state) || InstanceState.isStopped(state))
+			{
+				logger.info("Valid Instance state: " + state);
+				return;
+			}
+			else
+			{
+				logger.info("Instance not running. Instance state: " + state);
+				checkInstanceState(paramsToUdate, gson, instanceId);
+			}
+		}
+
+	}
+
+	public String getInstanceState(final Map<String, String> paramsToUdate, final Gson gson, final String instanceId)
+			throws FluffyCloudException
 	{
 		paramsToUdate.clear();
-		logger.info("Checking instance state.");
-		paramsToUdate.put(AppParams.INSTANCEID.getValue(), runInstanceResponse.getInstances().get(0).getInstanceId());
-		String command = performAction(Action.DESCRIBEINSTANCESTATUS, paramsToUdate, null);
-		DescribeInstanceStatusResponse response = gson.fromJson(command, DescribeInstanceStatusResponse.class);
-
-		if (response.getInstanceStatuses().size() > 0
-				&& response.getInstanceStatuses().get(0).getInstanceState().getName().equalsIgnoreCase("running"))
-		{
-			logger.info("Valid Instance state: " + response.getInstanceStatuses().get(0).getInstanceState().getName());
-			return;
-		}
-		else
-		{
-			logger.info("Invalid Instance state");
-			checkInstanceState(paramsToUdate, gson, runInstanceResponse);
-		}
+		paramsToUdate.put(AppParams.INSTANCEID.getValue(), instanceId);
+		String describeInstanceCommand = performAction(Action.DESCRIBEINSTANCES, paramsToUdate, null);
+		DescribeInstancesResponse describeInstanceResponse = gson.fromJson(describeInstanceCommand,
+				DescribeInstancesResponse.class);
+		return describeInstanceResponse.getReservations().get(0).getInstances().get(0).getState().getName();
 	}
 }
