@@ -1,7 +1,7 @@
 define([], function() {
 	'use strict';
-	return [ '$scope', '$rootScope', 'EC2SERVICE', 'toaster', '$state', 'MODALSERVICE', '$interval',
-			function($scope, $rootScope, EC2SERVICE, toaster, $state, MODALSERVICE, $interval) {
+	return [ '$scope', '$rootScope', 'EC2SERVICE', 'toaster', '$state', 'MODALSERVICE',
+			function($scope, $rootScope, EC2SERVICE, toaster, $state, MODALSERVICE) {
 
 				$scope.createInstanceRequest = {
 					createVpcRequest : {
@@ -83,6 +83,7 @@ define([], function() {
 					$scope.SecurityGroups = {};
 					EC2SERVICE.clearActiveContext();
 					EC2SERVICE.setActiveInstance(instance);
+					$scope.describeSG();
 					$state.go('home.vpc.summary.securitygroup');
 				}
 
