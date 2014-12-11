@@ -191,4 +191,10 @@ public class AWSMockController
 		return aWSService.describeInstanceStatus(params, describeInstanceStatusRequest);
 	}
 
+	@RequestMapping(value = "/aws/ec2/describekeypairs", method = GET)
+	public String describeKeyPairs(@Valid CommonRequestParams params) throws FluffyCloudException
+	{
+		return aWSService.describeKeyPairs(params);
+	}
+
 }

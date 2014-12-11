@@ -75,5 +75,9 @@ define([ 'angular' ], function(angular) {
 			return $http.post(Constants.baseUrl + '/createinstance', JSON.stringify(payLoad), jsonConfig);
 		}
 
+		this.describeKeyPairs = function() {
+			return $http.get(Constants.baseUrl + '/describekeypairs', jsonConfig);
+		}
+
 	} ];
 });

@@ -179,13 +179,12 @@ define([], function() {
 							values : [ vpcId ]
 						} ]
 					};
-
 					EC2SERVICE.describeSecurityGroup(payLoad).success(function(data, status) {
 						console.log(data);
 						$scope.vpcSGs = data.SecurityGroups;
 					}).error(function(data, status) {
 						console.log(data);
-						toaster.pop('error', 'Try Again');
+						toaster.pop('error', 'Error while geting security group.', ' Please reload.');
 					});
 				}
 
@@ -194,8 +193,18 @@ define([], function() {
 					$scope.getSGsForVPC(vpcId);
 				}
 
+				$scope.describeKeyPair = function() {
+					EC2SERVICE.describeKeyPairs().success(function(data, status) {
+						console.log(data);
+						$scope.keyPairs = data.KeyPairs;
+					}).error(function(data, status) {
+						toaster.pop('error', 'Error while getting key pairs.', ' Please reload.');
+					});
+				}
+
 				var init = function() {
 					$scope.getVPCList();
+					$scope.describeKeyPair();
 				}
 
 				init();

@@ -49,4 +49,6 @@ public interface AWSService
 
 	public String describeInstanceStatus(CommonRequestParams params,
 			DescribeInstanceStatusRequest describeInstanceStatusRequest) throws FluffyCloudException;
+
+	public String describeKeyPairs(CommonRequestParams params) throws FluffyCloudException;
 }

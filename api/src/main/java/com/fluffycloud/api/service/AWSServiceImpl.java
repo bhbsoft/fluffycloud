@@ -39,6 +39,7 @@ import com.fluffycloud.aws.response.entity.CreateSecurityGroupResponse;
 import com.fluffycloud.aws.response.entity.CreateSubnetResponse;
 import com.fluffycloud.aws.response.entity.CreateVPCResponse;
 import com.fluffycloud.aws.response.entity.DescribeInstancesResponse;
+import com.fluffycloud.aws.response.entity.DescribeKeyPairsResponse;
 import com.fluffycloud.aws.response.entity.DescribeRouteTableResponse;
 import com.fluffycloud.aws.response.entity.DescribeSecurityGroupResponse;
 import com.fluffycloud.aws.response.entity.DescribeSubnetsResponse;
@@ -908,4 +909,27 @@ public class AWSServiceImpl implements AWSService
 		return cliExecutor.getInstanceState(paramsToUdate, gson, describeInstanceStatusRequest.getInstanceId());
 
 	}
+
+	@Override
+	public String describeKeyPairs(CommonRequestParams params) throws FluffyCloudException
+	{
+		Map<String, String> paramsToUdate = new HashMap<String, String>();
+		Gson gson = new Gson();
+		try
+		{
+			logger.info("Fetching key pairs.");
+			paramsToUdate.clear();
+			final String describeVPCsJsonResponse = cliExecutor.performAction(Action.DESCRIBEKEYPAIRS, paramsToUdate);
+			DescribeKeyPairsResponse describeKeyPairsResponse = gson.fromJson(describeVPCsJsonResponse,
+					DescribeKeyPairsResponse.class);
+			logger.info("Fetched key pairs.");
+			return gson.toJson(describeKeyPairsResponse);
+		}
+		catch (Exception exception)
+		{
+			throw new FluffyCloudException(exception.getMessage());
+		}
+
+	}
+
 }
