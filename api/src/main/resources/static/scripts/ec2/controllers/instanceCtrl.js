@@ -144,7 +144,7 @@ define([], function() {
 						$scope.subnets = data.Subnets;
 
 					}).error(function(data, status) {
-						$scope.isSubnetLoading = true;
+						$scope.isSubnetLoading = false;
 						console.log(data);
 						toaster.pop('error', 'Try Again');
 
@@ -152,7 +152,6 @@ define([], function() {
 				}
 
 				$scope.createInstance = function() {
-					console.log($scope.createInstanceRequest);
 					EC2SERVICE.createInstance($scope.createInstanceRequest).success(function(data, status) {
 						// TODO clear form and move to homepage
 						toaster.pop('success', 'Instance created');
@@ -165,14 +164,18 @@ define([], function() {
 				}
 
 				$scope.getVPCList = function() {
+					$scope.isVPCLoading = true;
 					EC2SERVICE.describeVpcs().success(function(data, status) {
+						$scope.isVPCLoading = false;
 						$scope.vpcs = data.Vpcs;
 					}).error(function(data, status) {
+						$scope.isVPCLoading = false;
 						toaster.pop('error', 'Error while getting VPC details');
 					});
 				}
 
 				$scope.getSGsForVPC = function(vpcId) {
+					$scope.isSGLoading = true;
 					var payLoad = {
 						Filter : [ {
 							name : "vpc-id",
@@ -180,10 +183,10 @@ define([], function() {
 						} ]
 					};
 					EC2SERVICE.describeSecurityGroup(payLoad).success(function(data, status) {
-						console.log(data);
+						$scope.isSGLoading = false;
 						$scope.vpcSGs = data.SecurityGroups;
 					}).error(function(data, status) {
-						console.log(data);
+						$Scope.isSGLoading = false;
 						toaster.pop('error', 'Error while geting security group.', ' Please reload.');
 					});
 				}
@@ -194,10 +197,13 @@ define([], function() {
 				}
 
 				$scope.describeKeyPair = function() {
+					$scope.isKeyPairLoading = true;
 					EC2SERVICE.describeKeyPairs().success(function(data, status) {
 						console.log(data);
+						$scope.isKeyPairLoading = false;
 						$scope.keyPairs = data.KeyPairs;
 					}).error(function(data, status) {
+						$scope.isKeyPairLoading = false;
 						toaster.pop('error', 'Error while getting key pairs.', ' Please reload.');
 					});
 				}

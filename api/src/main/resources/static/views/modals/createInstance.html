@@ -24,7 +24,7 @@
 					</div>
 					<div class="form-group">
 						<label class="col-sm-2 control-label">Key Pair</label>
-						<div class="col-sm-10 field_block">
+						<div class="col-sm-10 field_block" ng-loading="isKeyPairLoading">
 							<select class="form-control"
 								ng-model="createInstanceRequest.keyPairName"
 								ng-options="keyPair.KeyName as keyPair.KeyName for keyPair in keyPairs">
@@ -34,12 +34,12 @@
 					</div>
 					<div class="form-group">
 						<label class="col-sm-2 control-label">VPC</label>
-						<div class="col-sm-10 field_block">
+						<div class="col-sm-10 field_block" ng-loading="isVPCLoading">
 							<select class="form-control" ng-disabled="showVPCForm"
 								ng-model="createInstanceRequest.createVpcRequest.vpcId"
 								ng-options="vpc.VpcId as vpc.VpcId for vpc in vpcs"
 								ng-change="vpcSelected(createInstanceRequest.createVpcRequest.vpcId)">
-								<option value="" default>Select Vpc</option>
+								<option value="Select Vpc" default>Select Vpc</option>
 							</select>
 							<div class="btn_block">
 								<button type="button" class="btn btn-primary popover_block"
@@ -71,11 +71,11 @@
 					</div>
 					<div class="form-group">
 						<label class="col-sm-2 control-label">Subnet</label>
-						<div class="col-sm-10 field_block">
+						<div class="col-sm-10 field_block" ng-loading="isSubnetLoading">
 							<select class="form-control" ng-disabled="showSubnetForm"
 								ng-model="createInstanceRequest.createSubnetRequest.subnetId"
 								ng-options="subnet.SubnetId as subnet.SubnetId for subnet in subnets">
-								<option value="" default>Select Subnet</option>
+
 							</select>
 							<div class="btn_block">
 								<button type="button" class="btn btn-primary popover_block"
@@ -105,11 +105,11 @@
 					</div>
 					<div class="form-group">
 						<label class="col-sm-2 control-label">Security Group</label>
-						<div class="col-sm-10 field_block">
+						<div class="col-sm-10 field_block" ng-loading="isSGLoading">
 							<select class="form-control" ng-disabled="showSGForm"
 								ng-model="createInstanceRequest.createSecurityGroupRequest.securityGroupId"
 								ng-options="sg.GroupId as sg.GroupId for sg in vpcSGs">
-								<option value="" default>Select Security Group</option>
+
 							</select>
 							<div class="btn_block">
 								<button type="button" class="btn btn-primary popover_block"

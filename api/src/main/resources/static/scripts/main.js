@@ -7,7 +7,7 @@ require.config({
 		angularBootstrap : "vendor/ui.bootstrap/ui-bootstrap-tpls-0.10.0",
 		angularTouch : 'vendor/angular/angular-touch',
 		jquery : "vendor/jquery/jquery-1.11.0",
-		toaster : "vendor/toaster/toaster"
+		toaster : "vendor/toaster/toaster",
 	},
 
 	shim : {
@@ -31,6 +31,9 @@ require.config({
 		},
 		'toaster' : {
 			deps : [ 'angular', 'angularAnimate' ]
+		},
+		'ngActivityIndicator' : {
+			deps : [ 'angular', 'angularAnimate' ]
 		}
 	},
 	priority : [ "angular" ]
@@ -38,15 +41,13 @@ require.config({
 
 window.name = "NG_DEFER_BOOTSTRAP!";
 
-require([ 'angular', 'angularAnimate', 'app', 'uiRouter', 'angularTouch',
-		'angularBootstrap', 'jquery', 'routes' ], function(angular,
-		angularAnimate, app, uiRouter, angularTouch, angularBootstrap, jquery,
-		routes) {
-	var $html = angular.element(document.getElementsByTagName('html')[0]);
+require([ 'angular', 'angularAnimate', 'app', 'uiRouter', 'angularTouch', 'angularBootstrap', 'jquery', 'routes' ],
+		function(angular, angularAnimate, app, uiRouter, angularTouch, angularBootstrap, jquery, routes) {
+			var $html = angular.element(document.getElementsByTagName('html')[0]);
 
-	angular.element().ready(function() {
-		angular.resumeBootstrap([ app['name'] ]);
-		console.log("Running");
-	});
+			angular.element().ready(function() {
+				angular.resumeBootstrap([ app['name'] ]);
+				console.log("Running");
+			});
 
-});
+		});
