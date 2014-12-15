@@ -1,40 +1,51 @@
-
-body{
-    margin:0px;
-    padding: 0px;
-    font-size:14px;
-}
-.form_container .form-control{
-    display: inline-block;
-    width: 70%;
-}
-.form_container .btn_block{
-    display: inline-block;
-    width: 27%;
-    margin-left:2%;
-}
-.custom_popover{
-    border: 1px solid #CCC;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 6px;
-    -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-    width: 70%;
-    background: #F5F5F5;
-}
-.form_container .custom_popover .form-group{
-    margin: 0;
-    padding: 5px 12px;
-}
-.form_container .custom_popover .form-control{
-    width:100%;
-}
-@media(max-width:479px){
-.form_container .form-control, .custom_popover{
-    width: 100%;
-}
-.form_container .btn_block, .custom_popover{
-    margin:10px 0 0 0;
+body {
+	margin: 0px;
+	padding: 0px;
+	font-size: 14px;
 }
 
+/* input.ng-invalid {
+	border: 1px solid red;
+} */
+.form_container .ng-valid {
+	border: 1px solid green;
+}
+
+.form_container .form-control {
+	display: inline-block;
+	width: 70%;
+}
+
+.form_container .btn_block {
+	display: inline-block;
+	width: 27%;
+	margin-left: 2%;
+}
+
+.custom_popover {
+	border: 1px solid #CCC;
+	border: 1px solid rgba(0, 0, 0, 0.2);
+	border-radius: 6px;
+	-webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+	width: 70%;
+	background: #F5F5F5;
+}
+
+.form_container .custom_popover .form-group {
+	margin: 0;
+	padding: 5px 12px;
+}
+
+.form_container .custom_popover .form-control {
+	width: 100%;
+}
+
+@media ( max-width :479px) {
+	.form_container .form-control, .custom_popover {
+		width: 100%;
+	}
+	.form_container .btn_block, .custom_popover {
+		margin: 10px 0 0 0;
+	}
 }

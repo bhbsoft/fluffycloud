@@ -3,21 +3,27 @@
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-md-12">
-				<form class="form-horizontal form_container" role="form">
+				<form class="form-horizontal form_container" role="form"
+					name="instanceForm" novalidate>
 					<div class="form-group">
 						<label class="col-sm-2 control-label">Name</label>
 						<div class="col-sm-10 field_block">
 							<input class="form-control"
 								ng-model="createInstanceRequest.tags['Name']"
-								placeholder="Enter Name">
+								placeholder="Enter Name" name="name" required="required">
+							<div
+								ng-show="instanceForm.name.$dirty && instanceForm.name.$invalid">
+								<label class="control-label">Name required.</label>
+							</div>
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-sm-2 control-label">Instance Type</label>
 						<div class="col-sm-10 field_block">
 							<select class="form-control"
-								ng-model="createInstanceRequest.instanceType">
-								<option value="" default>Select Instance Type</option>
+								ng-model="createInstanceRequest.instanceType"
+								required="required">
+								<option value="">Select Instance Type</option>
 								<option value="t1MICRO">t1.micro</option>
 							</select>
 						</div>
@@ -27,8 +33,8 @@
 						<div class="col-sm-10 field_block" ng-loading="isKeyPairLoading">
 							<select class="form-control"
 								ng-model="createInstanceRequest.keyPairName"
-								ng-options="keyPair.KeyName as keyPair.KeyName for keyPair in keyPairs">
-								<option value="" default>Select key Pair</option>
+								ng-options="keyPair.KeyName as keyPair.KeyName for keyPair in keyPairs"
+								required="required">
 							</select>
 						</div>
 					</div>
@@ -38,12 +44,12 @@
 							<select class="form-control" ng-disabled="showVPCForm"
 								ng-model="createInstanceRequest.createVpcRequest.vpcId"
 								ng-options="vpc.VpcId as vpc.VpcId for vpc in vpcs"
-								ng-change="vpcSelected(createInstanceRequest.createVpcRequest.vpcId)">
-								<option value="Select Vpc" default>Select Vpc</option>
+								ng-change="vpcSelected(createInstanceRequest.createVpcRequest.vpcId)"
+								required="required">
 							</select>
 							<div class="btn_block">
 								<button type="button" class="btn btn-primary popover_block"
-									ng-click="showVPCForm = !showVPCForm">Create New VPC</button>
+									ng-click="createNewVpc()">Create New VPC</button>
 							</div>
 							<div class="custom_popover" data-slide-toggle="showVPCForm"
 								data-slide-toggle-duration="250" style="display: none;">
@@ -51,8 +57,7 @@
 								<div class="form-group">
 									<input class="form-control"
 										ng-model="createInstanceRequest.createVpcRequest.tags['Name']"
-										placeholder="Enter VPC Name"
-										ng-click="createInstanceRequest.createVpcRequest.vpcId=null">
+										placeholder="Enter VPC Name">
 								</div>
 								<div class="form-group">
 									<input class="form-control"
@@ -74,7 +79,8 @@
 						<div class="col-sm-10 field_block" ng-loading="isSubnetLoading">
 							<select class="form-control" ng-disabled="showSubnetForm"
 								ng-model="createInstanceRequest.createSubnetRequest.subnetId"
-								ng-options="subnet.SubnetId as subnet.SubnetId for subnet in subnets">
+								ng-options="subnet.SubnetId as subnet.SubnetId for subnet in subnets"
+								required="required">
 
 							</select>
 							<div class="btn_block">
@@ -108,8 +114,8 @@
 						<div class="col-sm-10 field_block" ng-loading="isSGLoading">
 							<select class="form-control" ng-disabled="showSGForm"
 								ng-model="createInstanceRequest.createSecurityGroupRequest.securityGroupId"
-								ng-options="sg.GroupId as sg.GroupId for sg in vpcSGs">
-
+								ng-options="sg.GroupId as sg.GroupId for sg in vpcSGs"
+								required="required">
 							</select>
 							<div class="btn_block">
 								<button type="button" class="btn btn-primary popover_block"
@@ -144,7 +150,8 @@
 					</div>
 					<div class="form-group">
 						<div class="col-sm-offset-2 col-sm-10">
-							<button ng-click="createInstance()" class="btn btn-default">Submit</button>
+							<button ng-click="createInstance()"
+								ng-disabled="instanceForm.$invalid" class="btn btn-default">Submit</button>
 						</div>
 					</div>
 				</form>

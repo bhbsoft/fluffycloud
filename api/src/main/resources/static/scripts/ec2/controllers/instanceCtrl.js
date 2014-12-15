@@ -8,7 +8,7 @@ define([], function() {
 						tags : {}
 					},
 					createSubnetRequest : {
-						"tags" : {}
+						tags : {}
 					},
 					createSecurityGroupRequest : {
 						tags : {}
@@ -208,9 +208,19 @@ define([], function() {
 					});
 				}
 
+				$scope.createNewVpc = function() {
+					$scope.vpcs = {};
+					$scope.subnets = {};
+					$scope.showVPCForm = !$scope.showVPCForm;
+					if (!$scope.showVPCForm) {
+						$scope.getVPCList();
+					}
+				}
+
 				var init = function() {
 					$scope.getVPCList();
 					$scope.describeKeyPair();
+
 				}
 
 				init();
