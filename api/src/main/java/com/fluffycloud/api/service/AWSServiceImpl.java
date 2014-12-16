@@ -820,6 +820,7 @@ public class AWSServiceImpl implements AWSService
 			logger.info("Creating security group.");
 			paramsToUdate.put(AppParams.VPCID.getValue(), createSecurityGroupRequest.getVpcId());
 			paramsToUdate.put(AppParams.GROUPNAME.getValue(), createSecurityGroupRequest.getName());
+			paramsToUdate.put(AppParams.DESCRIPTION.getValue(), createSecurityGroupRequest.getDescription());
 			final String createSecurityGroupJSON = cliExecutor.performAction(Action.CREATESECURITYGROUP, paramsToUdate);
 			logger.info("Security group Created.");
 			return createSecurityGroupJSON;

@@ -7,10 +7,9 @@ body {
 /* input.ng-invalid {
 	border: 1px solid red;
 } */
-.form_container .ng-valid {
+/* .form_container .ng-valid {
 	border: 1px solid green;
-}
-
+} */
 .form_container .form-control {
 	display: inline-block;
 	width: 70%;

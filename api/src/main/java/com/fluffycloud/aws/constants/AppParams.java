@@ -8,7 +8,7 @@ public enum AppParams
 			"subnet-id"), SGIDS("security-group-ids"), IGID("internet-gateway-id"), ALLOCID("allocation-id"),
 	CIDRBLOCK("cidr-block"), CIDR("cidr"), PROTOCOL("protocol"), ROUTETABLEID("route-table-id"), GATEID("gateway-id"),
 	DESTCIDRBLOCK("destination-cidr-block"), INSTANCEID("instance-id"), PORT("port"), RESOURCES("resources"),
-	INSTANCEIDS("instance-ids"), TAGS("tags"), KEYPAIR("key-name");
+	INSTANCEIDS("instance-ids"), TAGS("tags"), KEYPAIR("key-name"), DESCRIPTION("description");
 
 	public String typeName;
 

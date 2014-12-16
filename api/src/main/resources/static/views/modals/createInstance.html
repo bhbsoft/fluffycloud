@@ -10,11 +10,7 @@
 						<div class="col-sm-10 field_block">
 							<input class="form-control"
 								ng-model="createInstanceRequest.tags['Name']"
-								placeholder="Enter Name" name="name" required="required">
-							<div
-								ng-show="instanceForm.name.$dirty && instanceForm.name.$invalid">
-								<label class="control-label">Name required.</label>
-							</div>
+								placeholder="Enter Name" name="name" required>
 						</div>
 					</div>
 					<div class="form-group">
@@ -22,7 +18,7 @@
 						<div class="col-sm-10 field_block">
 							<select class="form-control"
 								ng-model="createInstanceRequest.instanceType"
-								required="required">
+								name="instancetype" required>
 								<option value="">Select Instance Type</option>
 								<option value="t1MICRO">t1.micro</option>
 							</select>
@@ -34,7 +30,7 @@
 							<select class="form-control"
 								ng-model="createInstanceRequest.keyPairName"
 								ng-options="keyPair.KeyName as keyPair.KeyName for keyPair in keyPairs"
-								required="required">
+								ng-init="createInstanceRequest.keyPairName = keyPairs[0].KeyName">
 							</select>
 						</div>
 					</div>
@@ -45,7 +41,7 @@
 								ng-model="createInstanceRequest.createVpcRequest.vpcId"
 								ng-options="vpc.VpcId as vpc.VpcId for vpc in vpcs"
 								ng-change="vpcSelected(createInstanceRequest.createVpcRequest.vpcId)"
-								required="required">
+								ng-init="vpcSelected(createInstanceRequest.createVpcRequest.vpcId)">
 							</select>
 							<div class="btn_block">
 								<button type="button" class="btn btn-primary popover_block"
@@ -53,20 +49,20 @@
 							</div>
 							<div class="custom_popover" data-slide-toggle="showVPCForm"
 								data-slide-toggle-duration="250" style="display: none;">
-
 								<div class="form-group">
 									<input class="form-control"
 										ng-model="createInstanceRequest.createVpcRequest.tags['Name']"
-										placeholder="Enter VPC Name">
+										placeholder="Enter VPC Name" name="vpcname">
 								</div>
 								<div class="form-group">
 									<input class="form-control"
 										ng-model="createInstanceRequest.createVpcRequest.cidrBlock"
-										placeholder="Enter Cidr">
+										placeholder="Enter Cidr" name="cidr">
 								</div>
 								<div class="form-group">
 									<label class="control-label">Tenancy</label> <select
-										ng-model="createInstanceRequest.createVpcRequest.instanceTenancy">
+										ng-model="createInstanceRequest.createVpcRequest.instanceTenancy"
+										name="tenancy">
 										<option selected="selected">Default</option>
 										<option>Dedicated</option>
 									</select>
@@ -80,8 +76,7 @@
 							<select class="form-control" ng-disabled="showSubnetForm"
 								ng-model="createInstanceRequest.createSubnetRequest.subnetId"
 								ng-options="subnet.SubnetId as subnet.SubnetId for subnet in subnets"
-								required="required">
-
+								ng-init="createInstanceRequest.createSubnetRequest.subnetId = subnets[0].SubnetId">
 							</select>
 							<div class="btn_block">
 								<button type="button" class="btn btn-primary popover_block"
@@ -94,17 +89,13 @@
 									<input class="form-control"
 										ng-model="createInstanceRequest.createSubnetRequest.tags['Name']"
 										placeholder="Enter Subnet Name"
-										ng-click="createInstanceRequest.createSubnetRequest.subnetId=null">
-								</div>
-								<div class="form-group">
-									<input class="form-control"
-										ng-model="createInstanceRequest.createSubnetRequest.vpcId"
-										placeholder="Enter vpc">
+										ng-click="createInstanceRequest.createSubnetRequest.subnetId=null"
+										name="subnetname">
 								</div>
 								<div class="form-group">
 									<input class="form-control"
 										ng-model="createInstanceRequest.createSubnetRequest.cidrBlock"
-										placeholder="Enter cidr">
+										placeholder="Enter cidr" name="subnetcidr">
 								</div>
 							</div>
 						</div>
@@ -115,7 +106,7 @@
 							<select class="form-control" ng-disabled="showSGForm"
 								ng-model="createInstanceRequest.createSecurityGroupRequest.securityGroupId"
 								ng-options="sg.GroupId as sg.GroupId for sg in vpcSGs"
-								required="required">
+								ng-init="createInstanceRequest.createSecurityGroupRequest.securityGroupId = vpcSGs[0].GroupId">
 							</select>
 							<div class="btn_block">
 								<button type="button" class="btn btn-primary popover_block"
@@ -126,24 +117,13 @@
 								data-slide-toggle-duration="250" style="display: none;">
 								<div class="form-group">
 									<input class="form-control"
-										ng-model="createInstanceRequest.createSecurityGroupRequest.tags['Name']"
-										placeholder="Enter Name"
-										ng-click="createInstanceRequest.createSecurityGroupRequest.securityGroupId=null">
-								</div>
-								<div class="form-group">
-									<input class="form-control"
-										ng-model="createInstanceRequest.createSecurityGroupRequest.vpcId"
-										placeholder="Select vpc">
-								</div>
-								<div class="form-group">
-									<input class="form-control"
-										ng-model="createInstanceRequest.createSecurityGroupRequest.cidrBlock"
-										placeholder="Enter cidr block">
+										ng-model="createInstanceRequest.createSecurityGroupRequest.name"
+										placeholder="Enter Name" name="sgname">
 								</div>
 								<div class="form-group">
 									<input class="form-control"
 										ng-model="createInstanceRequest.createSecurityGroupRequest.description"
-										placeholder="Enter description">
+										placeholder="Enter description" name="sgdescription">
 								</div>
 							</div>
 						</div>

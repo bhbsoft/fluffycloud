@@ -152,12 +152,14 @@ define([], function() {
 				}
 
 				$scope.createInstance = function() {
+					$scope.creatingInstance = true;
 					EC2SERVICE.createInstance($scope.createInstanceRequest).success(function(data, status) {
 						// TODO clear form and move to homepage
+						$scope.creatingInstance = false;
 						toaster.pop('success', 'Instance created');
 
 					}).error(function(data, status) {
-
+						$scope.creatingInstance = false;
 						toaster.pop('error', 'Try Again');
 
 					});
@@ -168,6 +170,7 @@ define([], function() {
 					EC2SERVICE.describeVpcs().success(function(data, status) {
 						$scope.isVPCLoading = false;
 						$scope.vpcs = data.Vpcs;
+						$scope.createInstanceRequest.createVpcRequest.vpcId = $scope.vpcs[0].VpcId;
 					}).error(function(data, status) {
 						$scope.isVPCLoading = false;
 						toaster.pop('error', 'Error while getting VPC details');
@@ -192,8 +195,10 @@ define([], function() {
 				}
 
 				$scope.vpcSelected = function(vpcId) {
-					$scope.describeSubnets(vpcId);
-					$scope.getSGsForVPC(vpcId);
+					if (null != vpcId) {
+						$scope.describeSubnets(vpcId);
+						$scope.getSGsForVPC(vpcId);
+					}
 				}
 
 				$scope.describeKeyPair = function() {
@@ -211,7 +216,12 @@ define([], function() {
 				$scope.createNewVpc = function() {
 					$scope.vpcs = {};
 					$scope.subnets = {};
+					$scope.vpcSGs = {};
+					$scope.createInstanceRequest.createSecurityGroupRequest.securityGroupId = null;
+					$scope.createInstanceRequest.createSubnetRequest.subnetId = null;
+					$scope.createInstanceRequest.createVpcRequest.vpcId = null;
 					$scope.showVPCForm = !$scope.showVPCForm;
+
 					if (!$scope.showVPCForm) {
 						$scope.getVPCList();
 					}
