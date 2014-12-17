@@ -2,19 +2,19 @@ package com.fluffycloud.api.request.entity;
 
 public class AddRuleRequest
 {
-	private String type;
+	private String cidr;
 	private String protocol;
 	private String portRange;
 	private String source;
 
-	public String getType()
+	public String getCidr()
 	{
-		return type;
+		return cidr;
 	}
 
-	public void setType(String type)
+	public void setCidr(String cidr)
 	{
-		this.type = type;
+		this.cidr = cidr;
 	}
 
 	public String getProtocol()

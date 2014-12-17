@@ -37,6 +37,7 @@
 										<td>To Port</td>
 										<td>Protocol</td>
 										<td>CIDR</td>
+										<td></td>
 									</thead>
 									<tbody>
 										<tr ng-repeat="permission in group.IpPermissions">
@@ -44,9 +45,14 @@
 											<td>{{permission.ToPort}}</td>
 											<td>{{permission.IpProtocol}}</td>
 											<td>{{permission.IpRanges[0].CidrIp}}</td>
+											<td><span class="glyphicon glyphicon-remove-circle btn"></span></td>
 										</tr>
 										<tr>
-											<button class="btn btn-info pull-right">Add Rule</button>
+											<td><input placeholder="Enter From Port" /></td>
+											<td><input placeholder="Enter To Port" /></td>
+											<td><input placeholder="Enter Protocol" /></td>
+											<td><input placeholder="Enter Cidr" /></td>
+											<td><span class="glyphicon glyphicon-plus btn"></span></td>
 										</tr>
 									</tbody>
 								</table>

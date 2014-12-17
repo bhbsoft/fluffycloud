@@ -9,19 +9,12 @@
 		<div class="thumbnail custom_thubnail">
 			<div class="row">
 				<div class="col-md-4">
-					<div class="img_block dark_green"
-						ng-if="instance.State.Name =='running'">
-						<img src="img/dark_green.jpg" alt="" class="img-responsive">
-					</div>
-					<div class="img_block dark_green"
-						ng-if="instance.State.Name =='stopped'">
-						<img src="img/red.jpg" alt="" class="img-responsive">
-					</div>
-					<div class="img_block light_yellow"
-						ng-if="instance.State.Name !='running' && instance.State.Name !='stopped'">
+
+					<div class="img_block light_yellow">
 						<img src="img/yellow.jpg" alt="" class="img-responsive">
 						<div class="loader">
-							<img src="img/load.GIF" alt="" class="img-responsive">
+							<img src="img/loaders/instanceState.GIF" alt=""
+								class="img-responsive">
 						</div>
 					</div>
 

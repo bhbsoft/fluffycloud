@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fluffycloud.api.Iservice.AWSService;
+import com.fluffycloud.api.request.entity.AddSGRuleRequest;
 import com.fluffycloud.api.request.entity.CreateInstanceRequest;
 import com.fluffycloud.api.request.entity.CreateVpcRequest;
 import com.fluffycloud.api.request.entity.DescribeInstanceStatusRequest;
@@ -195,6 +196,20 @@ public class AWSMockController
 	public String describeKeyPairs(@Valid CommonRequestParams params) throws FluffyCloudException
 	{
 		return aWSService.describeKeyPairs(params);
+	}
+
+	@RequestMapping(value = "/aws/ec2/addingress", method = POST)
+	public String addIngressRule(@Valid CommonRequestParams params, AddSGRuleRequest addIngressRuleRequest)
+			throws FluffyCloudException
+	{
+		return aWSService.addIngressRule(params, addIngressRuleRequest);
+	}
+
+	@RequestMapping(value = "/aws/ec2/addegress", method = POST)
+	public String addEgressRule(@Valid CommonRequestParams params, AddSGRuleRequest addIngressRuleRequest)
+			throws FluffyCloudException
+	{
+		return aWSService.addIngressRule(params, addIngressRuleRequest);
 	}
 
 }

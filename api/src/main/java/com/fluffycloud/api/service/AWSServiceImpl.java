@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import com.fluffycloud.api.Iservice.AWSService;
 import com.fluffycloud.api.repository.IAWSCommandRepository;
 import com.fluffycloud.api.repository.IAWSResponseRepository;
+import com.fluffycloud.api.request.entity.AddSGRuleRequest;
 import com.fluffycloud.api.request.entity.CreateInstanceRequest;
 import com.fluffycloud.api.request.entity.CreateSecurityGroupRequest;
 import com.fluffycloud.api.request.entity.CreateSubnetRequest;
@@ -931,5 +932,42 @@ public class AWSServiceImpl implements AWSService
 			throw new FluffyCloudException(exception.getMessage());
 		}
 
+	}
+
+	@Override
+	public String addIngressRule(CommonRequestParams params, AddSGRuleRequest addSGRuleRequest)
+			throws FluffyCloudException
+	{
+		return addSGRule(params, addSGRuleRequest, Action.AUTHORIZESECURITYGROUPINGRESS);
+	}
+
+	@Override
+	public String addEgressRule(CommonRequestParams params, AddSGRuleRequest addSGRuleRequest)
+			throws FluffyCloudException
+	{
+		return addSGRule(params, addSGRuleRequest, Action.AUTHORIZESECURITYGROUPEGRESS);
+	}
+
+	private String addSGRule(CommonRequestParams params, AddSGRuleRequest addSGRuleRequest, final Action action)
+			throws FluffyCloudException
+	{
+		Map<String, String> paramsToUdate = new HashMap<String, String>();
+		try
+		{
+			logger.info("Adding ingress rule.");
+			paramsToUdate.clear();
+			paramsToUdate.put(AppParams.CIDR.getValue(), addSGRuleRequest.getAddRuleRequest().getCidr());
+			paramsToUdate.put(AppParams.PORT.getValue(), addSGRuleRequest.getAddRuleRequest().getPortRange());
+			paramsToUdate.put(AppParams.PROTOCOL.getValue(), addSGRuleRequest.getAddRuleRequest().getProtocol());
+			paramsToUdate.put(AppParams.GROUPID.getValue(), addSGRuleRequest.getSecurityGroupId());
+
+			final String addSGRuleResponseJson = cliExecutor.performAction(action, paramsToUdate);
+			logger.info("Rule added.");
+			return addSGRuleResponseJson;
+		}
+		catch (Exception exception)
+		{
+			throw new FluffyCloudException(exception.getMessage());
+		}
 	}
 }

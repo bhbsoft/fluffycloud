@@ -3,6 +3,7 @@ define([], function() {
 	return [ '$scope', '$rootScope', 'EC2SERVICE', 'toaster', '$state', 'MODALSERVICE',
 			function($scope, $rootScope, EC2SERVICE, toaster, $state, MODALSERVICE) {
 
+				$scope.creatingInstance = false;
 				$scope.createInstanceRequest = {
 					createVpcRequest : {
 						tags : {}

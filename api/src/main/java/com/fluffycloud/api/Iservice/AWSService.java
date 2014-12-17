@@ -1,5 +1,6 @@
 package com.fluffycloud.api.Iservice;
 
+import com.fluffycloud.api.request.entity.AddSGRuleRequest;
 import com.fluffycloud.api.request.entity.CreateInstanceRequest;
 import com.fluffycloud.api.request.entity.CreateSecurityGroupRequest;
 import com.fluffycloud.api.request.entity.CreateSubnetRequest;
@@ -51,4 +52,11 @@ public interface AWSService
 			DescribeInstanceStatusRequest describeInstanceStatusRequest) throws FluffyCloudException;
 
 	public String describeKeyPairs(CommonRequestParams params) throws FluffyCloudException;
+
+	public String addIngressRule(CommonRequestParams params, AddSGRuleRequest addIngressRuleRequest)
+			throws FluffyCloudException;
+
+	public String addEgressRule(CommonRequestParams params, AddSGRuleRequest addIngressRuleRequest)
+			throws FluffyCloudException;
+
 }
