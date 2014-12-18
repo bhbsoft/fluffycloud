@@ -33,26 +33,34 @@
 							<li class="list-group-item list-group-item-success">
 								<table class="table table-hover  table-responsive">
 									<thead>
+										<td>Protocol</td>
 										<td>From Port</td>
 										<td>To Port</td>
-										<td>Protocol</td>
 										<td>CIDR</td>
 										<td></td>
 									</thead>
 									<tbody>
 										<tr ng-repeat="permission in group.IpPermissions">
+											<td>{{permission.IpProtocol}}</td>
 											<td>{{permission.FromPort}}</td>
 											<td>{{permission.ToPort}}</td>
-											<td>{{permission.IpProtocol}}</td>
 											<td>{{permission.IpRanges[0].CidrIp}}</td>
 											<td><span class="glyphicon glyphicon-remove-circle btn"></span></td>
 										</tr>
 										<tr>
-											<td><input placeholder="Enter From Port" /></td>
-											<td><input placeholder="Enter To Port" /></td>
-											<td><input placeholder="Enter Protocol" /></td>
-											<td><input placeholder="Enter Cidr" /></td>
-											<td><span class="glyphicon glyphicon-plus btn"></span></td>
+											<td><select ng-model="addIngressRuleRequest"
+												ng-options="type.type for type in protocolTypes">
+											</select></td>
+											<td><input ng-model="addIngressRuleRequest.protocol"
+												ng-disabled="addIngressRuleRequest.protocol!=null"
+												placeholder="Enter Protocol" /></td>
+											<td><input ng-model="addIngressRuleRequest.portrange"
+												ng-disabled="addIngressRuleRequest.portrange!=null"
+												placeholder="Enter From Port" /></td>
+											<td><input ng-model="addIngressRuleRequest.cidr"
+												placeholder="Enter Cidr" /></td>
+											<td><span class="glyphicon glyphicon-plus btn"
+												ng-click="addIngressRule()"></span></td>
 										</tr>
 									</tbody>
 								</table>

@@ -79,5 +79,13 @@ define([ 'angular' ], function(angular) {
 			return $http.get(Constants.baseUrl + '/describekeypairs', jsonConfig);
 		}
 
+		this.addIngressRule = function(payLoad) {
+			return $http.post(Constants.baseUrl + '/addingress', JSON.stringify(payLoad), jsonConfig);
+		}
+
+		this.addEgressRule = function(payLoad) {
+			return $http.post(Constants.baseUrl + '/addegress', JSON.stringify(payLoad), jsonConfig);
+		}
+
 	} ];
 });

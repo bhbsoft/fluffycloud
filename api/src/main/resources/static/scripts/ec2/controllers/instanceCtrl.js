@@ -15,7 +15,41 @@ define([], function() {
 						tags : {}
 					},
 					tags : {}
-				}
+				};
+
+				$scope.protocolTypes = [ {
+					type : "Custom TCP",
+					protocol : "TCP"
+				}, {
+					type : "Custom UDP",
+					protocol : "UDP"
+				}, {
+					type : "Custom protocol",
+					portrange : "all"
+				}, {
+					type : "All TCP",
+					protocol : "TCP",
+					portrange : "0-65535"
+				}, {
+					type : "SSH",
+					protocol : "TCP",
+					portrange : "22"
+				}, {
+					type : "SMTP",
+					protocol : "TCP",
+					portrange : "25"
+				}, {
+					type : "HTTP",
+					protocol : "TCP",
+					portrange : "80"
+				}, {
+					type : "HTTPS",
+					protocol : "TCP",
+					portrange : "443"
+				} ];
+
+				$scope.addIngressRuleRequest = {};
+				$scope.addEgressRuleRequest = {};
 
 				$scope.tabs = [ {
 					heading : "Security Groups",
@@ -226,6 +260,15 @@ define([], function() {
 					if (!$scope.showVPCForm) {
 						$scope.getVPCList();
 					}
+				}
+
+				$scope.addIngressRule = function() {
+					addIngressRuleRequest.securityGroupId = "testId";
+					EC2SERVICE.addIngressRule(addIngressRuleRequest).success(function(data, status) {
+						console.log(data);
+					}).error(function(data, status) {
+						toaster.pop('error', 'Error while adding rule.');
+					});
 				}
 
 				var init = function() {

@@ -1,10 +1,18 @@
 package com.fluffycloud.api.request.entity;
 
+import javax.validation.constraints.NotNull;
+
 public class AddRuleRequest
 {
+	@NotNull
 	private String cidr;
+
+	@NotNull
 	private String protocol;
+
+	@NotNull
 	private String portRange;
+
 	private String source;
 
 	public String getCidr()
