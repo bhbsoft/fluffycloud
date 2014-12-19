@@ -1,5 +1,6 @@
 package com.fluffycloud.api;
 
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -18,10 +19,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fluffycloud.api.Iservice.AWSService;
-import com.fluffycloud.api.request.entity.AddSGRuleRequest;
 import com.fluffycloud.api.request.entity.CreateInstanceRequest;
 import com.fluffycloud.api.request.entity.CreateVpcRequest;
 import com.fluffycloud.api.request.entity.DescribeInstanceStatusRequest;
+import com.fluffycloud.api.request.entity.SGRuleRequest;
 import com.fluffycloud.aws.entity.CommonRequestParams;
 import com.fluffycloud.exceptions.FluffyCloudException;
 
@@ -199,17 +200,31 @@ public class AWSMockController
 	}
 
 	@RequestMapping(value = "/aws/ec2/addingress", method = POST)
-	public String addIngressRule(@Valid CommonRequestParams params, AddSGRuleRequest addIngressRuleRequest)
-			throws FluffyCloudException
+	public String addIngressRule(@Valid CommonRequestParams params,
+			@Valid @RequestBody SGRuleRequest addIngressRuleRequest) throws FluffyCloudException
 	{
 		return aWSService.addIngressRule(params, addIngressRuleRequest);
 	}
 
 	@RequestMapping(value = "/aws/ec2/addegress", method = POST)
-	public String addEgressRule(@Valid CommonRequestParams params, AddSGRuleRequest addIngressRuleRequest)
-			throws FluffyCloudException
+	public String addEgressRule(@Valid CommonRequestParams params,
+			@Valid @RequestBody SGRuleRequest addEgressRuleRequest) throws FluffyCloudException
 	{
-		return aWSService.addIngressRule(params, addIngressRuleRequest);
+		return aWSService.addEgressRule(params, addEgressRuleRequest);
+	}
+
+	@RequestMapping(value = "/aws/ec2/revokeEgressRule", method = DELETE)
+	public String revokeEgressRule(@Valid CommonRequestParams params,
+			@Valid @RequestBody SGRuleRequest revokeEgressRuleRequest) throws FluffyCloudException
+	{
+		return aWSService.revokeEgressRule(params, revokeEgressRuleRequest);
+	}
+
+	@RequestMapping(value = "/aws/ec2/revokeIngressRule", method = DELETE)
+	public String revokeIngressRule(@Valid CommonRequestParams params,
+			@Valid @RequestBody SGRuleRequest revokeIngressRuleRequest) throws FluffyCloudException
+	{
+		return aWSService.revokeIngressRule(params, revokeIngressRuleRequest);
 	}
 
 }

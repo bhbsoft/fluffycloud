@@ -9,7 +9,7 @@ public class CreateSecurityGroupRequest extends ResourceTags
 
 	private String description;
 
-	private AddRuleRequest addRuleRequest;
+	private Rule addRuleRequest;
 
 	private String vpcId;
 
@@ -53,12 +53,12 @@ public class CreateSecurityGroupRequest extends ResourceTags
 		this.description = description;
 	}
 
-	public AddRuleRequest getAddRuleRequest()
+	public Rule getAddRuleRequest()
 	{
 		return addRuleRequest;
 	}
 
-	public void setAddRuleRequest(AddRuleRequest addRuleRequest)
+	public void setAddRuleRequest(Rule addRuleRequest)
 	{
 		this.addRuleRequest = addRuleRequest;
 	}

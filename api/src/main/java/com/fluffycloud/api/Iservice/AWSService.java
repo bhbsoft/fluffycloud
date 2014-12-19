@@ -1,12 +1,12 @@
 package com.fluffycloud.api.Iservice;
 
-import com.fluffycloud.api.request.entity.AddSGRuleRequest;
 import com.fluffycloud.api.request.entity.CreateInstanceRequest;
 import com.fluffycloud.api.request.entity.CreateSecurityGroupRequest;
 import com.fluffycloud.api.request.entity.CreateSubnetRequest;
 import com.fluffycloud.api.request.entity.CreateVpcRequest;
 import com.fluffycloud.api.request.entity.DescribeInstanceStatusRequest;
 import com.fluffycloud.api.request.entity.ResourceTags;
+import com.fluffycloud.api.request.entity.SGRuleRequest;
 import com.fluffycloud.aws.entity.CommonRequestParams;
 import com.fluffycloud.exceptions.FluffyCloudException;
 
@@ -53,10 +53,16 @@ public interface AWSService
 
 	public String describeKeyPairs(CommonRequestParams params) throws FluffyCloudException;
 
-	public String addIngressRule(CommonRequestParams params, AddSGRuleRequest addIngressRuleRequest)
+	public String addIngressRule(CommonRequestParams params, SGRuleRequest addIngressRuleRequest)
 			throws FluffyCloudException;
 
-	public String addEgressRule(CommonRequestParams params, AddSGRuleRequest addIngressRuleRequest)
+	public String addEgressRule(CommonRequestParams params, SGRuleRequest addIngressRuleRequest)
+			throws FluffyCloudException;
+
+	public String revokeEgressRule(CommonRequestParams params, SGRuleRequest revokeEgressRuleRequest)
+			throws FluffyCloudException;
+
+	public String revokeIngressRule(CommonRequestParams params, SGRuleRequest revokeEgressRuleRequest)
 			throws FluffyCloudException;
 
 }

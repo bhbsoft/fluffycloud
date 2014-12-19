@@ -7,7 +7,6 @@ body {
 .navbar {
 	border-bottom: 1px solid #DBDBDB;
 }
-
 .navbar>.container-fluid .navbar-brand.logo {
 	background: #EAEAEA;
 	border: 1px solid #DBDBDB;
@@ -59,7 +58,7 @@ body {
 	position: relative;
 }
 
-.loader {
+.loader, .yellow_loader{
 	position: absolute;
 	top: 33%;
 	bottom: 0;
@@ -67,7 +66,7 @@ body {
 	right: 0;
 }
 
-.loader img {
+.loader img, .yellow_loader img {
 	margin: 0 auto;
 }
 
@@ -95,6 +94,14 @@ body {
 .social_block a:hover {
 	background-color: transparent;
 	text-decoration: none;
+}
+.table-responsive{
+	overflow:auto;
+}
+.summary_table input, .summary_table select{
+	width:140px;
+	height:30px;
+	padding-left:6px;
 }
 
 @media ( max-width :767px) {

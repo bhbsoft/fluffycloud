@@ -53,17 +53,17 @@
 								<div class="form-group">
 									<input class="form-control"
 										ng-model="createInstanceRequest.createVpcRequest.tags['Name']"
-										placeholder="Enter VPC Name" name="vpcname">
+										placeholder="Enter VPC Name" name="vpcname" required>
 								</div>
 								<div class="form-group">
 									<input class="form-control"
 										ng-model="createInstanceRequest.createVpcRequest.cidrBlock"
-										placeholder="Enter Cidr" name="cidr">
+										placeholder="Enter Cidr" name="cidr" required>
 								</div>
 								<div class="form-group">
 									<label class="control-label">Tenancy</label> <select
 										ng-model="createInstanceRequest.createVpcRequest.instanceTenancy"
-										name="tenancy">
+										name="tenancy" required>
 										<option selected="selected">Default</option>
 										<option>Dedicated</option>
 									</select>

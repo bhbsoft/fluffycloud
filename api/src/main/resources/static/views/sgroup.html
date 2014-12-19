@@ -31,7 +31,8 @@
 					<div class="col-sm-9">
 						<ul class="list-group">
 							<li class="list-group-item list-group-item-success">
-								<table class="table table-hover  table-responsive">
+								<div class="table-responsive summary_table">
+								<table class="table table-hover">
 									<thead>
 										<td>Protocol</td>
 										<td>From Port</td>
@@ -60,10 +61,11 @@
 											<td><input ng-model="addIngressRuleRequest.cidr"
 												placeholder="Enter Cidr" /></td>
 											<td><span class="glyphicon glyphicon-plus btn"
-												ng-click="addIngressRule()"></span></td>
+												ng-click="addIngressRule(group.GroupId)"></span></td>
 										</tr>
 									</tbody>
 								</table>
+								</div>
 							</li>
 						</ul>
 					</div>
@@ -75,15 +77,17 @@
 					<div class="col-sm-9">
 						<ul class="list-group">
 							<li class="list-group-item list-group-item-success">
-								<table class="table table-hover table-responsive">
+								<div class="table-responsive">
+								<table class="table table-hover summary_table">
 									<thead>
+										<td>Protocol</td>
 										<td>From Port</td>
 										<td>To Port</td>
-										<td>Protocol</td>
 										<td>CIDR</td>
+										<td></td>
 									</thead>
 									<tbody>
-										<tr ng-repeat="permission in group.IpPermissions">
+										<tr ng-repeat="permission in group.IpPermissionsEgress">
 											<td>{{permission.FromPort == null ? "ALL":
 												permission.FromPort}}</td>
 											<td>{{permission.ToPort == null ? "ALL":
@@ -91,12 +95,26 @@
 											<td>{{permission.IpProtocol == -1 ? "ALL":
 												permission.IpProtocol}}</td>
 											<td>{{permission.IpRanges[0].CidrIp}}</td>
+											<td><span class="glyphicon glyphicon-remove-circle btn" ng-click="revokeEgressRule()"></span></td>
 										</tr>
-										<tr>
-											<button class="btn btn-info pull-right">Add Rule</button>
+										<tr ng-loading="addingEgressRule">
+											<td><select ng-model="addEgressRuleRequest"
+												ng-options="type.type for type in protocolTypes">
+											</select></td>
+											<td><input ng-model="addEgressRuleRequest.protocol"
+												ng-disabled="addEgressRuleRequest.protocol!=null"
+												placeholder="Enter Protocol" /></td>
+											<td><input ng-model="addEgressRuleRequest.portrange"
+												ng-disabled="addEgressRuleRequest.portrange!=null"
+												placeholder="Enter From Port" /></td>
+											<td><input ng-model="addEgressRuleRequest.cidr"
+												placeholder="Enter Cidr" /></td>
+											<td><span class="glyphicon glyphicon-plus btn"
+												ng-click="addEgressRule(group.GroupId)"></span></td>
 										</tr>
 									</tbody>
 								</table>
+								</div>
 							</li>
 						</ul>
 					</div>

@@ -48,9 +48,6 @@ define([], function() {
 					portrange : "443"
 				} ];
 
-				$scope.addIngressRuleRequest = {};
-				$scope.addEgressRuleRequest = {};
-
 				$scope.tabs = [ {
 					heading : "Security Groups",
 					route : "home.vpc.summary.securitygroup",
@@ -262,19 +259,51 @@ define([], function() {
 					}
 				}
 
-				$scope.addIngressRule = function() {
-					addIngressRuleRequest.securityGroupId = "testId";
-					EC2SERVICE.addIngressRule(addIngressRuleRequest).success(function(data, status) {
+				$scope.addIngressRule = function(groupId) {
+					var payLoad = {
+						securityGroupId : groupId,
+						rule : {
+							cidr : this.addIngressRuleRequest.cidr,
+							protocol : this.addIngressRuleRequest.protocol,
+							portRange : this.addIngressRuleRequest.portrange,
+						}
+					};
+
+					EC2SERVICE.addIngressRule(payLoad).success(function(data, status) {
 						console.log(data);
 					}).error(function(data, status) {
 						toaster.pop('error', 'Error while adding rule.');
 					});
 				}
 
+				$scope.addEgressRule = function(groupId) {
+					// TODO add loader and update view
+					$scope.addingEgressRule = true;
+					var payLoad = {
+						securityGroupId : groupId,
+						rule : {
+							cidr : this.addEgressRuleRequest.cidr,
+							protocol : this.addEgressRuleRequest.protocol,
+							portRange : this.addEgressRuleRequest.portrange,
+						}
+					};
+					EC2SERVICE.addEgressRule(payLoad).success(function(data, status) {
+						console.log(data);
+						$scope.addingEgressRule = false;
+					}).error(function(data, status) {
+						$scope.addingEgressRule = false;
+						toaster.pop('error', 'Error while adding rule.');
+					});
+				}
+
+				$scope.revokeEgressRule = function(group) {
+					// TODO add revoke call
+					console.log(this);
+				}
+
 				var init = function() {
 					$scope.getVPCList();
 					$scope.describeKeyPair();
-
 				}
 
 				init();

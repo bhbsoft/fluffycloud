@@ -87,5 +87,13 @@ define([ 'angular' ], function(angular) {
 			return $http.post(Constants.baseUrl + '/addegress', JSON.stringify(payLoad), jsonConfig);
 		}
 
+		this.revokeEgressRule = function(payLoad) {
+			return $http.delete(Constants.baseUrl + '/revokeEgressRule', JSON.stringify(payLoad));
+		}
+
+		this.revokeIngressRule = function(payLoad) {
+			return $http.delete(Constants.baseUrl + '/revokeIngressRule', JSON.stringify(payLoad));
+		}
+
 	} ];
 });
