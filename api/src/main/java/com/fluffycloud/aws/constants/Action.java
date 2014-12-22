@@ -2,6 +2,7 @@ package com.fluffycloud.aws.constants;
 
 public enum Action
 {
+	/*--Ec2 Commands--*/
 	DESCRIBEROUTETABLES("describe-route-tables"),
 	DESCRIBEVPCS("describe-vpcs"),
 	CREATETAGS("create-tags"),
@@ -82,7 +83,19 @@ public enum Action
 	DELETEROUTE("delete-route"),
 	DELETENETWORKACLENTRY("delete-network-acl-entry"),
 	COPYIMAGE("copy-image"),
-	IMPORTKEYPAIR("import-key-pair");
+	IMPORTKEYPAIR("import-key-pair"),
+	/*--Ec2 Commands--*/
+	
+	/*--CloudFormation Commands--*/
+	CREATESTACK("create-stack"),
+	DELETESTACK("delete-stack"),
+	DESCRIBESTACKEVENTS("describe-stack-events"),
+	DESCRIBESTACKRESOURCES("describe-stack-resources"),
+	DESCRIBESTACKRESOURCE("describe-stack-resource"),
+	DESCRIBESTACKS("describe-stacks"),
+	LISTSTACKRESOURCES("list-stack-resources"),
+	LISTSTACKS("list-stacks");
+	/*--CloudFormation Commands--*/
 
 
 	private String action;

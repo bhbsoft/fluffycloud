@@ -1,0 +1,1 @@
+{"action":"describe-stack-resource","provider":"AWS","command":"cloudformation","parameters":{"parameterMap":{"stack-name":"sample","logical-resource-id":"r-asj34j5"}}}
