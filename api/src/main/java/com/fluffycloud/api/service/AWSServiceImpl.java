@@ -56,7 +56,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 @Component
-public class AWSServiceImpl implements AWSService
+class AWSServiceImpl implements AWSService
 {
 	final static Logger logger = LoggerFactory.getLogger(AWSServiceImpl.class);
 
