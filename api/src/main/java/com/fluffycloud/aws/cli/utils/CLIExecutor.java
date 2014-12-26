@@ -131,6 +131,11 @@ public class CLIExecutor
 	{
 		File file = new File("json" + File.separator + "aws" + File.separator + "ec2" + File.separator + "default"
 				+ File.separator + action.getAction() + ".json");
+		if (!file.exists())
+		{
+			file = new File("json" + File.separator + "aws" + File.separator + "cloudformation" + File.separator
+					+ "templates" + File.separator + action.getAction() + ".json");
+		}
 		try (Reader reader = new FileReader(file); BufferedReader bufferedReader = new BufferedReader(reader);)
 		{
 			StringBuilder sbJSONCommand = new StringBuilder();

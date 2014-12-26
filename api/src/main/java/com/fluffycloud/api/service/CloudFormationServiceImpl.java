@@ -8,14 +8,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.fluffycloud.api.Iservice.CloudFomationService;
+import com.fluffycloud.api.Iservice.CloudFormationService;
+import com.fluffycloud.api.request.entity.DescribeStackEventsRequest;
 import com.fluffycloud.aws.cli.utils.CLIExecutor;
 import com.fluffycloud.aws.constants.Action;
+import com.fluffycloud.aws.constants.AppParams;
 import com.fluffycloud.aws.entity.CommonRequestParams;
+import com.fluffycloud.aws.response.entity.DescribeStackEventsResponse;
+import com.fluffycloud.aws.response.entity.DescribeStacksResponse;
+import com.fluffycloud.aws.response.entity.ListStacksResponse;
 import com.fluffycloud.exceptions.FluffyCloudException;
+import com.google.gson.Gson;
 
 @Component
-class CloudFormationServiceImpl implements CloudFomationService
+class CloudFormationServiceImpl implements CloudFormationService
 {
 	final static Logger logger = LoggerFactory.getLogger(CloudFormationServiceImpl.class);
 
@@ -26,14 +32,16 @@ class CloudFormationServiceImpl implements CloudFomationService
 	public String describeStacks(CommonRequestParams params) throws FluffyCloudException
 	{
 		Map<String, String> paramsToUdate = new HashMap<String, String>();
-
+		Gson gson = new Gson();
 		try
 		{
 			logger.info("Getting available stack details.");
 			paramsToUdate.clear();
-			final String describeVPCsJsonResponse = cliExecutor.performAction(Action.DESCRIBESTACKS, paramsToUdate);
+			final String describeStacksJsonResponse = cliExecutor.performAction(Action.DESCRIBESTACKS, paramsToUdate);
 			logger.info("Got available stack details.");
-			return describeVPCsJsonResponse;
+			DescribeStacksResponse describeStacksResponse = gson.fromJson(describeStacksJsonResponse,
+					DescribeStacksResponse.class);
+			return gson.toJson(describeStacksResponse);
 		}
 		catch (Exception exception)
 		{
@@ -42,19 +50,19 @@ class CloudFormationServiceImpl implements CloudFomationService
 		}
 
 	}
-	
+
 	@Override
 	public String listStacks(CommonRequestParams params) throws FluffyCloudException
 	{
 		Map<String, String> paramsToUdate = new HashMap<String, String>();
-
+		Gson gson = new Gson();
 		try
 		{
 			logger.info("Getting available stack details.");
-			paramsToUdate.clear();
-			final String describeVPCsJsonResponse = cliExecutor.performAction(Action.LISTSTACKS, paramsToUdate);
+			final String listStacksJsonResponse = cliExecutor.performAction(Action.LISTSTACKS, paramsToUdate);
 			logger.info("Got available stack details.");
-			return describeVPCsJsonResponse;
+			ListStacksResponse listStacksResponse = gson.fromJson(listStacksJsonResponse, ListStacksResponse.class);
+			return gson.toJson(listStacksResponse);
 		}
 		catch (Exception exception)
 		{
@@ -64,4 +72,37 @@ class CloudFormationServiceImpl implements CloudFomationService
 
 	}
 
+	@Override
+	public String
+			describeStackEvents(CommonRequestParams params, DescribeStackEventsRequest describeStackEventsRequest)
+					throws FluffyCloudException
+	{
+		Map<String, String> paramsToUdate = new HashMap<String, String>();
+		Gson gson = new Gson();
+		try
+		{
+			logger.info("getting stack events.");
+			paramsToUdate.put(AppParams.STACKNAME.getValue(), describeStackEventsRequest.getStackName());
+			if (null != describeStackEventsRequest.getMaxItems())
+			{
+				paramsToUdate.put(AppParams.MAXITEMS.getValue(), describeStackEventsRequest.getMaxItems().toString());
+			}
+
+			if (null != describeStackEventsRequest.getStartingToken())
+			{
+				paramsToUdate.put(AppParams.STARTINGTOKEN.getValue(), describeStackEventsRequest.getStartingToken());
+			}
+			final String describeStackEventsJsonResponse = cliExecutor.performAction(Action.DESCRIBESTACKEVENTS,
+					paramsToUdate);
+			logger.info("stack events.");
+			DescribeStackEventsResponse describeStackEventsResponse = gson.fromJson(describeStackEventsJsonResponse,
+					DescribeStackEventsResponse.class);
+			return gson.toJson(describeStackEventsResponse);
+		}
+		catch (Exception exception)
+		{
+			logger.error("Error while getting stack events");
+			throw new FluffyCloudException(exception.getMessage());
+		}
+	}
 }

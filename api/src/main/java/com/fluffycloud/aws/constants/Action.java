@@ -87,13 +87,13 @@ public enum Action
 	/*--Ec2 Commands--*/
 	
 	/*--CloudFormation Commands--*/
-	CREATESTACK("create-stack"),
-	DELETESTACK("delete-stack"),
+//	CREATESTACK("create-stack"),
+//	DELETESTACK("delete-stack"),
 	DESCRIBESTACKEVENTS("describe-stack-events"),
-	DESCRIBESTACKRESOURCES("describe-stack-resources"),
-	DESCRIBESTACKRESOURCE("describe-stack-resource"),
+//	DESCRIBESTACKRESOURCES("describe-stack-resources"),
+//	DESCRIBESTACKRESOURCE("describe-stack-resource"),
 	DESCRIBESTACKS("describe-stacks"),
-	LISTSTACKRESOURCES("list-stack-resources"),
+//	LISTSTACKRESOURCES("list-stack-resources"),
 	LISTSTACKS("list-stacks");
 	/*--CloudFormation Commands--*/
 
