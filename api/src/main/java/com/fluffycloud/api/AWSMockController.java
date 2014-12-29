@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fluffycloud.api.Iservice.AWSService;
-import com.fluffycloud.api.request.entity.CreateInstanceRequest;
-import com.fluffycloud.api.request.entity.CreateVpcRequest;
-import com.fluffycloud.api.request.entity.DescribeInstanceStatusRequest;
-import com.fluffycloud.api.request.entity.SGRuleRequest;
+import com.fluffycloud.api.ec2.request.entity.CreateInstanceRequest;
+import com.fluffycloud.api.ec2.request.entity.CreateVpcRequest;
+import com.fluffycloud.api.ec2.request.entity.DescribeInstanceStatusRequest;
+import com.fluffycloud.api.ec2.request.entity.SGRuleRequest;
 import com.fluffycloud.aws.entity.CommonRequestParams;
 import com.fluffycloud.exceptions.FluffyCloudException;
 

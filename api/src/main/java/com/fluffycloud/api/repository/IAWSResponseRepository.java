@@ -2,7 +2,7 @@ package com.fluffycloud.api.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import com.fluffycloud.aws.response.entity.BaseResponse;
+import com.fluffycloud.aws.ec2.response.entity.BaseResponse;
 
 public interface IAWSResponseRepository extends MongoRepository<BaseResponse, String>
 {

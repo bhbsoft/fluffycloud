@@ -9,14 +9,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.fluffycloud.api.Iservice.CloudFormationService;
-import com.fluffycloud.api.request.entity.DescribeStackEventsRequest;
+import com.fluffycloud.api.cloud.request.entity.DescribeStackEventsRequest;
+import com.fluffycloud.api.cloud.request.entity.DescribeStackResourceRequest;
+import com.fluffycloud.api.cloud.request.entity.DescribeStackResourcesRequest;
+import com.fluffycloud.api.cloud.request.entity.ListStackResourcesRequest;
 import com.fluffycloud.aws.cli.utils.CLIExecutor;
+import com.fluffycloud.aws.cloud.response.entity.DescribeStackEventsResponse;
+import com.fluffycloud.aws.cloud.response.entity.DescribeStackResourceResponse;
+import com.fluffycloud.aws.cloud.response.entity.DescribeStackResourcesResponse;
+import com.fluffycloud.aws.cloud.response.entity.DescribeStacksResponse;
+import com.fluffycloud.aws.cloud.response.entity.ListStackResourcesResponse;
+import com.fluffycloud.aws.cloud.response.entity.ListStacksResponse;
 import com.fluffycloud.aws.constants.Action;
 import com.fluffycloud.aws.constants.AppParams;
 import com.fluffycloud.aws.entity.CommonRequestParams;
-import com.fluffycloud.aws.response.entity.DescribeStackEventsResponse;
-import com.fluffycloud.aws.response.entity.DescribeStacksResponse;
-import com.fluffycloud.aws.response.entity.ListStacksResponse;
 import com.fluffycloud.exceptions.FluffyCloudException;
 import com.google.gson.Gson;
 
@@ -102,6 +108,105 @@ class CloudFormationServiceImpl implements CloudFormationService
 		catch (Exception exception)
 		{
 			logger.error("Error while getting stack events");
+			throw new FluffyCloudException(exception.getMessage());
+		}
+	}
+
+	@Override
+	public String listStackResources(CommonRequestParams params, ListStackResourcesRequest listStackResourcesRequest)
+			throws FluffyCloudException
+	{
+		Map<String, String> paramsToUdate = new HashMap<String, String>();
+		Gson gson = new Gson();
+		try
+		{
+			logger.info("getting stack resources.");
+			paramsToUdate.put(AppParams.STACKNAME.getValue(), listStackResourcesRequest.getStackName());
+			if (null != listStackResourcesRequest.getMaxItems())
+			{
+				paramsToUdate.put(AppParams.MAXITEMS.getValue(), listStackResourcesRequest.getMaxItems().toString());
+			}
+
+			if (null != listStackResourcesRequest.getStartingToken())
+			{
+				paramsToUdate.put(AppParams.STARTINGTOKEN.getValue(), listStackResourcesRequest.getStartingToken());
+			}
+			final String listStackResourcesJsonResponse = cliExecutor.performAction(Action.LISTSTACKRESOURCES,
+					paramsToUdate);
+			logger.info("stack resources.");
+			ListStackResourcesResponse listStackResourcesResponse = gson.fromJson(listStackResourcesJsonResponse,
+					ListStackResourcesResponse.class);
+			return gson.toJson(listStackResourcesResponse);
+		}
+		catch (Exception exception)
+		{
+			logger.error("Error while getting stack resources");
+			throw new FluffyCloudException(exception.getMessage());
+		}
+	}
+
+	@Override
+	public String describeStackResource(CommonRequestParams params,
+			DescribeStackResourceRequest describeStackResourceRequest) throws FluffyCloudException
+	{
+		Map<String, String> paramsToUdate = new HashMap<String, String>();
+		Gson gson = new Gson();
+		try
+		{
+			logger.info("getting stack resource.");
+			paramsToUdate.put(AppParams.STACKNAME.getValue(), describeStackResourceRequest.getStackName());
+			paramsToUdate.put(AppParams.LOGICALRESOURCEID.getValue(),
+					describeStackResourceRequest.getLogicalResourceId());
+
+			final String describeStackResourceJsonResponse = cliExecutor.performAction(Action.DESCRIBESTACKRESOURCE,
+					paramsToUdate);
+			logger.info("stack resource.");
+			DescribeStackResourceResponse describeStackResourceResponse = gson.fromJson(
+					describeStackResourceJsonResponse, DescribeStackResourceResponse.class);
+			return gson.toJson(describeStackResourceResponse);
+		}
+		catch (Exception exception)
+		{
+			logger.error("Error while getting stack resources");
+			throw new FluffyCloudException(exception.getMessage());
+		}
+	}
+
+	@Override
+	public String describeStackResources(CommonRequestParams params,
+			DescribeStackResourcesRequest describeStackResourcesRequest) throws FluffyCloudException
+	{
+		Map<String, String> paramsToUdate = new HashMap<String, String>();
+		Gson gson = new Gson();
+		try
+		{
+			logger.info("getting stack resources.");
+			if (null != describeStackResourcesRequest.getPhysicalResourceId())
+			{
+				paramsToUdate.put(AppParams.PHYSICALRESOURCEID.getValue(),
+						describeStackResourcesRequest.getPhysicalResourceId());
+			}
+			else if (null != describeStackResourcesRequest.getStackName())
+			{
+				paramsToUdate.put(AppParams.STACKNAME.getValue(), describeStackResourcesRequest.getStackName());
+			}
+
+			if (null != describeStackResourcesRequest.getLogicalResourceId())
+			{
+				paramsToUdate.put(AppParams.LOGICALRESOURCEID.getValue(),
+						describeStackResourcesRequest.getLogicalResourceId());
+			}
+
+			final String describeStackResourcesJsonResponse = cliExecutor.performAction(Action.DESCRIBESTACKRESOURCES,
+					paramsToUdate);
+			logger.info("stack resource.");
+			DescribeStackResourcesResponse describeStackResourcesResponse = gson.fromJson(
+					describeStackResourcesJsonResponse, DescribeStackResourcesResponse.class);
+			return gson.toJson(describeStackResourcesResponse);
+		}
+		catch (Exception exception)
+		{
+			logger.error("Error while getting stack resources");
 			throw new FluffyCloudException(exception.getMessage());
 		}
 	}

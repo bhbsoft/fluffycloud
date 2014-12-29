@@ -9,7 +9,8 @@ public enum AppParams
 	CIDRBLOCK("cidr-block"), CIDR("cidr"), PROTOCOL("protocol"), ROUTETABLEID("route-table-id"), GATEID("gateway-id"),
 	DESTCIDRBLOCK("destination-cidr-block"), INSTANCEID("instance-id"), PORT("port"), RESOURCES("resources"),
 	INSTANCEIDS("instance-ids"), TAGS("tags"), KEYPAIR("key-name"), DESCRIPTION("description"),
-	STACKNAME("stack-name"), MAXITEMS("max-items"), STARTINGTOKEN("starting-token");
+	STACKNAME("stack-name"), MAXITEMS("max-items"), STARTINGTOKEN("starting-token"), LOGICALRESOURCEID(
+			"logical-resource-id"), PHYSICALRESOURCEID("physical-resource-id");
 
 	public String typeName;
 

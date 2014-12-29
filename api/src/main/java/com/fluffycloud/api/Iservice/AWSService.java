@@ -1,12 +1,12 @@
 package com.fluffycloud.api.Iservice;
 
-import com.fluffycloud.api.request.entity.CreateInstanceRequest;
-import com.fluffycloud.api.request.entity.CreateSecurityGroupRequest;
-import com.fluffycloud.api.request.entity.CreateSubnetRequest;
-import com.fluffycloud.api.request.entity.CreateVpcRequest;
-import com.fluffycloud.api.request.entity.DescribeInstanceStatusRequest;
-import com.fluffycloud.api.request.entity.ResourceTags;
-import com.fluffycloud.api.request.entity.SGRuleRequest;
+import com.fluffycloud.api.ec2.request.entity.CreateInstanceRequest;
+import com.fluffycloud.api.ec2.request.entity.CreateSecurityGroupRequest;
+import com.fluffycloud.api.ec2.request.entity.CreateSubnetRequest;
+import com.fluffycloud.api.ec2.request.entity.CreateVpcRequest;
+import com.fluffycloud.api.ec2.request.entity.DescribeInstanceStatusRequest;
+import com.fluffycloud.api.ec2.request.entity.ResourceTags;
+import com.fluffycloud.api.ec2.request.entity.SGRuleRequest;
 import com.fluffycloud.aws.entity.CommonRequestParams;
 import com.fluffycloud.exceptions.FluffyCloudException;
 

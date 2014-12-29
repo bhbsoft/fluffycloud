@@ -2,11 +2,11 @@ package com.fluffycloud.aws.cli.utils;
 
 import org.springframework.stereotype.Component;
 
-import com.fluffycloud.aws.response.entity.AllocateAddressReponse;
-import com.fluffycloud.aws.response.entity.CreateSecurityGroupResponse;
-import com.fluffycloud.aws.response.entity.CreateSubnetResponse;
-import com.fluffycloud.aws.response.entity.CreateVPCResponse;
-import com.fluffycloud.aws.response.entity.RunInstanceResponse;
+import com.fluffycloud.aws.ec2.response.entity.AllocateAddressReponse;
+import com.fluffycloud.aws.ec2.response.entity.CreateSecurityGroupResponse;
+import com.fluffycloud.aws.ec2.response.entity.CreateSubnetResponse;
+import com.fluffycloud.aws.ec2.response.entity.CreateVPCResponse;
+import com.fluffycloud.aws.ec2.response.entity.RunInstanceResponse;
 
 @Component
 public class ResponseValidator
