@@ -2,7 +2,6 @@ package com.fluffycloud.aws.constants;
 
 public enum AppParams
 {
-
 	DBHOST("host"), DBPORT("port"), DBNAME("FluffyCloudDB"), VPCID("vpc-id"), SGNAME("TestSG-"),
 	GROUPNAME("group-name"), GROUPID("group-id"), GROUPIDS("group-ids"), INSTANCETYPE("instance-type"), SUBNETID(
 			"subnet-id"), SGIDS("security-group-ids"), IGID("internet-gateway-id"), ALLOCID("allocation-id"),
@@ -10,30 +9,19 @@ public enum AppParams
 	DESTCIDRBLOCK("destination-cidr-block"), INSTANCEID("instance-id"), PORT("port"), RESOURCES("resources"),
 	INSTANCEIDS("instance-ids"), TAGS("tags"), KEYPAIR("key-name"), DESCRIPTION("description"),
 	STACKNAME("stack-name"), MAXITEMS("max-items"), STARTINGTOKEN("starting-token"), LOGICALRESOURCEID(
-			"logical-resource-id"), PHYSICALRESOURCEID("physical-resource-id");
+			"logical-resource-id"), PHYSICALRESOURCEID("physical-resource-id"), PARAMETERS("parameters"), TEMPLATEBODY(
+			"template-body"), TEMPLATEURL("template-url");
 
-	public String typeName;
+	public String value;
 
 	private AppParams(String value)
 	{
-		this.typeName = value;
+		this.value = value;
 	}
 
 	public String getValue()
 	{
-		return typeName;
+		return value;
 	}
 
-	public boolean isValidProvider(String value)
-	{
-		for (AppParams provider : values())
-		{
-			if (provider.getValue().equalsIgnoreCase(value))
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
 }

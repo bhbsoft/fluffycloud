@@ -1,10 +1,12 @@
 package com.fluffycloud.api;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,6 +15,7 @@ import com.fluffycloud.api.cloud.request.entity.DescribeStackEventsRequest;
 import com.fluffycloud.api.cloud.request.entity.DescribeStackResourceRequest;
 import com.fluffycloud.api.cloud.request.entity.DescribeStackResourcesRequest;
 import com.fluffycloud.api.cloud.request.entity.ListStackResourcesRequest;
+import com.fluffycloud.api.ec2.request.entity.CreateStackRequest;
 import com.fluffycloud.aws.entity.CommonRequestParams;
 import com.fluffycloud.exceptions.FluffyCloudException;
 
@@ -61,5 +64,12 @@ public class CloudFormationController
 			@Valid DescribeStackResourcesRequest describeStackResourcesRequest) throws FluffyCloudException
 	{
 		return cloudFormationService.describeStackResources(params, describeStackResourcesRequest);
+	}
+
+	@RequestMapping(value = "createstack", method = POST)
+	public String createStack(@Valid CommonRequestParams params, @RequestBody CreateStackRequest createStackRequest)
+			throws FluffyCloudException
+	{
+		return cloudFormationService.createStack(params, createStackRequest);
 	}
 }

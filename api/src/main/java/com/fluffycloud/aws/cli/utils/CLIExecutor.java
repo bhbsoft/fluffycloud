@@ -134,7 +134,7 @@ public class CLIExecutor
 		if (!file.exists())
 		{
 			file = new File("json" + File.separator + "aws" + File.separator + "cloudformation" + File.separator
-					+ "templates" + File.separator + action.getAction() + ".json");
+					+ "default" + File.separator + action.getAction() + ".json");
 		}
 		try (Reader reader = new FileReader(file); BufferedReader bufferedReader = new BufferedReader(reader);)
 		{
@@ -216,6 +216,14 @@ public class CLIExecutor
 
 	}
 
+	/**
+	 * 
+	 * @param paramsToUdate
+	 * @param gson
+	 * @param instanceId
+	 * @throws IOException
+	 * @throws FluffyCloudException
+	 */
 	public void checkInstanceState(final Map<String, String> paramsToUdate, final Gson gson, final String instanceId)
 			throws IOException, FluffyCloudException
 	{
@@ -236,6 +244,14 @@ public class CLIExecutor
 
 	}
 
+	/**
+	 * 
+	 * @param paramsToUdate
+	 * @param gson
+	 * @param instanceId
+	 * @return
+	 * @throws FluffyCloudException
+	 */
 	public String getInstanceState(final Map<String, String> paramsToUdate, final Gson gson, final String instanceId)
 			throws FluffyCloudException
 	{

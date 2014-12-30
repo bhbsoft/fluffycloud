@@ -87,7 +87,7 @@ public enum Action
 	/*--Ec2 Commands--*/
 	
 	/*--CloudFormation Commands--*/
-//	CREATESTACK("create-stack"),
+	CREATESTACK("create-stack"),
 //	DELETESTACK("delete-stack"),
 	DESCRIBESTACKEVENTS("describe-stack-events"),
 	DESCRIBESTACKRESOURCES("describe-stack-resources"),

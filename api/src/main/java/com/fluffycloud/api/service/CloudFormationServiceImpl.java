@@ -13,6 +13,7 @@ import com.fluffycloud.api.cloud.request.entity.DescribeStackEventsRequest;
 import com.fluffycloud.api.cloud.request.entity.DescribeStackResourceRequest;
 import com.fluffycloud.api.cloud.request.entity.DescribeStackResourcesRequest;
 import com.fluffycloud.api.cloud.request.entity.ListStackResourcesRequest;
+import com.fluffycloud.api.ec2.request.entity.CreateStackRequest;
 import com.fluffycloud.aws.cli.utils.CLIExecutor;
 import com.fluffycloud.aws.cloud.response.entity.DescribeStackEventsResponse;
 import com.fluffycloud.aws.cloud.response.entity.DescribeStackResourceResponse;
@@ -51,7 +52,7 @@ class CloudFormationServiceImpl implements CloudFormationService
 		}
 		catch (Exception exception)
 		{
-			logger.error("Error while getting stack details");
+			logger.error("Error while getting stack details" + exception.getMessage());
 			throw new FluffyCloudException(exception.getMessage());
 		}
 
@@ -72,7 +73,7 @@ class CloudFormationServiceImpl implements CloudFormationService
 		}
 		catch (Exception exception)
 		{
-			logger.error("Error while getting stack details");
+			logger.error("Error while getting stack details" + exception.getMessage());
 			throw new FluffyCloudException(exception.getMessage());
 		}
 
@@ -107,7 +108,7 @@ class CloudFormationServiceImpl implements CloudFormationService
 		}
 		catch (Exception exception)
 		{
-			logger.error("Error while getting stack events");
+			logger.error("Error while getting stack events" + exception.getMessage());
 			throw new FluffyCloudException(exception.getMessage());
 		}
 	}
@@ -140,7 +141,7 @@ class CloudFormationServiceImpl implements CloudFormationService
 		}
 		catch (Exception exception)
 		{
-			logger.error("Error while getting stack resources");
+			logger.error("Error while getting stack resources" + exception.getMessage());
 			throw new FluffyCloudException(exception.getMessage());
 		}
 	}
@@ -167,7 +168,7 @@ class CloudFormationServiceImpl implements CloudFormationService
 		}
 		catch (Exception exception)
 		{
-			logger.error("Error while getting stack resources");
+			logger.error("Error while getting stack resources" + exception.getMessage());
 			throw new FluffyCloudException(exception.getMessage());
 		}
 	}
@@ -206,7 +207,32 @@ class CloudFormationServiceImpl implements CloudFormationService
 		}
 		catch (Exception exception)
 		{
-			logger.error("Error while getting stack resources");
+			logger.error("Error while getting stack resources" + exception.getMessage());
+			throw new FluffyCloudException(exception.getMessage());
+		}
+	}
+
+	@Override
+	public String createStack(CommonRequestParams params, CreateStackRequest createStackRequest)
+			throws FluffyCloudException
+	{
+		Map<String, String> paramsToUdate = new HashMap<String, String>();
+		Gson gson = new Gson();
+		try
+		{
+			logger.info("creating stack.");
+			paramsToUdate.put(AppParams.STACKNAME.getValue(), createStackRequest.getStackName());
+			paramsToUdate.put(AppParams.TEMPLATEBODY.getValue(), createStackRequest.getTemplateBody());
+			paramsToUdate.put(AppParams.PARAMETERS.getValue(), createStackRequest.getTemplateParamsAsCommand());
+
+			final String createStackJsonResponse = cliExecutor.performAction(Action.CREATESTACK, paramsToUdate);
+			logger.info("stack created.");
+
+			return createStackJsonResponse;
+		}
+		catch (Exception exception)
+		{
+			logger.error("Error while creating stack" + exception.getMessage());
 			throw new FluffyCloudException(exception.getMessage());
 		}
 	}
