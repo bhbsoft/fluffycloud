@@ -9,12 +9,16 @@
 		<div class="thumbnail custom_thubnail">
 			<div class="row">
 				<div class="col-md-4">
-
-					<div class="img_block light_yellow">
+					<div class="img_block dark_green" ng-if="instance.State.Name =='running'">
+						<img src="img/dark_green.jpg" alt="" class="img-responsive">
+					</div>
+					<div class="img_block dark_green" ng-if="instance.State.Name =='stopped'">
+						<img src="img/red.jpg" alt="" class="img-responsive">
+					</div>
+					<div class="img_block light_yellow" ng-if="instance.State.Name !='running' && instance.State.Name !='stopped'">
 						<img src="img/yellow.jpg" alt="" class="img-responsive">
 						<div class="yellow_loader">
-							<img src="img/loaders/instanceState.GIF" alt=""
-								class="img-responsive">
+							<img src="img/loaders/instanceState.GIF" alt="" class="img-responsive">
 						</div>
 					</div>
 
@@ -22,11 +26,8 @@
 						<h5 class="text-center">Instance-{{$index + 1}}</h5>
 					</div>
 					<div class="caption">
-						<button class="btn btn-success"
-							ng-click="startInstances(instance)"
-							ng-show="instance.State.Name =='stopped'">Start</button>
-						<button class="btn btn-warning" ng-click="stopInstances(instance)"
-							ng-show="instance.State.Name =='running'">Stop</button>
+						<button class="btn btn-success" ng-click="startInstances(instance)" ng-show="instance.State.Name =='stopped'">Start</button>
+						<button class="btn btn-warning" ng-click="stopInstances(instance)" ng-show="instance.State.Name =='running'">Stop</button>
 					</div>
 				</div>
 				<div class="col-md-8">
@@ -55,8 +56,7 @@
 							<td ng-repeat="group in instance.SecurityGroups">{{group.GroupId}}</td>
 					</table>
 					<div class="row">
-						<button class="btn btn-info pull-right"
-							ng-click="setActiveInstance(instance)">View Summary</button>
+						<button class="btn btn-info pull-right" ng-click="setActiveInstance(instance)">View Summary</button>
 					</div>
 				</div>
 			</div>
