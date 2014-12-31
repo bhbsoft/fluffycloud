@@ -27,4 +27,8 @@ public interface CloudFormationService
 			DescribeStackResourcesRequest describeStackResourcesRequest) throws FluffyCloudException;
 
 	String createStack(CommonRequestParams params, CreateStackRequest createStackRequest) throws FluffyCloudException;
+
+	boolean deleteStack(CommonRequestParams params, String stackName) throws FluffyCloudException;
+
+	String getTemplate(CommonRequestParams params, String stackName) throws FluffyCloudException;
 }

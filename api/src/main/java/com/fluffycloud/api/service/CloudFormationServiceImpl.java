@@ -217,7 +217,6 @@ class CloudFormationServiceImpl implements CloudFormationService
 			throws FluffyCloudException
 	{
 		Map<String, String> paramsToUdate = new HashMap<String, String>();
-		Gson gson = new Gson();
 		try
 		{
 			logger.info("creating stack.");
@@ -227,12 +226,49 @@ class CloudFormationServiceImpl implements CloudFormationService
 
 			final String createStackJsonResponse = cliExecutor.performAction(Action.CREATESTACK, paramsToUdate);
 			logger.info("stack created.");
-
 			return createStackJsonResponse;
 		}
 		catch (Exception exception)
 		{
 			logger.error("Error while creating stack" + exception.getMessage());
+			throw new FluffyCloudException(exception.getMessage());
+		}
+	}
+
+	@Override
+	public boolean deleteStack(CommonRequestParams params, final String stackName) throws FluffyCloudException
+	{
+		Map<String, String> paramsToUdate = new HashMap<String, String>();
+		try
+		{
+			logger.info("deleting stack.");
+			paramsToUdate.put(AppParams.STACKNAME.getValue(), stackName);
+			cliExecutor.performAction(Action.DELETESTACK, paramsToUdate);
+			logger.info("stack deleted.");
+			return true;
+		}
+		catch (Exception exception)
+		{
+			logger.error("Error while deleting stack" + exception.getMessage());
+			throw new FluffyCloudException(exception.getMessage());
+		}
+	}
+
+	@Override
+	public String getTemplate(CommonRequestParams params, final String stackName) throws FluffyCloudException
+	{
+		Map<String, String> paramsToUdate = new HashMap<String, String>();
+		try
+		{
+			logger.info("getting stack template");
+			paramsToUdate.put(AppParams.STACKNAME.getValue(), stackName);
+			String getStackTemplateJsonResponse = cliExecutor.performAction(Action.GETTEMPLATE, paramsToUdate);
+			logger.info("stack template.");
+			return getStackTemplateJsonResponse;
+		}
+		catch (Exception exception)
+		{
+			logger.error("Error while getting stack template" + exception.getMessage());
 			throw new FluffyCloudException(exception.getMessage());
 		}
 	}

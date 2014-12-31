@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fluffycloud.api.Iservice.CloudFormationService;
@@ -71,5 +72,19 @@ public class CloudFormationController
 			throws FluffyCloudException
 	{
 		return cloudFormationService.createStack(params, createStackRequest);
+	}
+
+	@RequestMapping(value = "deletestack", method = GET)
+	public boolean deleteStack(@Valid CommonRequestParams params, @RequestParam(required = true) String stackName)
+			throws FluffyCloudException
+	{
+		return cloudFormationService.deleteStack(params, stackName);
+	}
+
+	@RequestMapping(value = "gettemplate", method = GET)
+	public String getTemplate(@Valid CommonRequestParams params, @RequestParam(required = true) String stackName)
+			throws FluffyCloudException
+	{
+		return cloudFormationService.getTemplate(params, stackName);
 	}
 }

@@ -88,13 +88,14 @@ public enum Action
 	
 	/*--CloudFormation Commands--*/
 	CREATESTACK("create-stack"),
-//	DELETESTACK("delete-stack"),
+	DELETESTACK("delete-stack"),
 	DESCRIBESTACKEVENTS("describe-stack-events"),
 	DESCRIBESTACKRESOURCES("describe-stack-resources"),
 	DESCRIBESTACKRESOURCE("describe-stack-resource"),
 	DESCRIBESTACKS("describe-stacks"),
 	LISTSTACKRESOURCES("list-stack-resources"),
-	LISTSTACKS("list-stacks");
+	LISTSTACKS("list-stacks"),
+	GETTEMPLATE("get-template");
 	/*--CloudFormation Commands--*/
 
 
