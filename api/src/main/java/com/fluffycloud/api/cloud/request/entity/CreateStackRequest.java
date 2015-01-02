@@ -1,4 +1,4 @@
-package com.fluffycloud.api.ec2.request.entity;
+package com.fluffycloud.api.cloud.request.entity;
 
 import java.io.File;
 import java.util.Map;

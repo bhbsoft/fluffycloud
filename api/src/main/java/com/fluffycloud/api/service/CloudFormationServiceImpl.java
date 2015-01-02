@@ -9,11 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.fluffycloud.api.Iservice.CloudFormationService;
+import com.fluffycloud.api.cloud.request.entity.CreateStackRequest;
 import com.fluffycloud.api.cloud.request.entity.DescribeStackEventsRequest;
 import com.fluffycloud.api.cloud.request.entity.DescribeStackResourceRequest;
 import com.fluffycloud.api.cloud.request.entity.DescribeStackResourcesRequest;
 import com.fluffycloud.api.cloud.request.entity.ListStackResourcesRequest;
-import com.fluffycloud.api.ec2.request.entity.CreateStackRequest;
+import com.fluffycloud.api.cloud.request.entity.SetStackPolicyRequest;
 import com.fluffycloud.aws.cli.utils.CLIExecutor;
 import com.fluffycloud.aws.cloud.response.entity.DescribeStackEventsResponse;
 import com.fluffycloud.aws.cloud.response.entity.DescribeStackResourceResponse;
@@ -260,7 +261,7 @@ class CloudFormationServiceImpl implements CloudFormationService
 		Map<String, String> paramsToUdate = new HashMap<String, String>();
 		try
 		{
-			logger.info("getting stack template");
+			logger.info("getting stack template.");
 			paramsToUdate.put(AppParams.STACKNAME.getValue(), stackName);
 			String getStackTemplateJsonResponse = cliExecutor.performAction(Action.GETTEMPLATE, paramsToUdate);
 			logger.info("stack template.");
@@ -268,7 +269,53 @@ class CloudFormationServiceImpl implements CloudFormationService
 		}
 		catch (Exception exception)
 		{
-			logger.error("Error while getting stack template" + exception.getMessage());
+			logger.error("Error while getting stack template." + exception.getMessage());
+			throw new FluffyCloudException(exception.getMessage());
+		}
+	}
+
+	@Override
+	public boolean setStackPolicy(CommonRequestParams params, SetStackPolicyRequest setStackPolicyRequest)
+			throws FluffyCloudException
+	{
+		Map<String, String> paramsToUdate = new HashMap<String, String>();
+		try
+		{
+			logger.info("setting stack policy.");
+			paramsToUdate.put(AppParams.STACKNAME.getValue(), setStackPolicyRequest.getStackName());
+			paramsToUdate.put(AppParams.STACKPOLICYBODY.getValue(), setStackPolicyRequest.getStackPolicyBody());
+
+			cliExecutor.performAction(Action.SETSTACKPOLICY, paramsToUdate);
+			logger.info("policy added.");
+			return true;
+		}
+		catch (Exception exception)
+		{
+			logger.error("Error while setting stack policy." + exception.getMessage());
+			throw new FluffyCloudException(exception.getMessage());
+		}
+	}
+
+	@Override
+	public String getStackPolicy(CommonRequestParams params, final String stackName) throws FluffyCloudException
+	{
+		Map<String, String> paramsToUdate = new HashMap<String, String>();
+		// Gson gson = new Gson();
+		try
+		{
+			logger.info("getting stack policy.");
+			paramsToUdate.put(AppParams.STACKNAME.getValue(), stackName);
+			String getStackPolicyJsonResponse = cliExecutor.performAction(Action.GETSTACKPOLICY, paramsToUdate);
+			// TODO maaping issue
+			// GetStackPolicyResponse getStackPolicyResponse =
+			// gson.fromJson(getStackPolicyJsonResponse,
+			// GetStackPolicyResponse.class);
+			logger.info("stack policy.");
+			return getStackPolicyJsonResponse;
+		}
+		catch (Exception exception)
+		{
+			logger.error("Error while getting stack policy." + exception.getMessage());
 			throw new FluffyCloudException(exception.getMessage());
 		}
 	}

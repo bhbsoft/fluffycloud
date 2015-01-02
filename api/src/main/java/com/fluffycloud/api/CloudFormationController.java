@@ -12,11 +12,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fluffycloud.api.Iservice.CloudFormationService;
+import com.fluffycloud.api.cloud.request.entity.CreateStackRequest;
 import com.fluffycloud.api.cloud.request.entity.DescribeStackEventsRequest;
 import com.fluffycloud.api.cloud.request.entity.DescribeStackResourceRequest;
 import com.fluffycloud.api.cloud.request.entity.DescribeStackResourcesRequest;
 import com.fluffycloud.api.cloud.request.entity.ListStackResourcesRequest;
-import com.fluffycloud.api.ec2.request.entity.CreateStackRequest;
+import com.fluffycloud.api.cloud.request.entity.SetStackPolicyRequest;
 import com.fluffycloud.aws.entity.CommonRequestParams;
 import com.fluffycloud.exceptions.FluffyCloudException;
 
@@ -86,5 +87,20 @@ public class CloudFormationController
 			throws FluffyCloudException
 	{
 		return cloudFormationService.getTemplate(params, stackName);
+	}
+
+	@RequestMapping(value = "setstackpolicy", method = POST)
+	public boolean setStackPolicy(@Valid CommonRequestParams params,
+			@RequestBody(required = true) @Valid SetStackPolicyRequest setStackPolicyRequest)
+			throws FluffyCloudException
+	{
+		return cloudFormationService.setStackPolicy(params, setStackPolicyRequest);
+	}
+
+	@RequestMapping(value = "getstackpolicy", method = GET)
+	public String getStackPolicy(@Valid CommonRequestParams params, @RequestParam(required = true) String stackName)
+			throws FluffyCloudException
+	{
+		return cloudFormationService.getStackPolicy(params, stackName);
 	}
 }

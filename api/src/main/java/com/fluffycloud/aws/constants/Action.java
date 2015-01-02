@@ -95,7 +95,9 @@ public enum Action
 	DESCRIBESTACKS("describe-stacks"),
 	LISTSTACKRESOURCES("list-stack-resources"),
 	LISTSTACKS("list-stacks"),
-	GETTEMPLATE("get-template");
+	GETTEMPLATE("get-template"),
+	SETSTACKPOLICY("set-stack-policy"),
+	GETSTACKPOLICY("get-stack-policy");
 	/*--CloudFormation Commands--*/
 
 

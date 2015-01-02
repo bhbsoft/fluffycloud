@@ -1,0 +1,1 @@
+{"action":"set-stack-policy","provider":"AWS","command":"cloudformation","parameters":{"parameterMap":{"stack-policy-body":"file://samplesp.json","stack-name":"sample"}}}

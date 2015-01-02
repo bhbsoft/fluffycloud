@@ -10,7 +10,7 @@ public enum AppParams
 	INSTANCEIDS("instance-ids"), TAGS("tags"), KEYPAIR("key-name"), DESCRIPTION("description"),
 	STACKNAME("stack-name"), MAXITEMS("max-items"), STARTINGTOKEN("starting-token"), LOGICALRESOURCEID(
 			"logical-resource-id"), PHYSICALRESOURCEID("physical-resource-id"), PARAMETERS("parameters"), TEMPLATEBODY(
-			"template-body"), TEMPLATEURL("template-url");
+			"template-body"), TEMPLATEURL("template-url"), STACKPOLICYBODY("stack-policy-body");
 
 	public String value;
 
