@@ -10,6 +10,45 @@ public class Parameter
 	@SerializedName("ParameterKey")
 	private String parameterKey;
 
+	@SerializedName("DefaultValue")
+	private String defaultValue;
+
+	@SerializedName("NoEcho")
+	private boolean noEcho;
+
+	@SerializedName("Description")
+	private String description;
+
+	public String getDefaultValue()
+	{
+		return defaultValue;
+	}
+
+	public void setDefaultValue(String defaultValue)
+	{
+		this.defaultValue = defaultValue;
+	}
+
+	public boolean isNoEcho()
+	{
+		return noEcho;
+	}
+
+	public void setNoEcho(boolean noEcho)
+	{
+		this.noEcho = noEcho;
+	}
+
+	public String getDescription()
+	{
+		return description;
+	}
+
+	public void setDescription(String description)
+	{
+		this.description = description;
+	}
+
 	public String getParameterValue()
 	{
 		return parameterValue;

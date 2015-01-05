@@ -15,6 +15,8 @@ import com.fluffycloud.api.cloud.request.entity.DescribeStackResourceRequest;
 import com.fluffycloud.api.cloud.request.entity.DescribeStackResourcesRequest;
 import com.fluffycloud.api.cloud.request.entity.ListStackResourcesRequest;
 import com.fluffycloud.api.cloud.request.entity.SetStackPolicyRequest;
+import com.fluffycloud.api.cloud.request.entity.UpdateStackRequest;
+import com.fluffycloud.api.cloud.request.entity.ValidateTemplateRequest;
 import com.fluffycloud.aws.cli.utils.CLIExecutor;
 import com.fluffycloud.aws.cloud.response.entity.DescribeStackEventsResponse;
 import com.fluffycloud.aws.cloud.response.entity.DescribeStackResourceResponse;
@@ -306,7 +308,7 @@ class CloudFormationServiceImpl implements CloudFormationService
 			logger.info("getting stack policy.");
 			paramsToUdate.put(AppParams.STACKNAME.getValue(), stackName);
 			String getStackPolicyJsonResponse = cliExecutor.performAction(Action.GETSTACKPOLICY, paramsToUdate);
-			// TODO maaping issue
+			// TODO mapping issue
 			// GetStackPolicyResponse getStackPolicyResponse =
 			// gson.fromJson(getStackPolicyJsonResponse,
 			// GetStackPolicyResponse.class);
@@ -316,6 +318,68 @@ class CloudFormationServiceImpl implements CloudFormationService
 		catch (Exception exception)
 		{
 			logger.error("Error while getting stack policy." + exception.getMessage());
+			throw new FluffyCloudException(exception.getMessage());
+		}
+	}
+
+	@Override
+	public String updateStack(CommonRequestParams params, UpdateStackRequest updateStackRequest)
+			throws FluffyCloudException
+	{
+		Map<String, String> paramsToUdate = new HashMap<String, String>();
+		Gson gson = new Gson();
+
+		try
+		{
+			logger.info("updating stack policy.");
+			// TODO issue with use-previous-template option
+			logger.info("stack policy updated.");
+			return "IN PROGRESS";
+		}
+		catch (Exception exception)
+		{
+			logger.error("Error while updating stack." + exception.getMessage());
+			throw new FluffyCloudException(exception.getMessage());
+		}
+
+	}
+
+	@Override
+	public boolean cancelUpdateStack(CommonRequestParams params, String stackName) throws FluffyCloudException
+	{
+		Map<String, String> paramsToUdate = new HashMap<String, String>();
+		try
+		{
+			logger.info("cancelling stack update.");
+			paramsToUdate.put(AppParams.STACKNAME.getValue(), stackName);
+			cliExecutor.performAction(Action.CREATESTACK, paramsToUdate);
+			logger.info("update cancelled.");
+			return true;
+		}
+		catch (Exception exception)
+		{
+			logger.error("Error while cancelling update stack" + exception.getMessage());
+			throw new FluffyCloudException(exception.getMessage());
+		}
+	}
+
+	@Override
+	public String validateTemplate(CommonRequestParams params, ValidateTemplateRequest validateTemplateRequest)
+			throws FluffyCloudException
+	{
+		Map<String, String> paramsToUdate = new HashMap<String, String>();
+		try
+		{
+			logger.info("validating template.");
+			paramsToUdate.put(AppParams.TEMPLATEBODY.getValue(), validateTemplateRequest.getTemplateBody());
+
+			String validateTemplateJsonResponse = cliExecutor.performAction(Action.CREATESTACK, paramsToUdate);
+			logger.info("template validated");
+			return validateTemplateJsonResponse;
+		}
+		catch (Exception exception)
+		{
+			logger.error("Error while cancelling update stack" + exception.getMessage());
 			throw new FluffyCloudException(exception.getMessage());
 		}
 	}

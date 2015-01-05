@@ -18,6 +18,8 @@ import com.fluffycloud.api.cloud.request.entity.DescribeStackResourceRequest;
 import com.fluffycloud.api.cloud.request.entity.DescribeStackResourcesRequest;
 import com.fluffycloud.api.cloud.request.entity.ListStackResourcesRequest;
 import com.fluffycloud.api.cloud.request.entity.SetStackPolicyRequest;
+import com.fluffycloud.api.cloud.request.entity.UpdateStackRequest;
+import com.fluffycloud.api.cloud.request.entity.ValidateTemplateRequest;
 import com.fluffycloud.aws.entity.CommonRequestParams;
 import com.fluffycloud.exceptions.FluffyCloudException;
 
@@ -102,5 +104,27 @@ public class CloudFormationController
 			throws FluffyCloudException
 	{
 		return cloudFormationService.getStackPolicy(params, stackName);
+	}
+
+	@RequestMapping(value = "updatestack", method = POST)
+	public String updateStack(@Valid CommonRequestParams params,
+			@RequestBody(required = true) UpdateStackRequest updateStackRequest) throws FluffyCloudException
+	{
+		return cloudFormationService.updateStack(params, updateStackRequest);
+	}
+
+	@RequestMapping(value = "cancelupdatestack", method = GET)
+	public boolean
+			cancelUpdateStack(@Valid CommonRequestParams params, @RequestParam(required = true) String stackName)
+					throws FluffyCloudException
+	{
+		return cloudFormationService.cancelUpdateStack(params, stackName);
+	}
+
+	@RequestMapping(value = "validatetemplate", method = GET)
+	public String validateTemplate(@Valid CommonRequestParams params,
+			@Valid ValidateTemplateRequest validateTemplateRequest) throws FluffyCloudException
+	{
+		return cloudFormationService.validateTemplate(params, validateTemplateRequest);
 	}
 }

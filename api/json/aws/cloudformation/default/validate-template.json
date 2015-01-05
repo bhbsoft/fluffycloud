@@ -1,0 +1,1 @@
+{"action":"validate-template","provider":"AWS","command":"cloudformation","parameters":{"parameterMap":{"template-body":"file://samplesp.json"}}}

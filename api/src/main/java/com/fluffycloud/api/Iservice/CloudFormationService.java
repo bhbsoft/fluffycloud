@@ -6,6 +6,8 @@ import com.fluffycloud.api.cloud.request.entity.DescribeStackResourceRequest;
 import com.fluffycloud.api.cloud.request.entity.DescribeStackResourcesRequest;
 import com.fluffycloud.api.cloud.request.entity.ListStackResourcesRequest;
 import com.fluffycloud.api.cloud.request.entity.SetStackPolicyRequest;
+import com.fluffycloud.api.cloud.request.entity.UpdateStackRequest;
+import com.fluffycloud.api.cloud.request.entity.ValidateTemplateRequest;
 import com.fluffycloud.aws.entity.CommonRequestParams;
 import com.fluffycloud.exceptions.FluffyCloudException;
 
@@ -37,4 +39,11 @@ public interface CloudFormationService
 			throws FluffyCloudException;
 
 	String getStackPolicy(CommonRequestParams params, String stackName) throws FluffyCloudException;
+
+	String updateStack(CommonRequestParams params, UpdateStackRequest updateStackRequest) throws FluffyCloudException;
+
+	boolean cancelUpdateStack(CommonRequestParams params, String stackName) throws FluffyCloudException;
+
+	String validateTemplate(CommonRequestParams params, ValidateTemplateRequest validateTemplateRequest)
+			throws FluffyCloudException;;
 }
