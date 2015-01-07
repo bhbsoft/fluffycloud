@@ -13,6 +13,7 @@ import com.fluffycloud.api.cloud.request.entity.CreateStackRequest;
 import com.fluffycloud.api.cloud.request.entity.DescribeStackEventsRequest;
 import com.fluffycloud.api.cloud.request.entity.DescribeStackResourceRequest;
 import com.fluffycloud.api.cloud.request.entity.DescribeStackResourcesRequest;
+import com.fluffycloud.api.cloud.request.entity.DescribeStacksRequest;
 import com.fluffycloud.api.cloud.request.entity.ListStackResourcesRequest;
 import com.fluffycloud.api.cloud.request.entity.SetStackPolicyRequest;
 import com.fluffycloud.api.cloud.request.entity.UpdateStackRequest;
@@ -40,14 +41,19 @@ class CloudFormationServiceImpl implements CloudFormationService
 	private CLIExecutor cliExecutor;
 
 	@Override
-	public String describeStacks(CommonRequestParams params) throws FluffyCloudException
+	public String describeStacks(CommonRequestParams params, DescribeStacksRequest describeStacksRequest)
+			throws FluffyCloudException
 	{
 		Map<String, String> paramsToUdate = new HashMap<String, String>();
 		Gson gson = new Gson();
 		try
 		{
 			logger.info("Getting available stack details.");
-			paramsToUdate.clear();
+			if (null != describeStacksRequest.getStackName())
+			{
+				paramsToUdate.put(AppParams.STACKNAME.getValue(), describeStacksRequest.getStackName());
+			}
+
 			final String describeStacksJsonResponse = cliExecutor.performAction(Action.DESCRIBESTACKS, paramsToUdate);
 			logger.info("Got available stack details.");
 			DescribeStacksResponse describeStacksResponse = gson.fromJson(describeStacksJsonResponse,
@@ -327,8 +333,8 @@ class CloudFormationServiceImpl implements CloudFormationService
 	public String updateStack(CommonRequestParams params, UpdateStackRequest updateStackRequest)
 			throws FluffyCloudException
 	{
-		Map<String, String> paramsToUdate = new HashMap<String, String>();
-		Gson gson = new Gson();
+		// Map<String, String> paramsToUdate = new HashMap<String, String>();
+		// Gson gson = new Gson();
 
 		try
 		{

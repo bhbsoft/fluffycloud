@@ -6,6 +6,6 @@ define([ 'angular', './services/constants', './services/cfServices' ], function(
 	var module = angular.module('fluffyCloud.cf.services', []);
 
 	module.value('CFServiceConstants', constants);
-	module.service('cfSERVICE', cfServices);
+	module.service('CFSERVICE', cfServices);
 	return module;
 });

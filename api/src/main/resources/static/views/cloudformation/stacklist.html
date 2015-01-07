@@ -1,3 +1,19 @@
 <div class="col-md-8 col-xs-12 col-sm-8">
-	<div class="row">Welcome To CloudFormation</div>
+	<div class="row">
+		<h3>
+			Available Stacks <span class="btn btn-lg glyphicon glyphicon-refresh"></span>
+		</h3>
+		<div class="col-sm-12" ng-repeat="stack in stacks">
+			<h3>{{stack.StackName}}</h3>
+			<button class="btn btn-default" ng-click="describeStack(stack)">Describe
+				Stack</button>
+			<button class="btn btn-default">Events</button>
+			<button class="btn btn-default">Resource</button>
+			<button class="btn btn-default">Resources</button>
+			<button class="btn btn-default">List Resources</button>
+			<button class="btn btn-default">List Stacks</button>
+			<button class="btn btn-default">Delete Stacks</button>
+			<textarea class="form-control" rows="3">{{stack | json }}</textarea>
+		</div>
+	</div>
 </div>

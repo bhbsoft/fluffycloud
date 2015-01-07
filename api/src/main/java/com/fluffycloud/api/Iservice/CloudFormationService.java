@@ -4,6 +4,7 @@ import com.fluffycloud.api.cloud.request.entity.CreateStackRequest;
 import com.fluffycloud.api.cloud.request.entity.DescribeStackEventsRequest;
 import com.fluffycloud.api.cloud.request.entity.DescribeStackResourceRequest;
 import com.fluffycloud.api.cloud.request.entity.DescribeStackResourcesRequest;
+import com.fluffycloud.api.cloud.request.entity.DescribeStacksRequest;
 import com.fluffycloud.api.cloud.request.entity.ListStackResourcesRequest;
 import com.fluffycloud.api.cloud.request.entity.SetStackPolicyRequest;
 import com.fluffycloud.api.cloud.request.entity.UpdateStackRequest;
@@ -13,7 +14,8 @@ import com.fluffycloud.exceptions.FluffyCloudException;
 
 public interface CloudFormationService
 {
-	String describeStacks(CommonRequestParams params) throws FluffyCloudException;
+	String describeStacks(CommonRequestParams params, DescribeStacksRequest describeStacksRequest)
+			throws FluffyCloudException;
 
 	String listStacks(CommonRequestParams params) throws FluffyCloudException;
 

@@ -75,7 +75,8 @@ define([ 'angular', 'app' ], function(angular, app) {
 			url : '/cloudformation',
 			views : {
 				'maintemplate@home' : {
-					templateUrl : 'views/cloudformation/stacklist.html'
+					templateUrl : 'views/cloudformation/stacklist.html',
+					controller : 'CFCTRL'
 
 				},
 				'lefttemplate@home' : {

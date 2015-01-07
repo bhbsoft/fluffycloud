@@ -16,6 +16,7 @@ import com.fluffycloud.api.cloud.request.entity.CreateStackRequest;
 import com.fluffycloud.api.cloud.request.entity.DescribeStackEventsRequest;
 import com.fluffycloud.api.cloud.request.entity.DescribeStackResourceRequest;
 import com.fluffycloud.api.cloud.request.entity.DescribeStackResourcesRequest;
+import com.fluffycloud.api.cloud.request.entity.DescribeStacksRequest;
 import com.fluffycloud.api.cloud.request.entity.ListStackResourcesRequest;
 import com.fluffycloud.api.cloud.request.entity.SetStackPolicyRequest;
 import com.fluffycloud.api.cloud.request.entity.UpdateStackRequest;
@@ -31,9 +32,11 @@ public class CloudFormationController
 	CloudFormationService cloudFormationService;
 
 	@RequestMapping(value = "describestacks", method = GET)
-	public String describeStacks(@Valid CommonRequestParams params) throws FluffyCloudException
+	public String
+			describeStacks(@Valid CommonRequestParams params, @Valid DescribeStacksRequest describeStackskRequest)
+					throws FluffyCloudException
 	{
-		return cloudFormationService.describeStacks(params);
+		return cloudFormationService.describeStacks(params, describeStackskRequest);
 	}
 
 	@RequestMapping(value = "liststacks", method = GET)
