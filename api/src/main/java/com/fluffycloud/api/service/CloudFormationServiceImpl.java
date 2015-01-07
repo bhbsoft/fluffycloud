@@ -24,6 +24,7 @@ import com.fluffycloud.aws.cloud.response.entity.DescribeStackResourcesResponse;
 import com.fluffycloud.aws.cloud.response.entity.DescribeStacksResponse;
 import com.fluffycloud.aws.cloud.response.entity.ListStackResourcesResponse;
 import com.fluffycloud.aws.cloud.response.entity.ListStacksResponse;
+import com.fluffycloud.aws.cloud.response.entity.ValidateTemplateResponse;
 import com.fluffycloud.aws.constants.Action;
 import com.fluffycloud.aws.constants.AppParams;
 import com.fluffycloud.aws.entity.CommonRequestParams;
@@ -368,18 +369,21 @@ class CloudFormationServiceImpl implements CloudFormationService
 			throws FluffyCloudException
 	{
 		Map<String, String> paramsToUdate = new HashMap<String, String>();
+		Gson gson = new Gson();
 		try
 		{
 			logger.info("validating template.");
 			paramsToUdate.put(AppParams.TEMPLATEBODY.getValue(), validateTemplateRequest.getTemplateBody());
 
-			String validateTemplateJsonResponse = cliExecutor.performAction(Action.CREATESTACK, paramsToUdate);
+			String validateTemplateJsonResponse = cliExecutor.performAction(Action.VALIDATETEMPLATE, paramsToUdate);
+			ValidateTemplateResponse validateTemplateResponse = gson.fromJson(validateTemplateJsonResponse,
+					ValidateTemplateResponse.class);
 			logger.info("template validated");
-			return validateTemplateJsonResponse;
+			return gson.toJson(validateTemplateResponse);
 		}
 		catch (Exception exception)
 		{
-			logger.error("Error while cancelling update stack" + exception.getMessage());
+			logger.error("Error while validating template" + exception.getMessage());
 			throw new FluffyCloudException(exception.getMessage());
 		}
 	}

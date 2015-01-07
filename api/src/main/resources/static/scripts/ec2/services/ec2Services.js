@@ -1,6 +1,6 @@
 define([ 'angular' ], function(angular) {
 	'use strict';
-	return [ '$http', 'Constants', function($http, Constants) {
+	return [ '$http', 'EC2ServiceConstants', function($http, Constants) {
 
 		var jsonConfig = {
 			headers : {

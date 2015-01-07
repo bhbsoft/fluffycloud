@@ -71,6 +71,17 @@ define([ 'angular', 'app' ], function(angular, app) {
 					controller : 'INSTANCECTRL'
 				}
 			}
+		}).state('home.cf', {
+			url : '/cloudformation',
+			views : {
+				'maintemplate@home' : {
+					templateUrl : 'views/cloudformation/stacklist.html'
+
+				},
+				'lefttemplate@home' : {
+					templateUrl : 'views/cloudformation/lefttemplate.html',
+				}
+			}
 		});
 	})
 });
