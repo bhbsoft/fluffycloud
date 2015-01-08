@@ -4,16 +4,28 @@
 			Available Stacks <span class="btn btn-lg glyphicon glyphicon-refresh"></span>
 		</h3>
 		<div class="col-sm-12" ng-repeat="stack in stacks">
-			<h3>{{stack.StackName}}</h3>
-			<button class="btn btn-default" ng-click="describeStack(stack)">Describe
+			<h3>{{stack.StackName | uppercase}}</h3>
+			<button class="btn btn-success" ng-click="describeStack(stack)">Describe
 				Stack</button>
-			<button class="btn btn-default">Events</button>
-			<button class="btn btn-default">Resource</button>
-			<button class="btn btn-default">Resources</button>
-			<button class="btn btn-default">List Resources</button>
-			<button class="btn btn-default">List Stacks</button>
-			<button class="btn btn-default">Delete Stacks</button>
-			<textarea class="form-control" rows="3">{{stack | json }}</textarea>
+			<button class="btn btn-success" ng-click="describeStackEvents(stack)">Events</button>
+			<button class="btn btn-success"
+				ng-click="describeStackResources(stack)">Resources</button>
+			<div class="btn-group">
+				<button type="button" class="btn btn-success dropdown-toggle"
+					data-toggle="dropdown" aria-expanded="false">
+					Get Resource <span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" role="menu">
+					<li ng-repeat="resource in resources"><a
+						ng-click="describeStackResource(stack, resource.LogicalResourceId)">{{resource.LogicalResourceId}}</a></li>
+				</ul>
+			</div>
+
+			<button class="btn btn-success" ng-click="listStackResources(stack)">List
+				Resources</button>
+			<button class="btn btn-success">List Stacks</button>
+			<button class="btn btn-success">Delete Stacks</button>
+			<textarea class="form-control" rows="5" ng-disabled="true">{{jsonContent | json }}</textarea>
 		</div>
 	</div>
 </div>

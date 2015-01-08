@@ -17,19 +17,48 @@ define([ 'angular' ], function(angular) {
 		}
 
 		this.listStacks = function(payLoad) {
-			return $http.get(Constants.baseUrl + '/liststacks', JSON.stringify(payLoad), jsonConfig);
+			var stackName = angular.isUndefined(payLoad) ? null : payLoad.stackName;
+			return $http.get(Constants.baseUrl + '/liststacks', {
+				params : {
+					stackName : stackName,
+				}
+			});
 		}
 
 		this.describeStackEvents = function(payLoad) {
-			return $http.get(Constants.baseUrl + '/describestackevents', JSON.stringify(payLoad), jsonConfig);
+			var stackName = angular.isUndefined(payLoad) ? null : payLoad.stackName;
+			return $http.get(Constants.baseUrl + '/describestackevents', {
+				params : {
+					stackName : stackName,
+				}
+			});
 		}
 
 		this.listStackResources = function(payLoad) {
-			return $http.get(Constants.baseUrl + '/liststackresources', JSON.stringify(payLoad), jsonConfig);
+			var stackName = angular.isUndefined(payLoad) ? null : payLoad.stackName;
+			return $http.get(Constants.baseUrl + '/liststackresources', {
+				params : {
+					stackName : stackName,
+				}
+			});
 		}
 
 		this.describeStackResource = function(payLoad) {
-			return $http.get(Constants.baseUrl + '/describestackresource', JSON.stringify(payLoad), jsonConfig);
+			return $http.get(Constants.baseUrl + '/describestackresource', {
+				params : {
+					stackName : payLoad.stackName,
+					logicalResourceId : payLoad.logicalResourceId
+				}
+			});
+		}
+
+		this.describeStackResources = function(payLoad) {
+			var stackName = angular.isUndefined(payLoad) ? null : payLoad.stackName;
+			return $http.get(Constants.baseUrl + '/describestackresources', {
+				params : {
+					stackName : stackName,
+				}
+			});
 		}
 	} ];
 });
