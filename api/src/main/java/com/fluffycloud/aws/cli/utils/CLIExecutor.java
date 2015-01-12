@@ -196,7 +196,7 @@ public class CLIExecutor
 				logger.info("Command executed.");
 				return sb.toString();
 			}
-			else
+			else if (null != stdError.readLine())
 			{
 				while ((s = stdError.readLine()) != null)
 				{
@@ -206,6 +206,11 @@ public class CLIExecutor
 
 				logger.debug("Action: " + commandFromJSon.getAction() + ". " + sb.toString());
 				throw new CommandExecutionException("Action: " + commandFromJSon.getAction() + ". " + sb.toString());
+			}
+			else
+			{
+				logger.info("Empty reponse.");
+				return "Empty reponse.";
 			}
 		}
 		catch (Exception e)

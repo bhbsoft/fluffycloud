@@ -1,10 +1,12 @@
 <div class="col-md-8 col-xs-12 col-sm-8">
 	<div class="row">
 		<h3>
-			Available Stacks <span class="btn btn-lg glyphicon glyphicon-refresh"></span>
+			Available Stacks <span class="btn btn-lg glyphicon glyphicon-refresh"
+				ng-click="describeStacks()"></span>
 		</h3>
 		<div class="col-sm-12" ng-repeat="stack in stacks">
 			<h3>{{stack.StackName | uppercase}}</h3>
+			<h5>Status: {{stack.StackStatus}}</h5>
 			<button class="btn btn-success" ng-click="describeStack(stack)">Describe
 				Stack</button>
 			<button class="btn btn-success" ng-click="describeStackEvents(stack)">Events</button>
@@ -12,7 +14,8 @@
 				ng-click="describeStackResources(stack)">Resources</button>
 			<div class="btn-group">
 				<button type="button" class="btn btn-success dropdown-toggle"
-					data-toggle="dropdown" aria-expanded="false">
+					data-toggle="dropdown" aria-expanded="false"
+					ng-disabled="resources==null ? true:resources.length>0?false:true">
 					Get Resource <span class="caret"></span>
 				</button>
 				<ul class="dropdown-menu" role="menu">
@@ -23,8 +26,10 @@
 
 			<button class="btn btn-success" ng-click="listStackResources(stack)">List
 				Resources</button>
-			<button class="btn btn-success">List Stacks</button>
-			<button class="btn btn-success">Delete Stacks</button>
+			<button class="btn btn-success" ng-click="listStacks()">List
+				Stacks</button>
+			<button class="btn btn-success" ng-click="deleteStack($index)">Delete
+				Stacks</button>
 			<textarea class="form-control" rows="5" ng-disabled="true">{{jsonContent | json }}</textarea>
 		</div>
 	</div>

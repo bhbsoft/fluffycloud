@@ -1,5 +1,6 @@
 package com.fluffycloud.api;
 
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -80,7 +81,7 @@ public class CloudFormationController
 		return cloudFormationService.createStack(params, createStackRequest);
 	}
 
-	@RequestMapping(value = "deletestack", method = GET)
+	@RequestMapping(value = "deletestack", method = DELETE)
 	public boolean deleteStack(@Valid CommonRequestParams params, @RequestParam(required = true) String stackName)
 			throws FluffyCloudException
 	{
@@ -130,4 +131,5 @@ public class CloudFormationController
 	{
 		return cloudFormationService.validateTemplate(params, validateTemplateRequest);
 	}
+
 }

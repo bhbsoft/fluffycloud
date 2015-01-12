@@ -259,7 +259,7 @@ class CloudFormationServiceImpl implements CloudFormationService
 		}
 		catch (Exception exception)
 		{
-			logger.error("Error while deleting stack" + exception.getMessage());
+			logger.error("Error while deleting stack " + exception.getMessage());
 			throw new FluffyCloudException(exception.getMessage());
 		}
 	}

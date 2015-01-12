@@ -17,12 +17,7 @@ define([ 'angular' ], function(angular) {
 		}
 
 		this.listStacks = function(payLoad) {
-			var stackName = angular.isUndefined(payLoad) ? null : payLoad.stackName;
-			return $http.get(Constants.baseUrl + '/liststacks', {
-				params : {
-					stackName : stackName,
-				}
-			});
+			return $http.get(Constants.baseUrl + '/liststacks');
 		}
 
 		this.describeStackEvents = function(payLoad) {
@@ -55,6 +50,15 @@ define([ 'angular' ], function(angular) {
 		this.describeStackResources = function(payLoad) {
 			var stackName = angular.isUndefined(payLoad) ? null : payLoad.stackName;
 			return $http.get(Constants.baseUrl + '/describestackresources', {
+				params : {
+					stackName : stackName,
+				}
+			});
+		}
+		
+		this.deleteStack = function(payLoad) {
+			var stackName = angular.isUndefined(payLoad) ? null : payLoad.stackName;
+			return $http.delete(Constants.baseUrl + '/deletestack', {
 				params : {
 					stackName : stackName,
 				}
