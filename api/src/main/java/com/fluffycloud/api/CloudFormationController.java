@@ -4,6 +4,8 @@ import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
+import java.util.Map;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,6 +132,12 @@ public class CloudFormationController
 			@Valid ValidateTemplateRequest validateTemplateRequest) throws FluffyCloudException
 	{
 		return cloudFormationService.validateTemplate(params, validateTemplateRequest);
+	}
+
+	@RequestMapping(value = "getstacktemplates", method = GET)
+	public Map<String, String> getStackTemplates(@Valid CommonRequestParams params) throws FluffyCloudException
+	{
+		return cloudFormationService.getStackTemplates(params);
 	}
 
 }

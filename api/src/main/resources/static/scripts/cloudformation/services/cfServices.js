@@ -64,5 +64,10 @@ define([ 'angular' ], function(angular) {
 				}
 			});
 		}
+		
+		this.getStackTemplates = function(payLoad) {
+			return $http.get(Constants.baseUrl + '/getstacktemplates');
+		}
+
 	} ];
 });

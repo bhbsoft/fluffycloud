@@ -136,6 +136,11 @@ public class CLIExecutor
 			file = new File("json" + File.separator + "aws" + File.separator + "cloudformation" + File.separator
 					+ "default" + File.separator + action.getAction() + ".json");
 		}
+		return new Gson().fromJson(getJsonFromFile(file).toString(), Command.class);
+	}
+
+	public String getJsonFromFile(File file) throws DefaultJsonNotFoundException
+	{
 		try (Reader reader = new FileReader(file); BufferedReader bufferedReader = new BufferedReader(reader);)
 		{
 			StringBuilder sbJSONCommand = new StringBuilder();
@@ -145,15 +150,13 @@ public class CLIExecutor
 				sbJSONCommand.append(s);
 				sbJSONCommand.append("\n");
 			}
-			Gson gson = new Gson();
-			Command defaultCommand = gson.fromJson(sbJSONCommand.toString(), Command.class);
-			return defaultCommand;
+
+			return sbJSONCommand.toString();
 		}
 		catch (IOException e)
 		{
-			throw new DefaultJsonNotFoundException(action.getAction() + ".json not found.");
+			throw new DefaultJsonNotFoundException(file.getName() + ".json not found.");
 		}
-
 	}
 
 	/**

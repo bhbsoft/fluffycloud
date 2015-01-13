@@ -113,8 +113,22 @@ define([], function() {
 			}).error(function(data, status) {
 				toaster.pop('error', 'Error while listing stacks.');
 				scope.jsonContent = 'Error while listing stacks. Please try again';
-				console.log(data, status);
+
 			});
+		}
+
+		$scope.getStackTemplates = function() {
+			CFSERVICE.getStackTemplates().success(function(data, status) {
+				console.log(data);
+				$scope.templates = data;
+			}).error(function(data, status) {
+				toaster.pop('error', 'Error while getting templates.');
+			});
+		}
+
+		$scope.updateTemplateForm = function(value) {
+			console.log(angular.fromJson(value));
+			$scope.selectedTemplate = angular.fromJson(value);
 		}
 
 		function getPayload(stackName) {

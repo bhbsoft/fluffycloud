@@ -1,5 +1,6 @@
 package com.fluffycloud.api.service;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +20,7 @@ import com.fluffycloud.api.cloud.request.entity.SetStackPolicyRequest;
 import com.fluffycloud.api.cloud.request.entity.UpdateStackRequest;
 import com.fluffycloud.api.cloud.request.entity.ValidateTemplateRequest;
 import com.fluffycloud.aws.cli.utils.CLIExecutor;
+import com.fluffycloud.aws.cli.utils.TemplateFileFilter;
 import com.fluffycloud.aws.cloud.response.entity.DescribeStackEventsResponse;
 import com.fluffycloud.aws.cloud.response.entity.DescribeStackResourceResponse;
 import com.fluffycloud.aws.cloud.response.entity.DescribeStackResourcesResponse;
@@ -392,5 +394,30 @@ class CloudFormationServiceImpl implements CloudFormationService
 			logger.error("Error while validating template" + exception.getMessage());
 			throw new FluffyCloudException(exception.getMessage());
 		}
+	}
+
+	@Override
+	public Map<String, String> getStackTemplates(CommonRequestParams params) throws FluffyCloudException
+	{
+		Map<String, String> templates = new HashMap<String, String>();
+		try
+		{
+			logger.info("Getting stack templates.");
+			File templatesLocation = new File("json" + File.separator + "aws" + File.separator + "cloudformation"
+					+ File.separator + "templates");
+			if (templatesLocation.exists() && templatesLocation.isDirectory())
+			{
+				for (File file : templatesLocation.listFiles(new TemplateFileFilter()))
+				{
+					templates.put(file.getName(), cliExecutor.getJsonFromFile(file));
+				}
+			}
+		}
+		catch (Exception exception)
+		{
+			logger.error("Error while getting stack templates." + exception.getMessage());
+			throw new FluffyCloudException(exception.getMessage());
+		}
+		return templates;
 	}
 }

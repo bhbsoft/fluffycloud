@@ -1,5 +1,7 @@
 package com.fluffycloud.api.Iservice;
 
+import java.util.Map;
+
 import com.fluffycloud.api.cloud.request.entity.CreateStackRequest;
 import com.fluffycloud.api.cloud.request.entity.DescribeStackEventsRequest;
 import com.fluffycloud.api.cloud.request.entity.DescribeStackResourceRequest;
@@ -47,5 +49,7 @@ public interface CloudFormationService
 	boolean cancelUpdateStack(CommonRequestParams params, String stackName) throws FluffyCloudException;
 
 	String validateTemplate(CommonRequestParams params, ValidateTemplateRequest validateTemplateRequest)
-			throws FluffyCloudException;;
+			throws FluffyCloudException;
+
+	Map<String, String> getStackTemplates(CommonRequestParams params) throws FluffyCloudException;
 }
