@@ -126,9 +126,27 @@ define([], function() {
 			});
 		}
 
-		$scope.updateTemplateForm = function(value) {
-			console.log(angular.fromJson(value));
-			$scope.selectedTemplate = angular.fromJson(value);
+		$scope.updateTemplateForm = function(templateName, templateJson) {
+			$scope.createStackRequest = {
+				templateParams : {}
+			};
+			$scope.createStackRequest.templateName = templateName;
+			$scope.selectedTemplate = angular.fromJson(templateJson);
+			$scope.displayForm = true;
+		}
+
+		$scope.createStack = function() {
+			console.log($scope.createStackRequest);
+			CFSERVICE.createStack($scope.createStackRequest).success(function(data, status) {
+				console.log(data);
+				$scope.createStackRequest = {
+					templateParams : {}
+				};
+				$scope.describeStacks();
+				toaster.pop('success', 'Stack Created!');
+			}).error(function(data, status) {
+				toaster.pop('error', 'Error while getting templates.');
+			});
 		}
 
 		function getPayload(stackName) {

@@ -7,29 +7,42 @@
 		</button>
 		<ul class="dropdown-menu" role="menu">
 			<li class="btn" ng-repeat="(key, value) in templates"
-				ng-click="updateTemplateForm(value)">{{key}}</li>
+				ng-click="updateTemplateForm(key, value)">{{key}}</li>
 		</ul>
 	</div>
-	<div class="container-fluid">
+	<div class="container-fluid" ng-show="displayForm">
 		<div class="row">
+			<h4>Enter Template Parameters</h4>
 			<div class="col-md-12">
-				<form class="form-horizontal form_container" role="form" novalidate>
+				<form class="form-horizontal form_container" role="form"
+					name="createstackform" novalidate>
+					<div class="form-group">
+						<label class="col-sm-4 control-label">Stack Name</label>
+						<div class="col-sm-8 field_block">
+							<input class="form-control"
+								ng-model="createStackRequest.stackName"
+								placeholder="Enter stack name." required>
+						</div>
+					</div>
 					<div class="form-group"
 						ng-repeat="(key, value) in selectedTemplate.Parameters">
-						<label class="col-sm-2 control-label">{{key}}</label>
-						<div class="col-sm-10 field_block" ng-hide="value.AllowedValues">
-							<input class="form-control" placeholder="Enter Name" name="name"
-								required>
+						<label class="col-sm-4 control-label">{{key}}</label>
+						<div class="col-sm-8 field_block" ng-hide="value.AllowedValues">
+							<input class="form-control"
+								ng-model="createStackRequest.templateParams[key]"
+								placeholder="Enter {{key}}" required>
 						</div>
-						<div class="col-sm-10 field_block" ng-show="value.AllowedValues">
-							<select class="form-control" ng-model="testparam"
-								ng-options="val in value.AllowedValues">
+						<div class="col-sm-8 field_block" ng-show="value.AllowedValues">
+							<select class="form-control"
+								ng-model="createStackRequest.templateParams[key]"
+								ng-options="val as val for val in value.AllowedValues">
 							</select>
 						</div>
 					</div>
 					<div class="form-group">
 						<div class="col-sm-offset-2 col-sm-10">
-							<button class="btn btn-default">Submit</button>
+							<button class="btn btn-default"
+								ng-disabled="createstackform.$invalid" ng-click="createStack()">Submit</button>
 						</div>
 					</div>
 				</form>
