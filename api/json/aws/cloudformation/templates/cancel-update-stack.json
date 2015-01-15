@@ -1,0 +1,1 @@
+{"action":"cancel-update-stack","provider":"AWS","command":"cloudformation","parameters":{"parameterMap":{"stack-name":"sample"}}}

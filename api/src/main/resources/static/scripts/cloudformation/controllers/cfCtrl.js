@@ -149,6 +149,19 @@ define([], function() {
 			});
 		}
 
+		$scope.addTemplateRequest = {
+
+		};
+
+		$scope.addTemplate = function() {
+			CFSERVICE.addTemplate($scope.addTemplateRequest).success(function(data, status) {
+				console.log(data);
+				toaster.pop('success', 'template added!');
+			}).error(function(data, status) {
+				toaster.pop('error', 'Error while getting templates.');
+			});
+		}
+
 		function getPayload(stackName) {
 			return {
 				stackName : stackName

@@ -72,6 +72,10 @@ define([ 'angular' ], function(angular) {
 		this.createStack = function(payLoad) {
 			return $http.post(Constants.baseUrl + '/createstack', JSON.stringify(payLoad), jsonConfig);
 		}
+		
+		this.addTemplate = function(payLoad) {
+			return $http.post(Constants.baseUrl + '/addtemplate', JSON.stringify(payLoad), jsonConfig);
+		}
 
 	} ];
 });

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fluffycloud.api.Iservice.CloudFormationService;
+import com.fluffycloud.api.cloud.request.entity.AddTemplateRequest;
 import com.fluffycloud.api.cloud.request.entity.CreateStackRequest;
 import com.fluffycloud.api.cloud.request.entity.DescribeStackEventsRequest;
 import com.fluffycloud.api.cloud.request.entity.DescribeStackResourceRequest;
@@ -140,4 +141,10 @@ public class CloudFormationController
 		return cloudFormationService.getStackTemplates(params);
 	}
 
+	@RequestMapping(value = "addtemplate", method = POST)
+	public boolean addTemplate(@Valid CommonRequestParams params,
+			@RequestBody(required = true) AddTemplateRequest addTemplateRequest) throws FluffyCloudException
+	{
+		return cloudFormationService.addTemplate(params, addTemplateRequest);
+	}
 }

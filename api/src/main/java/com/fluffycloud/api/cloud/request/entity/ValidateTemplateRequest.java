@@ -1,8 +1,8 @@
 package com.fluffycloud.api.cloud.request.entity;
 
-import java.io.File;
-
 import javax.validation.constraints.NotNull;
+
+import com.fluffycloud.aws.constants.AppParams;
 
 public class ValidateTemplateRequest
 {
@@ -33,9 +33,7 @@ public class ValidateTemplateRequest
 
 	public String getTemplateBody()
 	{
-		return "file:" + File.separator + File.separator + "json" + File.separator + File.separator + "aws"
-				+ File.separator + File.separator + "cloudformation" + File.separator + File.separator + "templates"
-				+ File.separator + File.separator + templateName;
+		return AppParams.TEMPLATEBODYCLILOCATION + templateName;
 	}
 
 }
