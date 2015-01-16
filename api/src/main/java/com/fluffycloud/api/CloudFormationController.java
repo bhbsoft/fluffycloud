@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fluffycloud.api.Iservice.CloudFormationService;
 import com.fluffycloud.api.cloud.request.entity.AddTemplateRequest;
@@ -142,9 +144,13 @@ public class CloudFormationController
 	}
 
 	@RequestMapping(value = "addtemplate", method = POST)
-	public boolean addTemplate(@Valid CommonRequestParams params,
-			@RequestBody(required = true) AddTemplateRequest addTemplateRequest) throws FluffyCloudException
+	public boolean addTemplate(@Valid CommonRequestParams params, @RequestPart MultipartFile templateFile,
+			String templateName, String templateJson) throws FluffyCloudException
 	{
+		AddTemplateRequest addTemplateRequest = new AddTemplateRequest();
+		addTemplateRequest.setTemplateJson(templateJson);
+		addTemplateRequest.setTemplateName(templateName);
+		addTemplateRequest.setTemplateFile(templateFile);
 		return cloudFormationService.addTemplate(params, addTemplateRequest);
 	}
 }

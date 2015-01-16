@@ -154,6 +154,7 @@ define([], function() {
 		};
 
 		$scope.addTemplate = function() {
+			
 			CFSERVICE.addTemplate($scope.addTemplateRequest).success(function(data, status) {
 				console.log(data);
 				toaster.pop('success', 'template added!');

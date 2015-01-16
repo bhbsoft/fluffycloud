@@ -8,6 +8,7 @@ require.config({
 		angularTouch : 'vendor/angular/angular-touch',
 		jquery : "vendor/jquery/jquery-1.11.0",
 		toaster : "vendor/toaster/toaster",
+		angularFileUpload : "vendor/angular/angular-file-upload"
 	},
 
 	shim : {
@@ -34,6 +35,9 @@ require.config({
 		},
 		'ngActivityIndicator' : {
 			deps : [ 'angular', 'angularAnimate' ]
+		},
+		'angularFileUpload' : {
+			deps : [ 'angular' ]
 		}
 	},
 	priority : [ "angular" ]

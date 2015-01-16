@@ -4,6 +4,8 @@ import java.io.File;
 
 import javax.validation.constraints.NotNull;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public class AddTemplateRequest
 {
 	@NotNull
@@ -11,7 +13,7 @@ public class AddTemplateRequest
 
 	private String templateJson;
 
-	private File templateFile;
+	private MultipartFile templateFile;
 
 	public String getTemplateName()
 	{
@@ -33,14 +35,13 @@ public class AddTemplateRequest
 		this.templateJson = templateJson;
 	}
 
-	public File getTemplateFile()
+	public MultipartFile getTemplateFile()
 	{
 		return templateFile;
 	}
 
-	public void setTemplateFile(File templateFile)
+	public void setTemplateFile(MultipartFile templateFile)
 	{
 		this.templateFile = templateFile;
 	}
-
 }

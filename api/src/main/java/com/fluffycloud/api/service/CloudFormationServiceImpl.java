@@ -2,9 +2,11 @@ package com.fluffycloud.api.service;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -405,7 +407,7 @@ class CloudFormationServiceImpl implements CloudFormationService
 		try
 		{
 			logger.info("Getting stack templates.");
-			File templatesLocation = new File(AppParams.TEMPLATEFOLDER.toString());
+			File templatesLocation = new File(AppParams.TEMPLATEFOLDER.getValue());
 			if (templatesLocation.exists() && templatesLocation.isDirectory())
 			{
 				for (File file : templatesLocation.listFiles(new TemplateFileFilter()))
@@ -427,31 +429,49 @@ class CloudFormationServiceImpl implements CloudFormationService
 			throws FluffyCloudException
 	{
 		logger.info("Adding stack template.");
-		File templateFile = new File(AppParams.TEMPLATEFOLDER.getValue() + addTemplateRequest.getTemplateName()
-				+ AppParams.TEMPLATEXTSN.getValue());
-		if (templateFile.exists())
+		if (null != addTemplateRequest.getTemplateFile())
 		{
-			throw new FluffyCloudException("Template already exists. Please choose different name.");
-		}
+			File templateFile = new File(addTemplateRequest.getTemplateFile().getOriginalFilename());
+			try
+			{
+				FileUtils.copyInputStreamToFile(addTemplateRequest.getTemplateFile().getInputStream(), templateFile);
+				FileUtils.copyFileToDirectory(templateFile, new File(AppParams.TEMPLATEFOLDER.getValue()));
+			}
+			catch (IOException e)
+			{
+				throw new FluffyCloudException("Template already exists. Please choose different name.");
+			}
 
-		try (FileWriter filewriter = new FileWriter(templateFile))
-		{
-			templateFile.createNewFile();
-			filewriter.write(addTemplateRequest.getTemplateJson());
-			logger.info("Template added.");
-			logger.info("Validating Template.");
-			ValidateTemplateRequest validateTemplateRequest = new ValidateTemplateRequest();
-			validateTemplateRequest.setTemplateName(addTemplateRequest.getTemplateName());
-			validateTemplate(params, validateTemplateRequest);
-			logger.info("validated template.");
-			return true;
 		}
-		catch (Exception exception)
+		else
 		{
-			// TODO delete file in case of exceptions
-			logger.error("Error while adding stack template." + exception.getMessage());
-			throw new FluffyCloudException(exception.getMessage());
+			File templateFile = new File(AppParams.TEMPLATEFOLDER.getValue() + addTemplateRequest.getTemplateName()
+					+ AppParams.TEMPLATEXTSN.getValue());
+
+			if (templateFile.exists())
+			{
+				throw new FluffyCloudException("Template already exists. Please choose different name.");
+			}
+
+			try (FileWriter filewriter = new FileWriter(templateFile))
+			{
+				templateFile.createNewFile();
+				filewriter.write(addTemplateRequest.getTemplateJson());
+				logger.info("Template added.");
+			}
+			catch (Exception exception)
+			{
+				logger.error("Error while adding stack template." + exception.getMessage());
+				throw new FluffyCloudException(exception.getMessage());
+			}
+
 		}
+		logger.info("Validating Template.");
+		ValidateTemplateRequest validateTemplateRequest = new ValidateTemplateRequest();
+		validateTemplateRequest.setTemplateName(addTemplateRequest.getTemplateName());
+		validateTemplate(params, validateTemplateRequest);
+		logger.info("validated template.");
+		return true;
 
 	}
 }
