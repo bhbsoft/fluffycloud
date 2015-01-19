@@ -1,12 +1,9 @@
 package com.fluffycloud.api.service;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +21,7 @@ import com.fluffycloud.api.cloud.request.entity.SetStackPolicyRequest;
 import com.fluffycloud.api.cloud.request.entity.UpdateStackRequest;
 import com.fluffycloud.api.cloud.request.entity.ValidateTemplateRequest;
 import com.fluffycloud.aws.cli.utils.CLIExecutor;
+import com.fluffycloud.aws.cli.utils.CommonUtils;
 import com.fluffycloud.aws.cli.utils.TemplateFileFilter;
 import com.fluffycloud.aws.cloud.response.entity.DescribeStackEventsResponse;
 import com.fluffycloud.aws.cloud.response.entity.DescribeStackResourceResponse;
@@ -45,6 +43,9 @@ class CloudFormationServiceImpl implements CloudFormationService
 
 	@Autowired
 	private CLIExecutor cliExecutor;
+
+	@Autowired
+	private CommonUtils commonUtils;
 
 	@Override
 	public String describeStacks(CommonRequestParams params, DescribeStacksRequest describeStacksRequest)
@@ -425,53 +426,46 @@ class CloudFormationServiceImpl implements CloudFormationService
 	}
 
 	@Override
-	public boolean addTemplate(CommonRequestParams params, AddTemplateRequest addTemplateRequest)
+	public String addTemplate(CommonRequestParams params, AddTemplateRequest addTemplateRequest)
 			throws FluffyCloudException
 	{
-		logger.info("Adding stack template.");
-		if (null != addTemplateRequest.getTemplateFile())
+		try
 		{
-			File templateFile = new File(addTemplateRequest.getTemplateFile().getOriginalFilename());
-			try
+			logger.info("Adding stack template.");
+			boolean flag = null != addTemplateRequest.getTemplateFile() ? commonUtils.saveTemplate(addTemplateRequest)
+					: commonUtils.createTemplate(addTemplateRequest);
+
+			if (!flag)
 			{
-				FileUtils.copyInputStreamToFile(addTemplateRequest.getTemplateFile().getInputStream(), templateFile);
-				FileUtils.copyFileToDirectory(templateFile, new File(AppParams.TEMPLATEFOLDER.getValue()));
-			}
-			catch (IOException e)
-			{
-				throw new FluffyCloudException("Template already exists. Please choose different name.");
+				throw new FluffyCloudException("Error while save/create template file.");
 			}
 
+			ValidateTemplateRequest validateTemplateRequest = new ValidateTemplateRequest();
+			validateTemplateRequest.setTemplateName(addTemplateRequest.getTemplateName());
+
+			return addTemplateRequest.isValidateOnly() ? validateOnlyTemplate(params, validateTemplateRequest)
+					: validateTemplate(params, validateTemplateRequest);
 		}
-		else
+		catch (Exception exception)
 		{
-			File templateFile = new File(AppParams.TEMPLATEFOLDER.getValue() + addTemplateRequest.getTemplateName()
-					+ AppParams.TEMPLATEXTSN.getValue());
-
-			if (templateFile.exists())
-			{
-				throw new FluffyCloudException("Template already exists. Please choose different name.");
-			}
-
-			try (FileWriter filewriter = new FileWriter(templateFile))
-			{
-				templateFile.createNewFile();
-				filewriter.write(addTemplateRequest.getTemplateJson());
-				logger.info("Template added.");
-			}
-			catch (Exception exception)
-			{
-				logger.error("Error while adding stack template." + exception.getMessage());
-				throw new FluffyCloudException(exception.getMessage());
-			}
-
+			logger.error("removing temporary file.");
+			commonUtils.removeTempFiles(AppParams.TEMPLATEFOLDER.getValue() + addTemplateRequest.getTemplateName());
+			logger.error("Error adding/validating template." + exception.getMessage());
+			throw new FluffyCloudException(exception.getMessage());
 		}
-		logger.info("Validating Template.");
-		ValidateTemplateRequest validateTemplateRequest = new ValidateTemplateRequest();
-		validateTemplateRequest.setTemplateName(addTemplateRequest.getTemplateName());
-		validateTemplate(params, validateTemplateRequest);
-		logger.info("validated template.");
-		return true;
 
 	}
+
+	public String validateOnlyTemplate(CommonRequestParams params, ValidateTemplateRequest validateTemplateRequest)
+			throws FluffyCloudException
+	{
+		logger.info("Validating Template.");
+		String validationResponse = validateTemplate(params, validateTemplateRequest);
+		logger.info("validated template.");
+
+		File templateFile = new File(AppParams.TEMPLATEFOLDER.getValue() + validateTemplateRequest.getTemplateName());
+		templateFile.delete();
+		return validationResponse;
+	}
+
 }

@@ -54,5 +54,5 @@ public interface CloudFormationService
 
 	Map<String, String> getStackTemplates(CommonRequestParams params) throws FluffyCloudException;
 
-	boolean addTemplate(CommonRequestParams params, AddTemplateRequest addTemplateRequest) throws FluffyCloudException;
+	String addTemplate(CommonRequestParams params, AddTemplateRequest addTemplateRequest) throws FluffyCloudException;
 }

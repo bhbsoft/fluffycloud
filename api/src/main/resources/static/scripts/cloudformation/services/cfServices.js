@@ -73,16 +73,17 @@ define([ 'angular' ], function(angular) {
 			return $http.post(Constants.baseUrl + '/createstack', JSON.stringify(payLoad), jsonConfig);
 		}
 		
-		this.addTemplate = function(payLoad) {
-			var fd=  new FormData();
-			fd.append("templateFile", payLoad.templateFile);
-			fd.append("templateName", payLoad.templateName);
-			return $http.post(Constants.baseUrl + '/addtemplate', fd, {
+		this.addTemplate = function(payLoad) {			
+			return $http.post(Constants.baseUrl + '/addtemplate', payLoad, {
 				headers : {
 					'Content-Type' : undefined					
 				},
 				transformRequest: angular.identity
 			});
+		}
+		
+		this.updateStack = function(payLoad) {
+			return $http.post(Constants.baseUrl + '/updatestack', JSON.stringify(payLoad), jsonConfig);
 		}
 
 	} ];

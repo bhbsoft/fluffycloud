@@ -1,0 +1,43 @@
+<div class="col-md-8 col-xs-12 col-sm-8">
+	<h3>Update Stack</h3>
+	<div class="btn-group" ng-init="getStackTemplates()">
+		<button type="button" class="btn btn-success dropdown-toggle"
+			data-toggle="dropdown" aria-expanded="false">
+			Available Templates <span class="caret"></span>
+		</button>
+	</div>
+	<div class="container-fluid">
+		<div class="row">
+			<h4>Enter Template Parameters</h4>
+			<div class="col-md-12">
+				<form class="form-horizontal form_container" role="form"
+					name="updatestackform" novalidate>
+					<div class="form-group">
+						<label class="col-sm-4 control-label">Stack Name</label>
+						<div class="col-sm-8 field_block">
+							<input class="form-control"
+								ng-model="updateStackRequest.stackName"
+								ng-value="stack.StackName" placeholder="Enter stack name."
+								required>
+						</div>
+					</div>
+					<div class="form-group" ng-repeat="param in stack.Parameters">
+						<label class="col-sm-4 control-label">{{param.ParameterKey}}</label>
+						<div class="col-sm-8 field_block">
+							<input class="form-control"
+								ng-model="updateStackRequest.templateParams[ParameterKey]"
+								ng-value="param.ParameterValue"
+								placeholder="Enter {{param.ParameterKey}}" required>{{value}}</input>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+							<button class="btn btn-default"
+								ng-disabled="createstackform.$invalid" ng-click="updateStack()">Submit</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

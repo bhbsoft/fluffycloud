@@ -150,16 +150,37 @@ define([], function() {
 		}
 
 		$scope.addTemplateRequest = {
-
+			templateName : null,
+			validateOnly : false
 		};
 
 		$scope.addTemplate = function() {
-			
-			CFSERVICE.addTemplate($scope.addTemplateRequest).success(function(data, status) {
+			var payLoad = new FormData();
+			payLoad.append("templateFile", $scope.addTemplateRequest.templateFile);
+			payLoad.append("templateJson", $scope.addTemplateRequest.templateJson);
+			if (!$scope.addTemplateRequest.validateOnly) {
+				payLoad.append("templateName", $scope.addTemplateRequest.templateName);
+			}
+			payLoad.append("validateOnly", $scope.addTemplateRequest.validateOnly);
+
+			CFSERVICE.addTemplate(payLoad).success(function(data, status) {
 				console.log(data);
-				toaster.pop('success', 'template added!');
+				if ($scope.addTemplateRequest.validateOnly) {
+					toaster.pop('success', 'Valid Template');
+				} else {
+					toaster.pop('success', 'Template validated and added.');
+				}
 			}).error(function(data, status) {
-				toaster.pop('error', 'Error while getting templates.');
+				toaster.pop('error', 'Error while validating template.');
+			});
+		}
+
+		$scope.updateStack = function(stack) {
+			CFSERVICE.updateStack(this.updateStackRequest).success(function(data, status) {
+				console.log(data);
+				toaster.pop('success', 'Template updated.');
+			}).error(function(data, status) {
+				toaster.pop('error', 'Error while updating template.');
 			});
 		}
 

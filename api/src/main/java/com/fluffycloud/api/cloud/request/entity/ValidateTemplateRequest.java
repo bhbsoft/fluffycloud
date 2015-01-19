@@ -33,7 +33,7 @@ public class ValidateTemplateRequest
 
 	public String getTemplateBody()
 	{
-		return AppParams.TEMPLATEBODYCLILOCATION + templateName;
+		return AppParams.TEMPLATEBODYCLILOCATION.getValue() + templateName;
 	}
 
 }

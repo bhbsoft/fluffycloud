@@ -13,10 +13,11 @@
 		<div class="col-sm-12" ng-repeat="stack in stacks">
 			<h3>{{stack.StackName | uppercase}}</h3>
 			<h5>Status: {{stack.StackStatus}}</h5>
-			<button class="btn btn-success" ng-click="describeStack(stack)">Describe
+			<button class="btn-sm btn-success" ng-click="describeStack(stack)">Describe
 				Stack</button>
-			<button class="btn btn-success" ng-click="describeStackEvents(stack)">Events</button>
-			<button class="btn btn-success"
+			<button class="btn-sm btn-success"
+				ng-click="describeStackEvents(stack)">Events</button>
+			<button class="btn-sm btn-success"
 				ng-click="describeStackResources(stack)">Resources</button>
 			<div class="btn-group">
 				<button type="button" class="btn btn-success dropdown-toggle"
@@ -30,13 +31,20 @@
 				</ul>
 			</div>
 
-			<button class="btn btn-success" ng-click="listStackResources(stack)">List
-				Resources</button>
-			<button class="btn btn-success" ng-click="listStacks()">List
+			<button class="btn-sm btn-success"
+				ng-click="listStackResources(stack)">List Resources</button>
+			<button class="btn-sm btn-success" ng-click="listStacks()">List
 				Stacks</button>
-			<button class="btn btn-success" ng-click="deleteStack($index)">Delete
+			<button class="btn-sm btn-success" ng-click="deleteStack($index)">Delete
 				Stacks</button>
-			<textarea class="form-control" rows="5" ng-disabled="true">{{jsonContent | json }}</textarea>
+			<button class="btn-sm btn-success"
+				ng-click="showUpdateStackForm = !showUpdateStackForm">Update
+				Stack</button>
+			<textarea class="form-control" rows="5" ng-disabled="true"
+				ng-hide="showUpdateStackForm">{{jsonContent | json }}</textarea>
+			<div class="row" ng-show="showUpdateStackForm">
+				<div ng-include="'views/cloudformation/updatestackform.html'"></div>
+			</div>
 		</div>
 	</div>
 </div>

@@ -144,13 +144,16 @@ public class CloudFormationController
 	}
 
 	@RequestMapping(value = "addtemplate", method = POST)
-	public boolean addTemplate(@Valid CommonRequestParams params, @RequestPart MultipartFile templateFile,
-			String templateName, String templateJson) throws FluffyCloudException
+	public String addTemplate(@Valid CommonRequestParams params,
+			@RequestPart(required = false) MultipartFile templateFile, String templateName, String templateJson,
+			boolean validateOnly) throws FluffyCloudException
 	{
 		AddTemplateRequest addTemplateRequest = new AddTemplateRequest();
 		addTemplateRequest.setTemplateJson(templateJson);
 		addTemplateRequest.setTemplateName(templateName);
 		addTemplateRequest.setTemplateFile(templateFile);
+		addTemplateRequest.setValidateOnly(validateOnly);
 		return cloudFormationService.addTemplate(params, addTemplateRequest);
 	}
+
 }

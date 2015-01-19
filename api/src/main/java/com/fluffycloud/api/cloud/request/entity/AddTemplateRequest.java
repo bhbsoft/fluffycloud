@@ -1,23 +1,29 @@
 package com.fluffycloud.api.cloud.request.entity;
 
-import java.io.File;
-
-import javax.validation.constraints.NotNull;
+import static java.lang.System.currentTimeMillis;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fluffycloud.aws.constants.AppParams;
+
 public class AddTemplateRequest
 {
-	@NotNull
 	private String templateName;
 
 	private String templateJson;
 
 	private MultipartFile templateFile;
 
+	private boolean validateOnly;
+
 	public String getTemplateName()
 	{
-		return templateName;
+		if (null == this.templateName)
+		{
+			this.templateName = (null == this.templateFile) ? Long.toString(currentTimeMillis()) : templateFile
+					.getName() + System.currentTimeMillis();
+		}
+		return templateName + AppParams.TEMPLATEXTSN.getValue();
 	}
 
 	public void setTemplateName(String templateName)
@@ -44,4 +50,15 @@ public class AddTemplateRequest
 	{
 		this.templateFile = templateFile;
 	}
+
+	public boolean isValidateOnly()
+	{
+		return validateOnly;
+	}
+
+	public void setValidateOnly(boolean validateOnly)
+	{
+		this.validateOnly = validateOnly;
+	}
+
 }
