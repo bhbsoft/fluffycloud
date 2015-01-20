@@ -175,6 +175,12 @@ define([], function() {
 			});
 		}
 
+		$scope.resetUpdateForm = function() {
+			this.updateStackRequest = {
+				templateParams : []
+			};
+		}
+
 		$scope.updateStack = function(stack) {
 			CFSERVICE.updateStack(this.updateStackRequest).success(function(data, status) {
 				console.log(data);
@@ -182,6 +188,13 @@ define([], function() {
 			}).error(function(data, status) {
 				toaster.pop('error', 'Error while updating template.');
 			});
+		}
+
+		$scope.updateParams = function() {
+			this.sTemplate = angular.fromJson($scope.templates[this.templateKey]);
+			this.updateStackRequest = {
+				templateParams : []
+			};
 		}
 
 		function getPayload(stackName) {

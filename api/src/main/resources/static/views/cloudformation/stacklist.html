@@ -38,11 +38,11 @@
 			<button class="btn-sm btn-success" ng-click="deleteStack($index)">Delete
 				Stacks</button>
 			<button class="btn-sm btn-success"
-				ng-click="showUpdateStackForm = !showUpdateStackForm">Update
+				ng-click="showUpdateStackForm=!showUpdateStackForm">Update
 				Stack</button>
 			<textarea class="form-control" rows="5" ng-disabled="true"
 				ng-hide="showUpdateStackForm">{{jsonContent | json }}</textarea>
-			<div class="row" ng-show="showUpdateStackForm">
+			<div class="row" ng-if="showUpdateStackForm">
 				<div ng-include="'views/cloudformation/updatestackform.html'"></div>
 			</div>
 		</div>
