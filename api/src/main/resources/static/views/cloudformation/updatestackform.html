@@ -49,7 +49,6 @@
 						</div>
 					</div>
 				</div>
-
 				<h4>Enter Template Parameters</h4>
 				<div class="form-group"
 					ng-repeat="(key, value) in sTemplate.Parameters"
@@ -76,6 +75,10 @@
 							ng-init="updateStackRequest.templateParams[param.ParameterKey] = param.ParameterValue"
 							placeholder="Enter {{param.ParameterKey}}" required>{{value}}</input>
 					</div>
+				</div>
+				<div class="form-group" ng-if="useTemplate=='useNew'">
+					<label class="col-sm-4 control-label">Can use Add Template
+						Functionality already provided above.</label>
 				</div>
 				<div class="form-group">
 					<div class="col-sm-offset-2 col-sm-10">

@@ -199,8 +199,9 @@ public class CLIExecutor
 				logger.info("Command executed.");
 				return sb.toString();
 			}
-			else if (null != stdError.readLine())
+			else if (null != (s = stdError.readLine()))
 			{
+				sb.append(s);
 				while ((s = stdError.readLine()) != null)
 				{
 					sb.append(s);

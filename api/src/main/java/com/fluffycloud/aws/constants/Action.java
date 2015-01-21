@@ -98,7 +98,7 @@ public enum Action
 	GETTEMPLATE("get-template"),
 	SETSTACKPOLICY("set-stack-policy"),
 	GETSTACKPOLICY("get-stack-policy"),
-	//UPDATESTACK("update-stack"),
+	UPDATESTACK("update-stack"),
 	CANCELUPDATESTACK("cancel-update-stack"),
 	VALIDATETEMPLATE("validate-template");
 	/*--CloudFormation Commands--*/

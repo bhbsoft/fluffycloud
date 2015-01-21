@@ -176,9 +176,7 @@ define([], function() {
 		}
 
 		$scope.resetUpdateForm = function() {
-			this.updateStackRequest = {
-				templateParams : []
-			};
+			this.updateStackRequest.templateParams = {};
 		}
 
 		$scope.updateStack = function(stack) {
@@ -192,9 +190,8 @@ define([], function() {
 
 		$scope.updateParams = function() {
 			this.sTemplate = angular.fromJson($scope.templates[this.templateKey]);
-			this.updateStackRequest = {
-				templateParams : []
-			};
+			this.updateStackRequest.templateName = this.templateKey;
+			this.updateStackRequest.templateParams = {};
 		}
 
 		function getPayload(stackName) {

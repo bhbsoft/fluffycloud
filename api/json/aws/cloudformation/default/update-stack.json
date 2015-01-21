@@ -1,0 +1,1 @@
+{"action":"update-stack","provider":"AWS","command":"cloudformation","parameters":{"parameterMap":{"stack-name":"Sample6","parameters":"ParameterKey\u003dKeyName,ParameterValue\u003dmykeypair","template-body":"file://EC2InstanceWithSecurityGroupSample.json"}}}

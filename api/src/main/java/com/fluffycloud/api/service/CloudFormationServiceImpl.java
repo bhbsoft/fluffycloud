@@ -340,15 +340,20 @@ class CloudFormationServiceImpl implements CloudFormationService
 	public String updateStack(CommonRequestParams params, UpdateStackRequest updateStackRequest)
 			throws FluffyCloudException
 	{
-		// Map<String, String> paramsToUdate = new HashMap<String, String>();
-		// Gson gson = new Gson();
+		Map<String, String> paramsToUdate = new HashMap<String, String>();
 
 		try
 		{
 			logger.info("updating stack policy.");
+			paramsToUdate.put(AppParams.STACKNAME.getValue(), updateStackRequest.getStackName());
+			paramsToUdate.put(AppParams.TEMPLATEBODY.getValue(), updateStackRequest.getTemplateBody());
+			paramsToUdate.put(AppParams.PARAMETERS.getValue(), updateStackRequest.getTemplateParamsAsCommand());
+
+			final String updateStackJsonResponse = cliExecutor.performAction(Action.UPDATESTACK, paramsToUdate);
 			// TODO issue with use-previous-template option
-			logger.info("stack policy updated.");
-			return "IN PROGRESS";
+
+			logger.info("stack updated.");
+			return updateStackJsonResponse;
 		}
 		catch (Exception exception)
 		{
