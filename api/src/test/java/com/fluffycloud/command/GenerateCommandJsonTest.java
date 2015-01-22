@@ -3,7 +3,9 @@ package com.fluffycloud.command;
 import static com.fluffycloud.aws.constants.InstanceTypes.t1MICRO;
 import static com.fluffycloud.aws.constants.Provider.AWS;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,6 +15,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import com.fluffycloud.aws.ec2.response.entity.StartInstancesResponse;
 import com.fluffycloud.aws.entity.Command;
 import com.fluffycloud.aws.entity.Parameters;
 import com.fluffycloud.aws.entity.SecurityGroup;
@@ -89,6 +92,35 @@ public class GenerateCommandJsonTest
 
 		Command commandFromJSon = gson.fromJson(json, Command.class);
 		System.out.println(commandFromJSon);
+
+	}
+
+	@Test
+	public void checkEntityStructure()
+	{
+		File file = new File("json" + File.separator + "test.json");
+		StringBuilder sb = new StringBuilder();
+		try (BufferedReader stdInput = new BufferedReader(new FileReader(file));)
+		{
+			String s = null;
+
+			while ((s = stdInput.readLine()) != null)
+			{
+				sb.append(s);
+				sb.append("\n");
+			}
+
+			Gson gson = new Gson();
+			StartInstancesResponse describeInstancesResponse = gson.fromJson(sb.toString(),
+					StartInstancesResponse.class);
+
+			System.out.println(describeInstancesResponse.getStartInstances().size());
+
+		}
+		catch (Exception e)
+		{
+			System.out.println(e.getMessage());
+		}
 
 	}
 

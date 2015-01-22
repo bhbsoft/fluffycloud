@@ -7,13 +7,14 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.fluffycloud.api.cloud.request.entity.AddTemplateRequest;
 import com.fluffycloud.aws.constants.AppParams;
 import com.fluffycloud.exceptions.FluffyCloudException;
 
@@ -22,6 +23,14 @@ public class CommonUtils
 {
 	final static Logger logger = LoggerFactory.getLogger(CommonUtils.class);
 
+	/**
+	 * 
+	 * @param contentType
+	 * @param action
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	public String getResponse(final String contentType, final String action) throws FileNotFoundException, IOException
 	{
 		File file = null;
@@ -54,9 +63,16 @@ public class CommonUtils
 		return sbJSONCommand.toString();
 	}
 
-	public boolean createTemplate(AddTemplateRequest addTemplateRequest) throws FluffyCloudException
+	/**
+	 * 
+	 * @param templateName
+	 * @param templateJson
+	 * @return
+	 * @throws FluffyCloudException
+	 */
+	public boolean createTemplate(final String templateName, final String templateJson) throws FluffyCloudException
 	{
-		File templateFile = new File(AppParams.TEMPLATEFOLDER.getValue() + addTemplateRequest.getTemplateName());
+		File templateFile = new File(AppParams.TEMPLATEFOLDER.getValue() + templateName);
 
 		if (templateFile.exists())
 		{
@@ -66,7 +82,7 @@ public class CommonUtils
 		try (FileWriter filewriter = new FileWriter(templateFile))
 		{
 			templateFile.createNewFile();
-			filewriter.write(addTemplateRequest.getTemplateJson());
+			filewriter.write(templateJson);
 			logger.info("Template added.");
 			return true;
 		}
@@ -77,9 +93,16 @@ public class CommonUtils
 		}
 	}
 
-	public boolean saveTemplate(AddTemplateRequest addTemplateRequest) throws FluffyCloudException
+	/**
+	 * 
+	 * @param inputTemplateFile
+	 * @param templateName
+	 * @return
+	 * @throws FluffyCloudException
+	 */
+	public boolean saveTemplate(MultipartFile inputTemplateFile, final String templateName) throws FluffyCloudException
 	{
-		File templateFile = new File(AppParams.TEMPLATEFOLDER.getValue() + addTemplateRequest.getTemplateName());
+		File templateFile = new File(AppParams.TEMPLATEFOLDER.getValue() + templateName);
 
 		if (templateFile.exists())
 		{
@@ -88,7 +111,7 @@ public class CommonUtils
 
 		try
 		{
-			FileUtils.copyInputStreamToFile(addTemplateRequest.getTemplateFile().getInputStream(), templateFile);
+			FileUtils.copyInputStreamToFile(inputTemplateFile.getInputStream(), templateFile);
 			return true;
 		}
 		catch (IOException e)
@@ -97,8 +120,34 @@ public class CommonUtils
 		}
 	}
 
+	/**
+	 * 
+	 * @param templateParams
+	 * @return
+	 */
+	public String getTemplateParamsAsCommand(Map<String, String> templateParams)
+	{
+		StringBuilder params = new StringBuilder();
+		for (String paramName : templateParams.keySet())
+		{
+			params.append(" ParameterKey=" + paramName + "," + "ParameterValue=" + templateParams.get(paramName));
+		}
+		return params.toString();
+	}
+
+	/**
+	 * 
+	 * @param templateName
+	 * @return
+	 */
+	public String getTemplateBody(final String templateName)
+	{
+		return AppParams.TEMPLATEBODYCLILOCATION.getValue() + templateName;
+	}
+
 	public void removeTempFiles(final String fileLocation)
 	{
+		logger.info("removing temporary files.");
 		File tempFile = new File(fileLocation);
 		if (tempFile.exists())
 		{

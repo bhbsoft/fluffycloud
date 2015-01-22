@@ -1,6 +1,5 @@
 package com.fluffycloud.api.cloud.request.entity;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -127,22 +126,5 @@ public class UpdateStackRequest
 	public void setStackPolicyURL(String stackPolicyURL)
 	{
 		this.stackPolicyURL = stackPolicyURL;
-	}
-
-	public String getTemplateBody()
-	{
-		return "file:" + File.separator + File.separator + "json" + File.separator + File.separator + "aws"
-				+ File.separator + File.separator + "cloudformation" + File.separator + File.separator + "templates"
-				+ File.separator + File.separator + templateName;
-	}
-
-	public String getTemplateParamsAsCommand()
-	{
-		StringBuilder params = new StringBuilder();
-		for (String paramName : templateParams.keySet())
-		{
-			params.append(" ParameterKey=" + paramName + "," + "ParameterValue=" + templateParams.get(paramName));
-		}
-		return params.toString();
 	}
 }

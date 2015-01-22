@@ -2,8 +2,6 @@ package com.fluffycloud.api.cloud.request.entity;
 
 import javax.validation.constraints.NotNull;
 
-import com.fluffycloud.aws.constants.AppParams;
-
 public class ValidateTemplateRequest
 {
 	@NotNull
@@ -30,10 +28,4 @@ public class ValidateTemplateRequest
 	{
 		this.templateURL = templateURL;
 	}
-
-	public String getTemplateBody()
-	{
-		return AppParams.TEMPLATEBODYCLILOCATION.getValue() + templateName;
-	}
-
 }

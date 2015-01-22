@@ -1,5 +1,7 @@
 package com.fluffycloud.api.service;
 
+import static java.lang.System.currentTimeMillis;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -238,8 +240,10 @@ class CloudFormationServiceImpl implements CloudFormationService
 		{
 			logger.info("creating stack.");
 			paramsToUdate.put(AppParams.STACKNAME.getValue(), createStackRequest.getStackName());
-			paramsToUdate.put(AppParams.TEMPLATEBODY.getValue(), createStackRequest.getTemplateBody());
-			paramsToUdate.put(AppParams.PARAMETERS.getValue(), createStackRequest.getTemplateParamsAsCommand());
+			paramsToUdate.put(AppParams.TEMPLATEBODY.getValue(),
+					commonUtils.getTemplateBody(createStackRequest.getTemplateName()));
+			paramsToUdate.put(AppParams.PARAMETERS.getValue(),
+					commonUtils.getTemplateParamsAsCommand(createStackRequest.getTemplateParams()));
 
 			final String createStackJsonResponse = cliExecutor.performAction(Action.CREATESTACK, paramsToUdate);
 			logger.info("stack created.");
@@ -341,22 +345,43 @@ class CloudFormationServiceImpl implements CloudFormationService
 			throws FluffyCloudException
 	{
 		Map<String, String> paramsToUdate = new HashMap<String, String>();
-
+		String templateName = updateStackRequest.getTemplateName();
+		boolean temporaryTemplateCreated = false;
 		try
 		{
-			logger.info("updating stack policy.");
+			if (null == templateName)
+			{
+				logger.info("Getting existing stack template.");
+				templateName = updateStackRequest.getStackName() + currentTimeMillis()
+						+ AppParams.TEMPLATEXTSN.getValue();
+				String existingStackTemplateJson = getTemplate(params, updateStackRequest.getStackName());
+				commonUtils.createTemplate(templateName, existingStackTemplateJson);
+				paramsToUdate.put(AppParams.TEMPLATEBODY.getValue(), commonUtils.getTemplateBody(templateName));
+				temporaryTemplateCreated = true;
+			}
+			else
+			{
+				paramsToUdate.put(AppParams.TEMPLATEBODY.getValue(),
+						commonUtils.getTemplateBody(updateStackRequest.getTemplateName()));
+			}
+
+			logger.info("updating stack.");
 			paramsToUdate.put(AppParams.STACKNAME.getValue(), updateStackRequest.getStackName());
-			paramsToUdate.put(AppParams.TEMPLATEBODY.getValue(), updateStackRequest.getTemplateBody());
-			paramsToUdate.put(AppParams.PARAMETERS.getValue(), updateStackRequest.getTemplateParamsAsCommand());
+			paramsToUdate.put(AppParams.PARAMETERS.getValue(),
+					commonUtils.getTemplateParamsAsCommand(updateStackRequest.getTemplateParams()));
 
 			final String updateStackJsonResponse = cliExecutor.performAction(Action.UPDATESTACK, paramsToUdate);
-			// TODO issue with use-previous-template option
 
 			logger.info("stack updated.");
+
 			return updateStackJsonResponse;
 		}
 		catch (Exception exception)
 		{
+			if (temporaryTemplateCreated)
+			{
+				commonUtils.removeTempFiles(AppParams.TEMPLATEFOLDER.getValue() + templateName);
+			}
 			logger.error("Error while updating stack." + exception.getMessage());
 			throw new FluffyCloudException(exception.getMessage());
 		}
@@ -391,8 +416,8 @@ class CloudFormationServiceImpl implements CloudFormationService
 		try
 		{
 			logger.info("validating template.");
-			paramsToUdate.put(AppParams.TEMPLATEBODY.getValue(), validateTemplateRequest.getTemplateBody());
-
+			paramsToUdate.put(AppParams.TEMPLATEBODY.getValue(),
+					commonUtils.getTemplateBody(validateTemplateRequest.getTemplateName()));
 			String validateTemplateJsonResponse = cliExecutor.performAction(Action.VALIDATETEMPLATE, paramsToUdate);
 			ValidateTemplateResponse validateTemplateResponse = gson.fromJson(validateTemplateJsonResponse,
 					ValidateTemplateResponse.class);
@@ -437,8 +462,9 @@ class CloudFormationServiceImpl implements CloudFormationService
 		try
 		{
 			logger.info("Adding stack template.");
-			boolean flag = null != addTemplateRequest.getTemplateFile() ? commonUtils.saveTemplate(addTemplateRequest)
-					: commonUtils.createTemplate(addTemplateRequest);
+			boolean flag = null != addTemplateRequest.getTemplateFile() ? commonUtils.saveTemplate(
+					addTemplateRequest.getTemplateFile(), addTemplateRequest.getTemplateName()) : commonUtils
+					.createTemplate(addTemplateRequest.getTemplateName(), addTemplateRequest.getTemplateJson());
 
 			if (!flag)
 			{
