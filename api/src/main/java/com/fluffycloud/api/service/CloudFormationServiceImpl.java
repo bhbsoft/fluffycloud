@@ -37,6 +37,7 @@ import com.fluffycloud.aws.constants.AppParams;
 import com.fluffycloud.aws.entity.CommonRequestParams;
 import com.fluffycloud.exceptions.FluffyCloudException;
 import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 
 @Component
 class CloudFormationServiceImpl implements CloudFormationService
@@ -354,8 +355,7 @@ class CloudFormationServiceImpl implements CloudFormationService
 				logger.info("Getting existing stack template.");
 				templateName = updateStackRequest.getStackName() + currentTimeMillis()
 						+ AppParams.TEMPLATEXTSN.getValue();
-				String existingStackTemplateJson = getTemplate(params, updateStackRequest.getStackName());
-				commonUtils.createTemplate(templateName, existingStackTemplateJson);
+				createTemporaryTemplate(params, updateStackRequest, templateName);
 				paramsToUdate.put(AppParams.TEMPLATEBODY.getValue(), commonUtils.getTemplateBody(templateName));
 				temporaryTemplateCreated = true;
 			}
@@ -386,6 +386,15 @@ class CloudFormationServiceImpl implements CloudFormationService
 			throw new FluffyCloudException(exception.getMessage());
 		}
 
+	}
+
+	private void createTemporaryTemplate(CommonRequestParams params, UpdateStackRequest updateStackRequest,
+			String templateName) throws FluffyCloudException
+	{
+		commonUtils.createTemplate(
+				templateName,
+				new JsonParser().parse(getTemplate(params, updateStackRequest.getStackName())).getAsJsonObject()
+						.get("TemplateBody").toString());
 	}
 
 	@Override

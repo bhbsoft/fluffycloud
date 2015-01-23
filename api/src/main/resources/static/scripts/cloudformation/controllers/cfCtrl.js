@@ -180,7 +180,11 @@ define([], function() {
 		}
 
 		$scope.updateStack = function(stack) {
-			CFSERVICE.updateStack(this.updateStackRequest).success(function(data, status) {
+			var payLoad = new FormData();
+			payLoad.append("stackPolicyDuringUpdateFile", this.updateStackRequest.stackPolicyDuringUpdateFile);
+			payLoad.append("stackName", this.updateStackRequest.stackName);
+
+			CFSERVICE.updateStack(payLoad).success(function(data, status) {
 				console.log(data);
 				toaster.pop('success', 'Template updated.');
 			}).error(function(data, status) {

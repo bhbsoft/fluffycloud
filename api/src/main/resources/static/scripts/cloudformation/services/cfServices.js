@@ -83,7 +83,12 @@ define([ 'angular' ], function(angular) {
 		}
 		
 		this.updateStack = function(payLoad) {
-			return $http.post(Constants.baseUrl + '/updatestack', JSON.stringify(payLoad), jsonConfig);
+			return $http.post(Constants.baseUrl + '/updatestack', JSON.stringify(payLoad), {
+				headers : {
+					'Content-Type' : undefined					
+				},
+				transformRequest: angular.identity
+			});
 		}
 
 	} ];

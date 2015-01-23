@@ -43,7 +43,8 @@ public enum AppParams
 			+ File.separator), 
 	TEMPLATEXTSN(".template"), 
  TEMPLATEBODYCLILOCATION("file:" + File.separator	+ File.separator + "json" + File.separator + File.separator + "aws" + File.separator + File.separator
-			+ "cloudformation" + File.separator + File.separator + "templates" + File.separator + File.separator);
+			+ "cloudformation" + File.separator + File.separator + "templates" + File.separator + File.separator),
+	STACKPOLICYDURINGUPDATE("stack-policy-during-update-body");
 
 	public String value;
 

@@ -13,7 +13,41 @@
 							placeholder="Enter stack name." required ng-disabled="true">
 					</div>
 				</div>
-
+				<div class="row">
+					<h4>Select Stack Policy</h4>
+					<div class="col-md-4">
+						<div class="form-group">
+							<div class="field_block">
+								<input type="radio" ng-model="useStackPolicy"
+									value="useExisting" /> Use Existing Policy
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="field_block">
+								<input type="radio" ng-model="useStackPolicy" value="enterNew" />
+								Enter Policy
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="field_block">
+								<input type="radio" ng-model="useStackPolicy" value="addNew" />
+								Add File
+							</div>
+						</div>
+					</div>
+					<div class="form-group col-md-8"
+						ng-if="useStackPolicy=='useExisting'"></div>
+					<div class="form-group col-md-8" ng-if="useStackPolicy=='enterNew'">
+						<textarea class="form-control"
+							ng-model="updateStackRequest.stackPolicyDuringUpdateBody"
+							rows="5"></textarea>
+					</div>
+					<div class="form-group col-md-8" ng-if="useStackPolicy=='addNew'">
+						<input class="form-control"
+							ngfile="updateStackRequest.stackPolicyDuringUpdateFile"
+							type="file" placeholder="Select policy">
+					</div>
+				</div>
 				<div class="row">
 					<h4>Select Template</h4>
 					<div class="col-md-4">
@@ -49,6 +83,7 @@
 						</div>
 					</div>
 				</div>
+
 				<h4>Enter Template Parameters</h4>
 				<div class="form-group"
 					ng-repeat="(key, value) in sTemplate.Parameters"
@@ -76,8 +111,8 @@
 							placeholder="Enter {{param.ParameterKey}}" required>{{value}}</input>
 					</div>
 				</div>
-				<div class="form-group" ng-if="useTemplate=='useNew'">
-					<label class="col-sm-4 control-label">Can use Add Template
+				<div class="form-group col-md-8" ng-if="useTemplate=='useNew'">
+					<label class="control-label">Can use Add Template
 						Functionality already provided above.</label>
 				</div>
 				<div class="form-group">

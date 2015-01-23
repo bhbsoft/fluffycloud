@@ -1,5 +1,6 @@
 package com.fluffycloud.api.cloud.request.entity;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +18,8 @@ public class UpdateStackRequest
 	private boolean usePreviousTemplate;
 
 	private String stackPolicyDuringUpdateBody;
+
+	private File stackPolicyDuringUpdateFile;
 
 	private String stackPolicyDuringUpdateURL;
 
@@ -126,5 +129,15 @@ public class UpdateStackRequest
 	public void setStackPolicyURL(String stackPolicyURL)
 	{
 		this.stackPolicyURL = stackPolicyURL;
+	}
+
+	public File getStackPolicyDuringUpdateFile()
+	{
+		return stackPolicyDuringUpdateFile;
+	}
+
+	public void setStackPolicyDuringUpdateFile(File stackPolicyDuringUpdateFile)
+	{
+		this.stackPolicyDuringUpdateFile = stackPolicyDuringUpdateFile;
 	}
 }
