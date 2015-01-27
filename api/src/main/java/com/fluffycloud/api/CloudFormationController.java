@@ -116,8 +116,8 @@ public class CloudFormationController
 	}
 
 	@RequestMapping(value = "updatestack", method = POST)
-	public String updateStack(@Valid CommonRequestParams params,
-			@RequestBody(required = true) UpdateStackRequest updateStackRequest) throws FluffyCloudException
+	public String updateStack(@Valid CommonRequestParams params, UpdateStackRequest updateStackRequest)
+			throws FluffyCloudException
 	{
 		return cloudFormationService.updateStack(params, updateStackRequest);
 	}

@@ -347,7 +347,10 @@ class CloudFormationServiceImpl implements CloudFormationService
 	{
 		Map<String, String> paramsToUdate = new HashMap<String, String>();
 		String templateName = updateStackRequest.getTemplateName();
+		final String stackPolicyName = updateStackRequest.getStackName() + "policy" + currentTimeMillis()
+				+ AppParams.JSONXTSN.getValue();
 		boolean temporaryTemplateCreated = false;
+		boolean stackPolicyDuringUpdateFlag = false;
 		try
 		{
 			if (null == templateName)
@@ -365,13 +368,23 @@ class CloudFormationServiceImpl implements CloudFormationService
 						commonUtils.getTemplateBody(updateStackRequest.getTemplateName()));
 			}
 
+			stackPolicyDuringUpdateFlag = null != updateStackRequest.getStackPolicyDuringUpdateFile() ? commonUtils
+					.saveStackPolicyFile(updateStackRequest.getStackPolicyDuringUpdateFile(), stackPolicyName)
+					: null != updateStackRequest.getStackPolicyDuringUpdateBody() ? commonUtils.createStackPolicyFile(
+							stackPolicyName, updateStackRequest.getStackPolicyDuringUpdateBody()) : false;
+
+			if (stackPolicyDuringUpdateFlag)
+			{
+				paramsToUdate.put(AppParams.STACKPOLICYDURINGUPDATE.getValue(),
+						commonUtils.getStackPolicyBody(stackPolicyName));
+			}
+
 			logger.info("updating stack.");
 			paramsToUdate.put(AppParams.STACKNAME.getValue(), updateStackRequest.getStackName());
 			paramsToUdate.put(AppParams.PARAMETERS.getValue(),
 					commonUtils.getTemplateParamsAsCommand(updateStackRequest.getTemplateParams()));
 
 			final String updateStackJsonResponse = cliExecutor.performAction(Action.UPDATESTACK, paramsToUdate);
-
 			logger.info("stack updated.");
 
 			return updateStackJsonResponse;
@@ -381,6 +394,11 @@ class CloudFormationServiceImpl implements CloudFormationService
 			if (temporaryTemplateCreated)
 			{
 				commonUtils.removeTempFiles(AppParams.TEMPLATEFOLDER.getValue() + templateName);
+			}
+
+			if (stackPolicyDuringUpdateFlag)
+			{
+				commonUtils.removeTempFiles(AppParams.STACKPOLICYFOLDER.getValue() + stackPolicyName);
 			}
 			logger.error("Error while updating stack." + exception.getMessage());
 			throw new FluffyCloudException(exception.getMessage());

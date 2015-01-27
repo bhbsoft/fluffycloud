@@ -41,11 +41,13 @@ public enum AppParams
 	STACKPOLICYBODY("stack-policy-body"), 
 	TEMPLATEFOLDER("json"+ File.separator + "aws" + File.separator + "cloudformation" + File.separator + "templates"
 			+ File.separator), 
+	STACKPOLICYFOLDER("json"+ File.separator + "aws" + File.separator + "cloudformation" + File.separator + "templates"
+					+ File.separator +"policy" + File.separator),
 	TEMPLATEXTSN(".template"), 
- TEMPLATEBODYCLILOCATION("file:" + File.separator	+ File.separator + "json" + File.separator + File.separator + "aws" + File.separator + File.separator
+	TEMPLATEBODYCLILOCATION("file:" + File.separator	+ File.separator + "json" + File.separator + File.separator + "aws" + File.separator + File.separator
 			+ "cloudformation" + File.separator + File.separator + "templates" + File.separator + File.separator),
-	STACKPOLICYDURINGUPDATE("stack-policy-during-update-body");
-
+	STACKPOLICYDURINGUPDATE("stack-policy-during-update-body"),
+	JSONXTSN(".json");
 	public String value;
 
 	private AppParams(String value)

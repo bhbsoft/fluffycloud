@@ -1,10 +1,11 @@
 package com.fluffycloud.api.cloud.request.entity;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 
 import javax.validation.constraints.NotNull;
+
+import org.springframework.web.multipart.MultipartFile;
 
 public class UpdateStackRequest
 {
@@ -19,7 +20,7 @@ public class UpdateStackRequest
 
 	private String stackPolicyDuringUpdateBody;
 
-	private File stackPolicyDuringUpdateFile;
+	private MultipartFile stackPolicyDuringUpdateFile;
 
 	private String stackPolicyDuringUpdateURL;
 
@@ -131,12 +132,12 @@ public class UpdateStackRequest
 		this.stackPolicyURL = stackPolicyURL;
 	}
 
-	public File getStackPolicyDuringUpdateFile()
+	public MultipartFile getStackPolicyDuringUpdateFile()
 	{
 		return stackPolicyDuringUpdateFile;
 	}
 
-	public void setStackPolicyDuringUpdateFile(File stackPolicyDuringUpdateFile)
+	public void setStackPolicyDuringUpdateFile(MultipartFile stackPolicyDuringUpdateFile)
 	{
 		this.stackPolicyDuringUpdateFile = stackPolicyDuringUpdateFile;
 	}

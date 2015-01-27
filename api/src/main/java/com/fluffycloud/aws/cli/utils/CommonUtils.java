@@ -74,21 +74,49 @@ public class CommonUtils
 	{
 		File templateFile = new File(AppParams.TEMPLATEFOLDER.getValue() + templateName);
 
-		if (templateFile.exists())
+		logger.info("Adding template file.");
+		return createNewFile(templateJson, templateFile);
+	}
+
+	/**
+	 * 
+	 * @param stackPolicyName
+	 * @param stackPolicyJson
+	 * @return
+	 * @throws FluffyCloudException
+	 */
+	public boolean createStackPolicyFile(final String stackPolicyName, final String stackPolicyJson)
+			throws FluffyCloudException
+	{
+		File stackPolicyFile = new File(AppParams.STACKPOLICYFOLDER.getValue() + stackPolicyName);
+		logger.info("Adding stack policy file.");
+		return createNewFile(stackPolicyJson, stackPolicyFile);
+	}
+
+	/**
+	 * 
+	 * @param jsonContent
+	 * @param file
+	 * @return
+	 * @throws FluffyCloudException
+	 */
+	private boolean createNewFile(final String jsonContent, File file) throws FluffyCloudException
+	{
+		if (file.exists())
 		{
-			throw new FluffyCloudException("Template already exists. Please choose different name.");
+			throw new FluffyCloudException("File already exists. Please choose different name.");
 		}
 
-		try (FileWriter filewriter = new FileWriter(templateFile))
+		try (FileWriter filewriter = new FileWriter(file))
 		{
-			templateFile.createNewFile();
-			filewriter.write(templateJson);
-			logger.info("Template added.");
+			file.createNewFile();
+			filewriter.write(jsonContent);
+			logger.info("File added.");
 			return true;
 		}
 		catch (Exception exception)
 		{
-			logger.error("Error while adding stack template." + exception.getMessage());
+			logger.error("Error while adding file." + exception.getMessage());
 			throw new FluffyCloudException(exception.getMessage());
 		}
 	}
@@ -103,20 +131,47 @@ public class CommonUtils
 	public boolean saveTemplate(MultipartFile inputTemplateFile, final String templateName) throws FluffyCloudException
 	{
 		File templateFile = new File(AppParams.TEMPLATEFOLDER.getValue() + templateName);
+		logger.info("Saving template file.");
+		return saveFile(inputTemplateFile, templateFile);
+	}
 
-		if (templateFile.exists())
+	/**
+	 * 
+	 * @param inputStackFile
+	 * @param stackName
+	 * @return
+	 * @throws FluffyCloudException
+	 */
+	public boolean saveStackPolicyFile(MultipartFile inputStackFile, final String stackName)
+			throws FluffyCloudException
+	{
+		File stackFile = new File(AppParams.STACKPOLICYFOLDER.getValue() + stackName);
+		logger.info("Saving stack policy during udate file.");
+		return saveFile(inputStackFile, stackFile);
+	}
+
+	/**
+	 * 
+	 * @param inputFile
+	 * @param destinationFile
+	 * @return
+	 * @throws FluffyCloudException
+	 */
+	private boolean saveFile(MultipartFile inputFile, File destinationFile) throws FluffyCloudException
+	{
+		if (destinationFile.exists())
 		{
-			throw new FluffyCloudException("Template already exists. Please choose different name.");
+			throw new FluffyCloudException("File already exists. Please choose different name.");
 		}
 
 		try
 		{
-			FileUtils.copyInputStreamToFile(inputTemplateFile.getInputStream(), templateFile);
+			FileUtils.copyInputStreamToFile(inputFile.getInputStream(), destinationFile);
 			return true;
 		}
 		catch (IOException e)
 		{
-			throw new FluffyCloudException("Error while creating template file.");
+			throw new FluffyCloudException("Error while creating file.");
 		}
 	}
 
@@ -145,6 +200,15 @@ public class CommonUtils
 		return AppParams.TEMPLATEBODYCLILOCATION.getValue() + templateName;
 	}
 
+	public String getStackPolicyBody(final String stackPolicyName)
+	{
+		return AppParams.STACKPOLICYFOLDER.getValue() + stackPolicyName;
+	}
+
+	/**
+	 * 
+	 * @param fileLocation
+	 */
 	public void removeTempFiles(final String fileLocation)
 	{
 		logger.info("removing temporary files.");
