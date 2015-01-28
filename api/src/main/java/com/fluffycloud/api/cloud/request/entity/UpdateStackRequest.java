@@ -1,7 +1,6 @@
 package com.fluffycloud.api.cloud.request.entity;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.validation.constraints.NotNull;
 
@@ -24,7 +23,7 @@ public class UpdateStackRequest
 
 	private String stackPolicyDuringUpdateURL;
 
-	private Map<String, String> templateParams;
+	private String templateParams;
 
 	private List<String> capabilities;
 
@@ -92,12 +91,12 @@ public class UpdateStackRequest
 		this.stackPolicyDuringUpdateURL = stackPolicyDuringUpdateURL;
 	}
 
-	public Map<String, String> getTemplateParams()
+	public String getTemplateParams()
 	{
 		return templateParams;
 	}
 
-	public void setTemplateParams(Map<String, String> templateParams)
+	public void setTemplateParams(String templateParams)
 	{
 		this.templateParams = templateParams;
 	}

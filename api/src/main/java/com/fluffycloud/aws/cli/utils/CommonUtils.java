@@ -12,6 +12,7 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -146,7 +147,7 @@ public class CommonUtils
 			throws FluffyCloudException
 	{
 		File stackFile = new File(AppParams.STACKPOLICYFOLDER.getValue() + stackName);
-		logger.info("Saving stack policy during udate file.");
+		logger.info("Saving stack policy during update file.");
 		return saveFile(inputStackFile, stackFile);
 	}
 
@@ -180,14 +181,31 @@ public class CommonUtils
 	 * @param templateParams
 	 * @return
 	 */
-	public String getTemplateParamsAsCommand(Map<String, String> templateParams)
+	public String getTemplateParamsAsCommand(String templateParams)
 	{
-		StringBuilder params = new StringBuilder();
-		for (String paramName : templateParams.keySet())
+		JacksonJsonParser js = new JacksonJsonParser();
+		Map<String, Object> params = js.parseMap(templateParams);
+		StringBuilder paramString = new StringBuilder();
+		for (String paramName : params.keySet())
 		{
-			params.append(" ParameterKey=" + paramName + "," + "ParameterValue=" + templateParams.get(paramName));
+			paramString.append(" ParameterKey=" + paramName + "," + "ParameterValue=" + params.get(paramName));
 		}
-		return params.toString();
+		return paramString.toString();
+	}
+
+	/**
+	 * 
+	 * @param params
+	 * @return
+	 */
+	public String getParamsAsCommand(Map<String, String> params)
+	{
+		StringBuilder paramString = new StringBuilder();
+		for (String paramName : params.keySet())
+		{
+			paramString.append(" ParameterKey=" + paramName + "," + "ParameterValue=" + params.get(paramName));
+		}
+		return paramString.toString();
 	}
 
 	/**

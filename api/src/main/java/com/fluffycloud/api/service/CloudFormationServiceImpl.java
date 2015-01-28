@@ -244,7 +244,7 @@ class CloudFormationServiceImpl implements CloudFormationService
 			paramsToUdate.put(AppParams.TEMPLATEBODY.getValue(),
 					commonUtils.getTemplateBody(createStackRequest.getTemplateName()));
 			paramsToUdate.put(AppParams.PARAMETERS.getValue(),
-					commonUtils.getTemplateParamsAsCommand(createStackRequest.getTemplateParams()));
+					commonUtils.getParamsAsCommand(createStackRequest.getTemplateParams()));
 
 			final String createStackJsonResponse = cliExecutor.performAction(Action.CREATESTACK, paramsToUdate);
 			logger.info("stack created.");
@@ -347,7 +347,7 @@ class CloudFormationServiceImpl implements CloudFormationService
 	{
 		Map<String, String> paramsToUdate = new HashMap<String, String>();
 		String templateName = updateStackRequest.getTemplateName();
-		final String stackPolicyName = updateStackRequest.getStackName() + "policy" + currentTimeMillis()
+		final String stackPolicyName = AppParams.STACKPOLICYDURINGUPDATE.getValue() + currentTimeMillis()
 				+ AppParams.JSONXTSN.getValue();
 		boolean temporaryTemplateCreated = false;
 		boolean stackPolicyDuringUpdateFlag = false;
@@ -386,24 +386,30 @@ class CloudFormationServiceImpl implements CloudFormationService
 
 			final String updateStackJsonResponse = cliExecutor.performAction(Action.UPDATESTACK, paramsToUdate);
 			logger.info("stack updated.");
-
+			deleteTemporaryFiles(templateName, stackPolicyName, temporaryTemplateCreated, stackPolicyDuringUpdateFlag);
 			return updateStackJsonResponse;
 		}
 		catch (Exception exception)
 		{
-			if (temporaryTemplateCreated)
-			{
-				commonUtils.removeTempFiles(AppParams.TEMPLATEFOLDER.getValue() + templateName);
-			}
-
-			if (stackPolicyDuringUpdateFlag)
-			{
-				commonUtils.removeTempFiles(AppParams.STACKPOLICYFOLDER.getValue() + stackPolicyName);
-			}
+			deleteTemporaryFiles(templateName, stackPolicyName, temporaryTemplateCreated, stackPolicyDuringUpdateFlag);
 			logger.error("Error while updating stack." + exception.getMessage());
 			throw new FluffyCloudException(exception.getMessage());
 		}
 
+	}
+
+	private void deleteTemporaryFiles(String templateName, final String stackPolicyName,
+			boolean temporaryTemplateCreated, boolean stackPolicyDuringUpdateFlag)
+	{
+		if (temporaryTemplateCreated)
+		{
+			commonUtils.removeTempFiles(AppParams.TEMPLATEFOLDER.getValue() + templateName);
+		}
+
+		if (stackPolicyDuringUpdateFlag)
+		{
+			commonUtils.removeTempFiles(AppParams.STACKPOLICYFOLDER.getValue() + stackPolicyName);
+		}
 	}
 
 	private void createTemporaryTemplate(CommonRequestParams params, UpdateStackRequest updateStackRequest,

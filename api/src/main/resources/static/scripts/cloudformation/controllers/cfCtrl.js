@@ -179,16 +179,27 @@ define([], function() {
 			this.updateStackRequest.templateParams = {};
 		}
 
+		$scope.resetStackPolicy = function() {
+			this.updateStackRequest.stackPolicyDuringUpdateFile = null;
+			this.updateStackRequest.stackPolicyDuringUpdateBody = null;
+		}
+
 		$scope.updateStack = function(stack) {
 			var payLoad = new FormData();
-			payLoad.append("stackPolicyDuringUpdateFile", this.updateStackRequest.stackPolicyDuringUpdateFile);
+			if (null != this.updateStackRequest.stackPolicyDuringUpdateFile) {
+				payLoad.append("stackPolicyDuringUpdateFile", this.updateStackRequest.stackPolicyDuringUpdateFile);
+			}
+
+			if (null != this.updateStackRequest.stackPolicyDuringUpdateBody) {
+				payLoad.append("stackPolicyDuringUpdateBody", this.updateStackRequest.stackPolicyDuringUpdateBody);
+			}
 			payLoad.append("stackName", this.updateStackRequest.stackName);
+			payLoad.append("templateParams", JSON.stringify(this.updateStackRequest.templateParams));
 
 			CFSERVICE.updateStack(payLoad).success(function(data, status) {
-				console.log(data);
-				toaster.pop('success', 'Template updated.');
+				toaster.pop('success', 'Stack updated.');
 			}).error(function(data, status) {
-				toaster.pop('error', 'Error while updating template.');
+				toaster.pop('error', 'Error while updating stack.');
 			});
 		}
 

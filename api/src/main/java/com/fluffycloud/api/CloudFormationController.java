@@ -155,5 +155,4 @@ public class CloudFormationController
 		addTemplateRequest.setValidateOnly(validateOnly);
 		return cloudFormationService.addTemplate(params, addTemplateRequest);
 	}
-
 }

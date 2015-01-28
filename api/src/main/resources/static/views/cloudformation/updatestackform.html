@@ -1,128 +1,127 @@
 
 <div class="container-fluid">
 	<div class="row">
-		<div class="col-md-12">
-			<form class="form-horizontal form_container" role="form"
-				name="updatestackform" novalidate>
-				<div class="form-group">
-					<label class="col-sm-4 control-label">Stack Name</label>
-					<div class="col-sm-8 field_block">
-						<input class="form-control"
-							ng-model="updateStackRequest.stackName"
-							ng-init="updateStackRequest.stackName = stack.StackName"
-							placeholder="Enter stack name." required ng-disabled="true">
-					</div>
-				</div>
-				<div class="row">
-					<h4>Select Stack Policy</h4>
-					<div class="col-md-4">
-						<div class="form-group">
-							<div class="field_block">
-								<input type="radio" ng-model="useStackPolicy"
-									value="useExisting" /> Use Existing Policy
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="field_block">
-								<input type="radio" ng-model="useStackPolicy" value="enterNew" />
-								Enter Policy
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="field_block">
-								<input type="radio" ng-model="useStackPolicy" value="addNew" />
-								Add File
-							</div>
-						</div>
-					</div>
-					<div class="form-group col-md-8"
-						ng-if="useStackPolicy=='useExisting'"></div>
-					<div class="form-group col-md-8" ng-if="useStackPolicy=='enterNew'">
-						<textarea class="form-control"
-							ng-model="updateStackRequest.stackPolicyDuringUpdateBody"
-							rows="5"></textarea>
-					</div>
-					<div class="form-group col-md-8" ng-if="useStackPolicy=='addNew'">
-						<input class="form-control"
-							ngfile="updateStackRequest.stackPolicyDuringUpdateFile"
-							type="file" placeholder="Select policy">
-					</div>
-				</div>
-				<div class="row">
-					<h4>Select Template</h4>
-					<div class="col-md-4">
-						<div class="form-group">
-							<div class="field_block">
-								<input type="radio" ng-model="useTemplate" value="useExisting"
-									ng-click="resetUpdateForm()" /> Use Existing Template
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="field_block">
-								<input type="radio" ng-model="useTemplate" value="useAvailable"
-									ng-click="resetUpdateForm()" /> Select Template
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="field_block">
-								<input type="radio" ng-model="useTemplate" value="useNew"
-									ng-click="resetUpdateForm()" /> Add New Template
-							</div>
-						</div>
 
+		<form class="form-horizontal form_container" role="form"
+			name="updatestackform" novalidate>
+			<div class="form-group">
+				<label class="col-sm-4 control-label">Stack Name</label>
+				<div class="col-sm-8 field_block">
+					<input class="form-control" ng-model="updateStackRequest.stackName"
+						ng-init="updateStackRequest.stackName = stack.StackName"
+						placeholder="Enter stack name." required ng-disabled="true">
+				</div>
+			</div>
+			<div class="row">
+				<h4>Select Stack Policy</h4>
+				<div class="col-md-4">
+					<div class="form-group">
+						<div class="field_block">
+							<input type="radio" ng-model="useStackPolicy"
+								ng-click="resetStackPolicy()" value="useExisting" /> Use
+							Existing Policy
+						</div>
 					</div>
-					<div class="col-md-8">
-						<div ng-show="useTemplate=='useAvailable'">
-							<div class="btn-group" ng-init="getStackTemplates()">
-								<select ng-model="templateKey"
-									ng-options="key as key for (key, value) in templates"
-									ng-change="updateParams()">
-								</select>
-
-							</div>
+					<div class="form-group">
+						<div class="field_block">
+							<input type="radio" ng-model="useStackPolicy"
+								ng-click="resetStackPolicy()" value="enterNew" /> Enter Policy
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="field_block">
+							<input type="radio" ng-model="useStackPolicy"
+								ng-click="resetStackPolicy()" value="addNew" /> Add File
 						</div>
 					</div>
 				</div>
+				<div class="form-group col-md-8"
+					ng-if="useStackPolicy=='useExisting'"></div>
+				<div class="form-group col-md-8" ng-if="useStackPolicy=='enterNew'">
+					<textarea class="form-control"
+						ng-model="updateStackRequest.stackPolicyDuringUpdateBody" rows="5"></textarea>
+				</div>
+				<div class="form-group col-md-8" ng-if="useStackPolicy=='addNew'">
+					<input class="form-control"
+						ngfile="updateStackRequest.stackPolicyDuringUpdateFile"
+						type="file" placeholder="Select policy">
+				</div>
+			</div>
+			<div class="row">
+				<h4>Select Template</h4>
+				<div class="col-md-4">
+					<div class="form-group">
+						<div class="field_block">
+							<input type="radio" ng-model="useTemplate" value="useExisting"
+								ng-click="resetUpdateForm()" /> Use Existing Template
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="field_block">
+							<input type="radio" ng-model="useTemplate" value="useAvailable"
+								ng-click="resetUpdateForm()" /> Select Template
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="field_block">
+							<input type="radio" ng-model="useTemplate" value="useNew"
+								ng-click="resetUpdateForm()" /> Add New Template
+						</div>
+					</div>
 
-				<h4>Enter Template Parameters</h4>
-				<div class="form-group"
-					ng-repeat="(key, value) in sTemplate.Parameters"
-					ng-if="useTemplate=='useAvailable'">
-					<label class="col-sm-4 control-label">{{key}}</label>
-					<div class="col-sm-8 field_block" ng-hide="value.AllowedValues">
-						<input class="form-control"
-							ng-model="updateStackRequest.templateParams[key]"
-							placeholder="Enter {{key}}" required>
-					</div>
-					<div class="col-sm-8 field_block" ng-show="value.AllowedValues">
-						<select class="form-control"
-							ng-model="updateStackRequest.templateParams[key]"
-							ng-options="val as val for val in value.AllowedValues">
-						</select>
+				</div>
+				<div class="col-md-8">
+					<div ng-show="useTemplate=='useAvailable'">
+						<div class="btn-group" ng-init="getStackTemplates()">
+							<select ng-model="templateKey"
+								ng-options="key as key for (key, value) in templates"
+								ng-change="updateParams()">
+							</select>
+
+						</div>
 					</div>
 				</div>
-				<div class="form-group" ng-repeat="param in stack.Parameters"
-					ng-if="useTemplate=='useExisting'">
-					<label class="col-sm-4 control-label">{{param.ParameterKey}}</label>
-					<div class="col-sm-8 field_block">
-						<input class="form-control"
-							ng-model="updateStackRequest.templateParams[param.ParameterKey]"
-							ng-init="updateStackRequest.templateParams[param.ParameterKey] = param.ParameterValue"
-							placeholder="Enter {{param.ParameterKey}}" required>{{value}}</input>
-					</div>
+			</div>
+
+			<h4>Enter Template Parameters</h4>
+			<div class="form-group"
+				ng-repeat="(key, value) in sTemplate.Parameters"
+				ng-if="useTemplate=='useAvailable'">
+				<label class="col-sm-4 control-label">{{key}}</label>
+				<div class="col-sm-8 field_block" ng-hide="value.AllowedValues">
+					<input class="form-control"
+						ng-model="updateStackRequest.templateParams[key]"
+						placeholder="Enter {{key}}" required>
 				</div>
-				<div class="form-group col-md-8" ng-if="useTemplate=='useNew'">
-					<label class="control-label">Can use Add Template
-						Functionality already provided above.</label>
+				<div class="col-sm-8 field_block" ng-show="value.AllowedValues">
+					<select class="form-control"
+						ng-model="updateStackRequest.templateParams[key]"
+						ng-options="val as val for val in value.AllowedValues">
+					</select>
 				</div>
-				<div class="form-group">
-					<div class="col-sm-offset-2 col-sm-10">
-						<button class="btn btn-default"
-							ng-disabled="updatestackform.$invalid" ng-click="updateStack()">Submit</button>
-					</div>
+			</div>
+			<div class="form-group" ng-repeat="param in stack.Parameters"
+				ng-if="useTemplate=='useExisting'">
+				<label class="col-sm-4 control-label">{{param.ParameterKey}}</label>
+				<div class="col-sm-8 field_block">
+					<input class="form-control"
+						ng-model="updateStackRequest.templateParams[param.ParameterKey]"
+						ng-init="updateStackRequest.templateParams[param.ParameterKey] = param.ParameterValue"
+						placeholder="Enter {{param.ParameterKey}}" required>{{value}}</input>
 				</div>
-			</form>
-		</div>
+			</div>
+			<div class="form-group col-md-8" ng-if="useTemplate=='useNew'">
+				<label class="control-label">Can use Add Template
+					Functionality already provided above.</label>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10 text-center">
+					<button class="btn btn-default"
+						ng-disabled="updatestackform.$invalid" ng-click="updateStack()">Submit</button>
+				</div>
+			</div>
+		</form>
+
 	</div>
 </div>
 
