@@ -8,8 +8,7 @@ define([], function() {
 				$scope.stacks = data.Stacks;
 				$scope.jsonContent = data.Stacks;
 			}).error(function(data, status) {
-				toaster.pop('error', 'Error while getting stacks');
-				console.log(data, status);
+				toaster.pop('error', 'Error while getting stack. Please try again');
 			});
 		}
 
@@ -22,22 +21,17 @@ define([], function() {
 			}).error(function(data, status) {
 				toaster.pop('error', 'Error while getting stack');
 				scope.jsonContent = 'Error while getting stack. Please try again';
-				console.log(data, status);
 			});
 		}
 
 		$scope.describeStackEvents = function(stack) {
 			var scope = this;
 			scope.jsonContent = 'Loading';
-
 			CFSERVICE.describeStackEvents(getPayload(stack.StackName)).success(function(data, status) {
-				console.log(data);
 				scope.jsonContent = data;
-
 			}).error(function(data, status) {
 				toaster.pop('error', 'Error while getting stack events');
 				scope.jsonContent = 'Error while getting stack events. Please try again';
-				console.log(data, status);
 			});
 		}
 
@@ -45,13 +39,11 @@ define([], function() {
 			var scope = this;
 			scope.jsonContent = 'Loading';
 			CFSERVICE.describeStackResources(getPayload(stack.StackName)).success(function(data, status) {
-				console.log(data);
 				scope.resources = data.StackResources;
 				scope.jsonContent = data;
 			}).error(function(data, status) {
 				toaster.pop('error', 'Error while getting stack resources');
 				scope.jsonContent = 'Error while getting stack resources. Please try again';
-				console.log(data, status);
 			});
 		}
 
@@ -63,12 +55,10 @@ define([], function() {
 				logicalResourceId : logicalResourceId
 			};
 			CFSERVICE.describeStackResource(payLoad).success(function(data, status) {
-				console.log(data);
 				scope.jsonContent = data;
 			}).error(function(data, status) {
 				toaster.pop('error', 'Error while getting stack resource');
 				scope.jsonContent = 'Error while getting stack resource. Please try again';
-				console.log(data, status);
 			});
 		}
 
@@ -79,12 +69,10 @@ define([], function() {
 				stackName : stack.StackName,
 			};
 			CFSERVICE.listStackResources(payLoad).success(function(data, status) {
-				console.log(data);
 				scope.jsonContent = data;
 			}).error(function(data, status) {
 				toaster.pop('error', 'Error while listing stack resources');
 				scope.jsonContent = 'Error while listing stack resources. Please try again';
-				console.log(data, status);
 			});
 		}
 
@@ -95,12 +83,10 @@ define([], function() {
 				stackName : $scope.stacks[index].StackName,
 			};
 			CFSERVICE.deleteStack(payLoad).success(function(data, status) {
-				console.log(data);
 				scope.jsonContent = data;
 			}).error(function(data, status) {
 				toaster.pop('error', 'Error while deleting stack.');
 				scope.jsonContent = 'Error while deleting stack. Please try again';
-				console.log(data, status);
 			});
 		}
 
@@ -108,18 +94,15 @@ define([], function() {
 			var scope = this;
 			scope.jsonContent = 'Loading';
 			CFSERVICE.listStacks().success(function(data, status) {
-				console.log(data);
 				scope.jsonContent = data;
 			}).error(function(data, status) {
 				toaster.pop('error', 'Error while listing stacks.');
 				scope.jsonContent = 'Error while listing stacks. Please try again';
-
 			});
 		}
 
 		$scope.getStackTemplates = function() {
 			CFSERVICE.getStackTemplates().success(function(data, status) {
-				console.log(data);
 				$scope.templates = data;
 			}).error(function(data, status) {
 				toaster.pop('error', 'Error while getting templates.');
@@ -136,9 +119,7 @@ define([], function() {
 		}
 
 		$scope.createStack = function() {
-			console.log($scope.createStackRequest);
 			CFSERVICE.createStack($scope.createStackRequest).success(function(data, status) {
-				console.log(data);
 				$scope.createStackRequest = {
 					templateParams : {}
 				};
@@ -164,7 +145,6 @@ define([], function() {
 			payLoad.append("validateOnly", $scope.addTemplateRequest.validateOnly);
 
 			CFSERVICE.addTemplate(payLoad).success(function(data, status) {
-				console.log(data);
 				if ($scope.addTemplateRequest.validateOnly) {
 					toaster.pop('success', 'Valid Template');
 				} else {
